@@ -1,0 +1,13 @@
+name = "STAMP"
+id_prefix = "FM-1_73"
+usb_manufacturer = "Michael Perry"
+usb_product = "Stamp Composer FM-1"
+o2 = ["dsp/stamp.c"]
+words = "words.tsv"
+ble = false
+usb_audio_in = true
+usb_audio_out = false
+tagline = "Stamp a sound. Make a song."
+repo = "https://github.com/MichaelAPerry/MPFM1"
+licence = "MIT"
+credits = "Original app and placeholder sounds; platform by fm1-base and felucca-bsp contributors."

@@ -1,0 +1,4224 @@
+{
+  "instruments": [
+    {
+      "name": "Feather",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 5
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 4
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 3
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 2
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 1
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Peach",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 11
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 10
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 9
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 8
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 7
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Luigi",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 17
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 16
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 15
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 14
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 13
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Heart",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 23
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 22
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 21
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 20
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 19
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 18
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Car",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 29
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 28
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 27
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 26
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 25
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Boat",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14080
+            },
+            {
+              "operator": 56,
+              "amount": 120
+            },
+            {
+              "operator": 58,
+              "amount": 48
+            },
+            {
+              "operator": 53,
+              "amount": 31
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32568
+            },
+            {
+              "operator": 56,
+              "amount": 120
+            },
+            {
+              "operator": 58,
+              "amount": 72
+            },
+            {
+              "operator": 53,
+              "amount": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Plane",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 39
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 38
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 37
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 36
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 33
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Face",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 53,
+              "amount": 40
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Swan",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 53,
+              "amount": 41
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pig",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 53,
+              "amount": 42
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cat",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 53,
+              "amount": 49
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dog",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 53,
+              "amount": 50
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Gameboy",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 56
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 55
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 54
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 53
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 52
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 51
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Flower",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 64
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 63
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 60
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 59
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 58
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 57
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Star",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 76
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 75
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 74
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 73
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 66
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 65
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Yoshi",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 53,
+              "amount": 77
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Mushroom",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 56,
+              "amount": 120
+            },
+            {
+              "operator": 58,
+              "amount": 50
+            },
+            {
+              "operator": 53,
+              "amount": 78
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Boo",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13312
+            },
+            {
+              "operator": 58,
+              "amount": 50
+            },
+            {
+              "operator": 53,
+              "amount": 61
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14645
+            },
+            {
+              "operator": 58,
+              "amount": 55
+            },
+            {
+              "operator": 53,
+              "amount": 62
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 15930
+            },
+            {
+              "operator": 58,
+              "amount": 60
+            },
+            {
+              "operator": 53,
+              "amount": 68
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32575
+            },
+            {
+              "operator": 58,
+              "amount": 67
+            },
+            {
+              "operator": 53,
+              "amount": 67
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Mario",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 84
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 83
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 82
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 81
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 80
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 79
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shy Guy",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13312
+            },
+            {
+              "operator": 58,
+              "amount": 50
+            },
+            {
+              "operator": 53,
+              "amount": 70
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14645
+            },
+            {
+              "operator": 58,
+              "amount": 55
+            },
+            {
+              "operator": 53,
+              "amount": 69
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 15930
+            },
+            {
+              "operator": 58,
+              "amount": 60
+            },
+            {
+              "operator": 53,
+              "amount": 72
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32575
+            },
+            {
+              "operator": 58,
+              "amount": 67
+            },
+            {
+              "operator": 53,
+              "amount": 71
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Coin",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13312
+            },
+            {
+              "operator": 58,
+              "amount": 50
+            },
+            {
+              "operator": 53,
+              "amount": 44
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14645
+            },
+            {
+              "operator": 58,
+              "amount": 55
+            },
+            {
+              "operator": 53,
+              "amount": 43
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 15930
+            },
+            {
+              "operator": 58,
+              "amount": 60
+            },
+            {
+              "operator": 53,
+              "amount": 45
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32575
+            },
+            {
+              "operator": 58,
+              "amount": 67
+            },
+            {
+              "operator": 53,
+              "amount": 46
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Piranha Plant",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13312
+            },
+            {
+              "operator": 58,
+              "amount": 50
+            },
+            {
+              "operator": 53,
+              "amount": 35
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14645
+            },
+            {
+              "operator": 58,
+              "amount": 55
+            },
+            {
+              "operator": 53,
+              "amount": 34
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 15930
+            },
+            {
+              "operator": 58,
+              "amount": 60
+            },
+            {
+              "operator": 53,
+              "amount": 47
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32575
+            },
+            {
+              "operator": 58,
+              "amount": 67
+            },
+            {
+              "operator": 53,
+              "amount": 48
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Bullet Bill",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 53,
+              "amount": 85
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Goomba",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 48,
+              "amount": 70
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 90
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 87
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 91
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 88
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 86
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 89
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Bob-Omb",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 92
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 93
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 94
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 95
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 96
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 97
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Spiny",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 98
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 99
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 100
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 101
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 102
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 103
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Berry",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 52,
+              "amount": 65526
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 104
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 105
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 106
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 107
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 108
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 109
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "1-UP",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 48,
+              "amount": 65476
+            },
+            {
+              "operator": 58,
+              "amount": 41
+            },
+            {
+              "operator": 53,
+              "amount": 110
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 58,
+              "amount": 48
+            },
+            {
+              "operator": 53,
+              "amount": 111
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 48,
+              "amount": 70
+            },
+            {
+              "operator": 58,
+              "amount": 55
+            },
+            {
+              "operator": 53,
+              "amount": 112
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 48,
+              "amount": 70
+            },
+            {
+              "operator": 58,
+              "amount": 62
+            },
+            {
+              "operator": 53,
+              "amount": 113
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32578
+            },
+            {
+              "operator": 58,
+              "amount": 72
+            },
+            {
+              "operator": 53,
+              "amount": 114
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Moon",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 115
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 116
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 117
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 118
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 119
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 120
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Egg",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 48,
+              "amount": 65486
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 11264
+            },
+            {
+              "operator": 53,
+              "amount": 121
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 13101
+            },
+            {
+              "operator": 53,
+              "amount": 122
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 14900
+            },
+            {
+              "operator": 53,
+              "amount": 123
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 16699
+            },
+            {
+              "operator": 53,
+              "amount": 124
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 18498
+            },
+            {
+              "operator": 53,
+              "amount": 125
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 43,
+              "amount": 32585
+            },
+            {
+              "operator": 53,
+              "amount": 126
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Gnome",
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 53,
+              "amount": 127
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "file_bytes": 7204552,
+  "pcm_pool_bytes": 7194408,
+  "bit_depth": 16,
+  "samples": [
+    {
+      "name": "Feather E4",
+      "frames": 36923,
+      "pcm_bytes": 73846,
+      "rate": 44100,
+      "seconds": 0.8372562358276644,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Feather A3",
+      "frames": 36736,
+      "pcm_bytes": 73472,
+      "rate": 44100,
+      "seconds": 0.833015873015873,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Feather D3",
+      "frames": 36719,
+      "pcm_bytes": 73438,
+      "rate": 44100,
+      "seconds": 0.8326303854875283,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Feather G2",
+      "frames": 36964,
+      "pcm_bytes": 73928,
+      "rate": 44100,
+      "seconds": 0.8381859410430839,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Feather C2",
+      "frames": 36922,
+      "pcm_bytes": 73844,
+      "rate": 44100,
+      "seconds": 0.8372335600907029,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Feather F1",
+      "frames": 37126,
+      "pcm_bytes": 74252,
+      "rate": 44100,
+      "seconds": 0.841859410430839,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Peach E4",
+      "frames": 48322,
+      "pcm_bytes": 96644,
+      "rate": 44100,
+      "seconds": 1.095736961451247,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Peach A3",
+      "frames": 48330,
+      "pcm_bytes": 96660,
+      "rate": 44100,
+      "seconds": 1.0959183673469388,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Peach D3",
+      "frames": 48527,
+      "pcm_bytes": 97054,
+      "rate": 44100,
+      "seconds": 1.1003854875283448,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Peach G2",
+      "frames": 48375,
+      "pcm_bytes": 96750,
+      "rate": 44100,
+      "seconds": 1.096938775510204,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Peach C2",
+      "frames": 48320,
+      "pcm_bytes": 96640,
+      "rate": 44100,
+      "seconds": 1.0956916099773242,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Peach F1",
+      "frames": 48586,
+      "pcm_bytes": 97172,
+      "rate": 44100,
+      "seconds": 1.1017233560090702,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Luigi E4",
+      "frames": 25085,
+      "pcm_bytes": 50170,
+      "rate": 44100,
+      "seconds": 0.5688208616780045,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Luigi A3",
+      "frames": 25032,
+      "pcm_bytes": 50064,
+      "rate": 44100,
+      "seconds": 0.5676190476190476,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Luigi D3",
+      "frames": 25444,
+      "pcm_bytes": 50888,
+      "rate": 44100,
+      "seconds": 0.5769614512471656,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Luigi G2",
+      "frames": 24966,
+      "pcm_bytes": 49932,
+      "rate": 44100,
+      "seconds": 0.5661224489795919,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Luigi C2",
+      "frames": 24930,
+      "pcm_bytes": 49860,
+      "rate": 44100,
+      "seconds": 0.5653061224489796,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Luigi F1",
+      "frames": 25094,
+      "pcm_bytes": 50188,
+      "rate": 44100,
+      "seconds": 0.5690249433106576,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Heart E4",
+      "frames": 22492,
+      "pcm_bytes": 44984,
+      "rate": 44100,
+      "seconds": 0.5100226757369615,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Heart A3",
+      "frames": 22276,
+      "pcm_bytes": 44552,
+      "rate": 44100,
+      "seconds": 0.505124716553288,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Heart D3",
+      "frames": 22505,
+      "pcm_bytes": 45010,
+      "rate": 44100,
+      "seconds": 0.5103174603174603,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Heart G2",
+      "frames": 22395,
+      "pcm_bytes": 44790,
+      "rate": 44100,
+      "seconds": 0.5078231292517007,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Heart C2",
+      "frames": 22433,
+      "pcm_bytes": 44866,
+      "rate": 44100,
+      "seconds": 0.5086848072562359,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Heart F1",
+      "frames": 22447,
+      "pcm_bytes": 44894,
+      "rate": 44100,
+      "seconds": 0.5090022675736962,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Car E4",
+      "frames": 26082,
+      "pcm_bytes": 52164,
+      "rate": 44100,
+      "seconds": 0.5914285714285714,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Car A3",
+      "frames": 25883,
+      "pcm_bytes": 51766,
+      "rate": 44100,
+      "seconds": 0.5869160997732427,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Car D3",
+      "frames": 25854,
+      "pcm_bytes": 51708,
+      "rate": 44100,
+      "seconds": 0.5862585034013605,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Car G2",
+      "frames": 25900,
+      "pcm_bytes": 51800,
+      "rate": 44100,
+      "seconds": 0.5873015873015873,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Car C2",
+      "frames": 25859,
+      "pcm_bytes": 51718,
+      "rate": 44100,
+      "seconds": 0.5863718820861678,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Car F1",
+      "frames": 25955,
+      "pcm_bytes": 51910,
+      "rate": 44100,
+      "seconds": 0.5885487528344672,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Boat F3",
+      "frames": 8240,
+      "pcm_bytes": 16480,
+      "rate": 44100,
+      "seconds": 0.18684807256235827,
+      "root": 65,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Boat C2",
+      "frames": 2991,
+      "pcm_bytes": 5982,
+      "rate": 44100,
+      "seconds": 0.06782312925170068,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Plane E4",
+      "frames": 31456,
+      "pcm_bytes": 62912,
+      "rate": 44100,
+      "seconds": 0.7132879818594104,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Plane A3",
+      "frames": 30982,
+      "pcm_bytes": 61964,
+      "rate": 44100,
+      "seconds": 0.7025396825396826,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "bowser_snd_G",
+      "frames": 37363,
+      "pcm_bytes": 74726,
+      "rate": 44100,
+      "seconds": 0.8472335600907029,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 2035,
+      "loop_end": 4083,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "bowser_snd_xd",
+      "frames": 37405,
+      "pcm_bytes": 74810,
+      "rate": 44100,
+      "seconds": 0.8481859410430839,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 2013,
+      "loop_end": 4061,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Plane D3",
+      "frames": 31522,
+      "pcm_bytes": 63044,
+      "rate": 44100,
+      "seconds": 0.7147845804988662,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Plane G2",
+      "frames": 30893,
+      "pcm_bytes": 61786,
+      "rate": 44100,
+      "seconds": 0.7005215419501134,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Plane C2",
+      "frames": 30947,
+      "pcm_bytes": 61894,
+      "rate": 44100,
+      "seconds": 0.7017460317460318,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Plane F1",
+      "frames": 31202,
+      "pcm_bytes": 62404,
+      "rate": 44100,
+      "seconds": 0.7075283446712018,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Face G2",
+      "frames": 16222,
+      "pcm_bytes": 32444,
+      "rate": 44100,
+      "seconds": 0.36784580498866215,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Swan C2",
+      "frames": 11042,
+      "pcm_bytes": 22084,
+      "rate": 44100,
+      "seconds": 0.25038548752834466,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Pig C3",
+      "frames": 3707,
+      "pcm_bytes": 7414,
+      "rate": 44100,
+      "seconds": 0.08405895691609977,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Umbrella2_Snd_G",
+      "frames": 39938,
+      "pcm_bytes": 79876,
+      "rate": 44100,
+      "seconds": 0.90562358276644,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 1922,
+      "loop_end": 3970,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Umbrella2_Snd_xD",
+      "frames": 41542,
+      "pcm_bytes": 83084,
+      "rate": 44100,
+      "seconds": 0.9419954648526077,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 1670,
+      "loop_end": 3718,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Umbrella2_Snd_C",
+      "frames": 40950,
+      "pcm_bytes": 81900,
+      "rate": 44100,
+      "seconds": 0.9285714285714286,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 1910,
+      "loop_end": 3958,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Umbrella2_Snd_aG",
+      "frames": 41580,
+      "pcm_bytes": 83160,
+      "rate": 44100,
+      "seconds": 0.9428571428571428,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 1900,
+      "loop_end": 3948,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "bowser_snd_C",
+      "frames": 37347,
+      "pcm_bytes": 74694,
+      "rate": 44100,
+      "seconds": 0.8468707482993197,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 1955,
+      "loop_end": 4003,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "bowser_snd_aG",
+      "frames": 32028,
+      "pcm_bytes": 64056,
+      "rate": 44100,
+      "seconds": 0.7262585034013606,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 1884,
+      "loop_end": 3932,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Cat D2",
+      "frames": 13121,
+      "pcm_bytes": 26242,
+      "rate": 44100,
+      "seconds": 0.2975283446712018,
+      "root": 50,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Dog C3",
+      "frames": 5845,
+      "pcm_bytes": 11690,
+      "rate": 44100,
+      "seconds": 0.13253968253968254,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Gameboy E4",
+      "frames": 5808,
+      "pcm_bytes": 11616,
+      "rate": 44100,
+      "seconds": 0.13170068027210885,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Gameboy A3",
+      "frames": 5710,
+      "pcm_bytes": 11420,
+      "rate": 44100,
+      "seconds": 0.1294784580498866,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Gameboy D3",
+      "frames": 5928,
+      "pcm_bytes": 11856,
+      "rate": 44100,
+      "seconds": 0.13442176870748299,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Gameboy G2",
+      "frames": 5732,
+      "pcm_bytes": 11464,
+      "rate": 44100,
+      "seconds": 0.12997732426303854,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Gameboy C2",
+      "frames": 5712,
+      "pcm_bytes": 11424,
+      "rate": 44100,
+      "seconds": 0.1295238095238095,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Gameboy F1",
+      "frames": 5894,
+      "pcm_bytes": 11788,
+      "rate": 44100,
+      "seconds": 0.13365079365079366,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Flower E4",
+      "frames": 8207,
+      "pcm_bytes": 16414,
+      "rate": 44100,
+      "seconds": 0.18609977324263038,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Flower A3",
+      "frames": 8287,
+      "pcm_bytes": 16574,
+      "rate": 44100,
+      "seconds": 0.1879138321995465,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Flower D3",
+      "frames": 8236,
+      "pcm_bytes": 16472,
+      "rate": 44100,
+      "seconds": 0.18675736961451248,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Flower G2",
+      "frames": 8326,
+      "pcm_bytes": 16652,
+      "rate": 44100,
+      "seconds": 0.18879818594104308,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "harp_snd_xD",
+      "frames": 231576,
+      "pcm_bytes": 463152,
+      "rate": 44100,
+      "seconds": 5.251156462585034,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 1432,
+      "loop_end": 3480,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "harp_snd_G",
+      "frames": 144214,
+      "pcm_bytes": 288428,
+      "rate": 44100,
+      "seconds": 3.2701587301587303,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 1622,
+      "loop_end": 3670,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Flower C2",
+      "frames": 8317,
+      "pcm_bytes": 16634,
+      "rate": 44100,
+      "seconds": 0.18859410430839002,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Flower F1",
+      "frames": 8252,
+      "pcm_bytes": 16504,
+      "rate": 44100,
+      "seconds": 0.1871201814058957,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Star E4",
+      "frames": 19055,
+      "pcm_bytes": 38110,
+      "rate": 44100,
+      "seconds": 0.4320861678004535,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Star A3",
+      "frames": 18869,
+      "pcm_bytes": 37738,
+      "rate": 44100,
+      "seconds": 0.42786848072562356,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "harp_snd_aG",
+      "frames": 114371,
+      "pcm_bytes": 228742,
+      "rate": 44100,
+      "seconds": 2.5934467120181406,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 1731,
+      "loop_end": 3779,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "harp_snd_C",
+      "frames": 125269,
+      "pcm_bytes": 250538,
+      "rate": 44100,
+      "seconds": 2.8405668934240365,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 1621,
+      "loop_end": 3669,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "orch_snd_G",
+      "frames": 87298,
+      "pcm_bytes": 174596,
+      "rate": 44100,
+      "seconds": 1.979546485260771,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 1538,
+      "loop_end": 3586,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "orch_snd_xD",
+      "frames": 80848,
+      "pcm_bytes": 161696,
+      "rate": 44100,
+      "seconds": 1.8332879818594103,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 976,
+      "loop_end": 3024,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "orch_snd_aG",
+      "frames": 63300,
+      "pcm_bytes": 126600,
+      "rate": 44100,
+      "seconds": 1.435374149659864,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 1604,
+      "loop_end": 3652,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "orch_snd_C",
+      "frames": 82256,
+      "pcm_bytes": 164512,
+      "rate": 44100,
+      "seconds": 1.865215419501134,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 1360,
+      "loop_end": 3408,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Star D3",
+      "frames": 18930,
+      "pcm_bytes": 37860,
+      "rate": 44100,
+      "seconds": 0.42925170068027213,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Star G2",
+      "frames": 18785,
+      "pcm_bytes": 37570,
+      "rate": 44100,
+      "seconds": 0.4259637188208617,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Star C2",
+      "frames": 19316,
+      "pcm_bytes": 38632,
+      "rate": 44100,
+      "seconds": 0.4380045351473923,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Star F1",
+      "frames": 19018,
+      "pcm_bytes": 38036,
+      "rate": 44100,
+      "seconds": 0.43124716553287984,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Yoshi E2",
+      "frames": 20957,
+      "pcm_bytes": 41914,
+      "rate": 44100,
+      "seconds": 0.4752154195011338,
+      "root": 52,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Mushroom F2",
+      "frames": 16607,
+      "pcm_bytes": 33214,
+      "rate": 44100,
+      "seconds": 0.37657596371882085,
+      "root": 53,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Mario E4",
+      "frames": 8949,
+      "pcm_bytes": 17898,
+      "rate": 44100,
+      "seconds": 0.2029251700680272,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Mario A3",
+      "frames": 8925,
+      "pcm_bytes": 17850,
+      "rate": 44100,
+      "seconds": 0.20238095238095238,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Mario D3",
+      "frames": 8961,
+      "pcm_bytes": 17922,
+      "rate": 44100,
+      "seconds": 0.20319727891156464,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Mario G2",
+      "frames": 9012,
+      "pcm_bytes": 18024,
+      "rate": 44100,
+      "seconds": 0.20435374149659863,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Mario C2",
+      "frames": 8938,
+      "pcm_bytes": 17876,
+      "rate": 44100,
+      "seconds": 0.20267573696145125,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Mario F1",
+      "frames": 8930,
+      "pcm_bytes": 17860,
+      "rate": 44100,
+      "seconds": 0.20249433106575965,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Bullet Bill A#2",
+      "frames": 23849,
+      "pcm_bytes": 47698,
+      "rate": 44100,
+      "seconds": 0.5407936507936508,
+      "root": 58,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Goomba A3",
+      "frames": 16000,
+      "pcm_bytes": 32000,
+      "rate": 31546,
+      "seconds": 0.5071958409941039,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Goomba C2",
+      "frames": 19328,
+      "pcm_bytes": 38656,
+      "rate": 37512,
+      "seconds": 0.5152484538281084,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Goomba D3",
+      "frames": 21184,
+      "pcm_bytes": 42368,
+      "rate": 42110,
+      "seconds": 0.5030634053668962,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Goomba E4",
+      "frames": 23712,
+      "pcm_bytes": 47424,
+      "rate": 47266,
+      "seconds": 0.5016713916980493,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Goomba F1",
+      "frames": 12544,
+      "pcm_bytes": 25088,
+      "rate": 25036,
+      "seconds": 0.501038504553443,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Goomba G2",
+      "frames": 14336,
+      "pcm_bytes": 28672,
+      "rate": 28104,
+      "seconds": 0.5101053230856818,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Bob-Omb F1",
+      "frames": 46002,
+      "pcm_bytes": 92004,
+      "rate": 44100,
+      "seconds": 1.0431292517006803,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Bob-Omb C2",
+      "frames": 45600,
+      "pcm_bytes": 91200,
+      "rate": 44100,
+      "seconds": 1.034013605442177,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Bob-Omb G2",
+      "frames": 47604,
+      "pcm_bytes": 95208,
+      "rate": 44100,
+      "seconds": 1.0794557823129252,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Bob-Omb D3",
+      "frames": 46657,
+      "pcm_bytes": 93314,
+      "rate": 44100,
+      "seconds": 1.0579818594104309,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Bob-Omb A3",
+      "frames": 46491,
+      "pcm_bytes": 92982,
+      "rate": 44100,
+      "seconds": 1.0542176870748299,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Bob-Omb E4",
+      "frames": 46770,
+      "pcm_bytes": 93540,
+      "rate": 44100,
+      "seconds": 1.0605442176870747,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Spiny F1",
+      "frames": 31458,
+      "pcm_bytes": 62916,
+      "rate": 44100,
+      "seconds": 0.7133333333333334,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Spiny C2",
+      "frames": 31294,
+      "pcm_bytes": 62588,
+      "rate": 44100,
+      "seconds": 0.7096145124716553,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Spiny G2",
+      "frames": 31062,
+      "pcm_bytes": 62124,
+      "rate": 44100,
+      "seconds": 0.7043537414965987,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Spiny D3",
+      "frames": 31098,
+      "pcm_bytes": 62196,
+      "rate": 44100,
+      "seconds": 0.7051700680272109,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Spiny A3",
+      "frames": 31293,
+      "pcm_bytes": 62586,
+      "rate": 44100,
+      "seconds": 0.7095918367346938,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Spiny E4",
+      "frames": 31289,
+      "pcm_bytes": 62578,
+      "rate": 44100,
+      "seconds": 0.7095011337868481,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Berry F1",
+      "frames": 8833,
+      "pcm_bytes": 17666,
+      "rate": 44100,
+      "seconds": 0.20029478458049887,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Berry C2",
+      "frames": 8955,
+      "pcm_bytes": 17910,
+      "rate": 44100,
+      "seconds": 0.2030612244897959,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Berry G2",
+      "frames": 8776,
+      "pcm_bytes": 17552,
+      "rate": 44100,
+      "seconds": 0.19900226757369616,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Berry D3",
+      "frames": 8752,
+      "pcm_bytes": 17504,
+      "rate": 44100,
+      "seconds": 0.1984580498866213,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Berry A3",
+      "frames": 8775,
+      "pcm_bytes": 17550,
+      "rate": 44100,
+      "seconds": 0.1989795918367347,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Berry E4",
+      "frames": 8841,
+      "pcm_bytes": 17682,
+      "rate": 44100,
+      "seconds": 0.20047619047619047,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "1-UP F1",
+      "frames": 34626,
+      "pcm_bytes": 69252,
+      "rate": 44100,
+      "seconds": 0.7851700680272109,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "1-UP C2",
+      "frames": 23029,
+      "pcm_bytes": 46058,
+      "rate": 44100,
+      "seconds": 0.5221995464852608,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "1-UP G2",
+      "frames": 11841,
+      "pcm_bytes": 23682,
+      "rate": 44100,
+      "seconds": 0.26850340136054424,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "1-UP D3",
+      "frames": 5266,
+      "pcm_bytes": 10532,
+      "rate": 44100,
+      "seconds": 0.11941043083900227,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "1-UP C4",
+      "frames": 11383,
+      "pcm_bytes": 22766,
+      "rate": 44100,
+      "seconds": 0.25811791383219956,
+      "root": 60,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Moon F1",
+      "frames": 5898,
+      "pcm_bytes": 11796,
+      "rate": 44100,
+      "seconds": 0.13374149659863946,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Moon C2",
+      "frames": 5869,
+      "pcm_bytes": 11738,
+      "rate": 44100,
+      "seconds": 0.13308390022675737,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Moon G2",
+      "frames": 5882,
+      "pcm_bytes": 11764,
+      "rate": 44100,
+      "seconds": 0.13337868480725623,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Moon D3",
+      "frames": 5890,
+      "pcm_bytes": 11780,
+      "rate": 44100,
+      "seconds": 0.13356009070294786,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Moon A3",
+      "frames": 5870,
+      "pcm_bytes": 11740,
+      "rate": 44100,
+      "seconds": 0.13310657596371883,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Moon E4",
+      "frames": 5931,
+      "pcm_bytes": 11862,
+      "rate": 44100,
+      "seconds": 0.13448979591836735,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Egg F1",
+      "frames": 15480,
+      "pcm_bytes": 30960,
+      "rate": 44100,
+      "seconds": 0.3510204081632653,
+      "root": 41,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Egg C2",
+      "frames": 15482,
+      "pcm_bytes": 30964,
+      "rate": 44100,
+      "seconds": 0.3510657596371882,
+      "root": 48,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Egg G2",
+      "frames": 15480,
+      "pcm_bytes": 30960,
+      "rate": 44100,
+      "seconds": 0.3510204081632653,
+      "root": 55,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Egg D3",
+      "frames": 15478,
+      "pcm_bytes": 30956,
+      "rate": 44100,
+      "seconds": 0.3509750566893424,
+      "root": 62,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Egg A3",
+      "frames": 11566,
+      "pcm_bytes": 23132,
+      "rate": 44100,
+      "seconds": 0.2622675736961451,
+      "root": 69,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Egg E4",
+      "frames": 7693,
+      "pcm_bytes": 15386,
+      "rate": 44100,
+      "seconds": 0.17444444444444446,
+      "root": 76,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    },
+    {
+      "name": "Gnome A2",
+      "frames": 12343,
+      "pcm_bytes": 24686,
+      "rate": 44100,
+      "seconds": 0.27988662131519276,
+      "root": 57,
+      "cents": 0,
+      "loop_start": 0,
+      "loop_end": 0,
+      "link": 0,
+      "type": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Feather",
+      "program": 21,
+      "bank": 0,
+      "bag": 0,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 0
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "unique_pcm_bytes": 442780
+    },
+    {
+      "name": "Peach",
+      "program": 20,
+      "bank": 0,
+      "bag": 1,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "unique_pcm_bytes": 580920
+    },
+    {
+      "name": "Plane",
+      "program": 11,
+      "bank": 0,
+      "bag": 2,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 6
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        32,
+        33,
+        36,
+        37,
+        38,
+        39
+      ],
+      "unique_pcm_bytes": 374004
+    },
+    {
+      "name": "Luigi",
+      "program": 19,
+      "bank": 0,
+      "bag": 3,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 2
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "unique_pcm_bytes": 301102
+    },
+    {
+      "name": "Car",
+      "program": 13,
+      "bank": 0,
+      "bag": 4,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 4
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        24,
+        25,
+        26,
+        27,
+        28,
+        29
+      ],
+      "unique_pcm_bytes": 311066
+    },
+    {
+      "name": "Shy Guy",
+      "program": 17,
+      "bank": 0,
+      "bag": 5,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 52,
+              "amount": 65531
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 19
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        69,
+        70,
+        71,
+        72
+      ],
+      "unique_pcm_bytes": 627404
+    },
+    {
+      "name": "Heart",
+      "program": 14,
+      "bank": 0,
+      "bag": 7,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 3
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "unique_pcm_bytes": 269096
+    },
+    {
+      "name": "Mario",
+      "program": 0,
+      "bank": 0,
+      "bag": 8,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 18
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        79,
+        80,
+        81,
+        82,
+        83,
+        84
+      ],
+      "unique_pcm_bytes": 107430
+    },
+    {
+      "name": "Swan",
+      "program": 9,
+      "bank": 0,
+      "bag": 9,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 8
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        41
+      ],
+      "unique_pcm_bytes": 22084
+    },
+    {
+      "name": "Yoshi",
+      "program": 2,
+      "bank": 0,
+      "bag": 10,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 15
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        77
+      ],
+      "unique_pcm_bytes": 41914
+    },
+    {
+      "name": "Star",
+      "program": 3,
+      "bank": 0,
+      "bag": 11,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 14
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        65,
+        66,
+        73,
+        74,
+        75,
+        76
+      ],
+      "unique_pcm_bytes": 227946
+    },
+    {
+      "name": "Flower",
+      "program": 4,
+      "bank": 0,
+      "bag": 12,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 13
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        57,
+        58,
+        59,
+        60,
+        63,
+        64
+      ],
+      "unique_pcm_bytes": 99250
+    },
+    {
+      "name": "Gameboy",
+      "program": 5,
+      "bank": 0,
+      "bag": 13,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 12
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        51,
+        52,
+        53,
+        54,
+        55,
+        56
+      ],
+      "unique_pcm_bytes": 69568
+    },
+    {
+      "name": "Dog",
+      "program": 6,
+      "bank": 0,
+      "bag": 14,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 11
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        50
+      ],
+      "unique_pcm_bytes": 11690
+    },
+    {
+      "name": "Cat",
+      "program": 7,
+      "bank": 0,
+      "bag": 15,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 10
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        49
+      ],
+      "unique_pcm_bytes": 26242
+    },
+    {
+      "name": "Pig",
+      "program": 8,
+      "bank": 0,
+      "bag": 16,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 9
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        42
+      ],
+      "unique_pcm_bytes": 7414
+    },
+    {
+      "name": "Boo",
+      "program": 18,
+      "bank": 0,
+      "bag": 17,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 52,
+              "amount": 65531
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 17
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        61,
+        62,
+        67,
+        68
+      ],
+      "unique_pcm_bytes": 1230860
+    },
+    {
+      "name": "Face",
+      "program": 10,
+      "bank": 0,
+      "bag": 19,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 7
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        40
+      ],
+      "unique_pcm_bytes": 32444
+    },
+    {
+      "name": "Coin",
+      "program": 15,
+      "bank": 0,
+      "bag": 20,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 52,
+              "amount": 65531
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 20
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        43,
+        44,
+        45,
+        46
+      ],
+      "unique_pcm_bytes": 328020
+    },
+    {
+      "name": "Piranha Plant",
+      "program": 16,
+      "bank": 0,
+      "bag": 22,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 52,
+              "amount": 65531
+            }
+          ]
+        },
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 21
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        34,
+        35,
+        47,
+        48
+      ],
+      "unique_pcm_bytes": 288286
+    },
+    {
+      "name": "Mushroom",
+      "program": 1,
+      "bank": 0,
+      "bag": 24,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 16
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        78
+      ],
+      "unique_pcm_bytes": 33214
+    },
+    {
+      "name": "Boat",
+      "program": 12,
+      "bank": 0,
+      "bag": 25,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 5
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        30,
+        31
+      ],
+      "unique_pcm_bytes": 22462
+    },
+    {
+      "name": "Bullet Bill",
+      "program": 22,
+      "bank": 0,
+      "bag": 26,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 22
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        85
+      ],
+      "unique_pcm_bytes": 47698
+    },
+    {
+      "name": "Goomba",
+      "program": 23,
+      "bank": 0,
+      "bag": 27,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 23
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        86,
+        87,
+        88,
+        89,
+        90,
+        91
+      ],
+      "unique_pcm_bytes": 214208
+    },
+    {
+      "name": "Bob-Omb",
+      "program": 24,
+      "bank": 0,
+      "bag": 28,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 24
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        92,
+        93,
+        94,
+        95,
+        96,
+        97
+      ],
+      "unique_pcm_bytes": 558248
+    },
+    {
+      "name": "Spiny",
+      "program": 25,
+      "bank": 0,
+      "bag": 29,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 25
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        98,
+        99,
+        100,
+        101,
+        102,
+        103
+      ],
+      "unique_pcm_bytes": 374988
+    },
+    {
+      "name": "Berry",
+      "program": 26,
+      "bank": 0,
+      "bag": 30,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 26
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        104,
+        105,
+        106,
+        107,
+        108,
+        109
+      ],
+      "unique_pcm_bytes": 105864
+    },
+    {
+      "name": "1-UP",
+      "program": 27,
+      "bank": 0,
+      "bag": 31,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 27
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        110,
+        111,
+        112,
+        113,
+        114
+      ],
+      "unique_pcm_bytes": 172290
+    },
+    {
+      "name": "Moon",
+      "program": 28,
+      "bank": 0,
+      "bag": 32,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 28
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        115,
+        116,
+        117,
+        118,
+        119,
+        120
+      ],
+      "unique_pcm_bytes": 70680
+    },
+    {
+      "name": "Egg",
+      "program": 29,
+      "bank": 0,
+      "bag": 33,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 29
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        121,
+        122,
+        123,
+        124,
+        125,
+        126
+      ],
+      "unique_pcm_bytes": 162358
+    },
+    {
+      "name": "Gnome",
+      "program": 30,
+      "bank": 0,
+      "bag": 34,
+      "zones": [
+        {
+          "generators": [
+            {
+              "operator": 41,
+              "amount": 30
+            }
+          ]
+        }
+      ],
+      "sample_ids": [
+        127
+      ],
+      "unique_pcm_bytes": 24686
+    }
+  ],
+  "note": "Sample headers only; zone generators can override root/loop/envelope. No redistribution permission inferred."
+}
