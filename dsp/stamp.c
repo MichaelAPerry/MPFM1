@@ -104,6 +104,7 @@ int sc_decode(ScSong *s,const uint8_t *in,unsigned len) {
  if(!sc_valid(&t)) return 0; *s=t; return 1;
 }
 void sc_engine_init(ScEngine *e,unsigned voices){memset(e,0,sizeof *e);e->limit=voices>=1 && voices<=16?voices:8;}
+#define GAIN 0.58f /* per-voice gain: a C4 at velocity 100 peaks near -12 dBFS (pack levels are matched; the limiter handles chords) */
 #define XT (60u*44100) /* phase units per tick, with tempo*96 added per frame */
 static uint32_t rate(const ScEngine *e,const ScSong *s){return s->midi_clock==2 && e->xinc?(uint32_t)(e->xinc+.5f):s->tempo*96u;} /* ext: measured */
 static void mp(ScEngine *e,unsigned cin,unsigned st,unsigned a,unsigned b){e->midi(cin|st<<8|a<<16|b<<24);} /* USB-MIDI packet, cable 0 */
@@ -157,7 +158,7 @@ void sc_note(ScEngine *e,const ScSong *s,ScNote n){
  v->left=len;v->rel=s->decay[ins]*520u;v->relp=0;v->lp=0; /* release up to ~1.5 s */
  {float t=s->tone[ins]/127.0f;v->k=s->tone[ins]>=127?1.0f:0.01f+0.99f*t*t;}
  v->gl=v->gr=1.0f;if(s->pan[ins]>0)v->gl=(64-s->pan[ins])/64.0f;else if(s->pan[ins]<0)v->gr=(64+s->pan[ins])/64.0f;
- v->gain=(float)n.velocity*s->volume[ins]*s->layers[n.layer&127]/(127.0f*127.0f*127.0f)*0.055f;e->triggers++;
+ v->gain=(float)n.velocity*s->volume[ins]*s->layers[n.layer&127]/(127.0f*127.0f*127.0f)*GAIN;e->triggers++;
 }
 /* swing: sgrid 0: off-beat 8ths (tick%96==48) late by swing% of 48 ticks; 1: off-beat 16ths (tick%48==24) of 24; human: random +-8 ticks and +-20 velocity at 100 (hmode: both/timing/velocity; the PRNG draws are the same).
  * Only the scan uses it (not auditions). Due now: straight to sc_note; later: pd[] (kept in scan order); never before the playhead or after end-1. */
@@ -181,6 +182,7 @@ void sc_ext_start(ScEngine *e,const ScSong *s,int cont){
  if(cont && e->tick<s->end){sc_stop(e);e->phase=0;e->clkc=0;e->next=0;while(e->next<s->count && s->notes[e->next].tick<e->tick)e->next++;e->playing=1;}else sc_start(e);
  e->xl=e->xw=1;
 }
+static float lim(float x){float a=x<0?-x:x;if(a<=.5f)return x;a=(a-.5f)*2;a=.5f+.5f*a/(1+a);return x<0?-a:a;} /* soft limiter: linear to -6 dBFS, then a x/(1+x) knee that approaches but never reaches full scale */
 void sc_render(ScEngine *e,const ScSong *s,int32_t *lr,unsigned n,unsigned master){
  unsigned f,i,lead=hj(s); const uint32_t threshold=XT;
  for(f=0;f<n;f++){
@@ -208,7 +210,7 @@ void sc_render(ScEngine *e,const ScSong *s,int32_t *lr,unsigned n,unsigned maste
    v->last=sample;mix+=sample*v->gl;mr+=sample*v->gr;
   }
   e->master+=((float)master/4096-e->master)*0.004f;
-  if(mix>1)mix=1;if(mix< -1)mix=-1;if(mr>1)mr=1;if(mr< -1)mr=-1;
+  mix=lim(mix);mr=lim(mr);
   lr[2*f]=(int32_t)(mix*e->master*8388607);lr[2*f+1]=(int32_t)(mr*e->master*8388607);
   e->frames++;
   if(e->playing && !e->xw){uint32_t inc=rate(e,s);

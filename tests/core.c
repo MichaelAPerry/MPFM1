@@ -6,6 +6,8 @@
 #include <time.h>
 #include <stdlib.h>
 #include <math.h>
+#define GAIN 0.58f /* = dsp/stamp.c */
+static float rlim(float x){float a=fabsf(x);if(a>.5f){a=(a-.5f)*2;a=.5f+.5f*a/(1+a);}return x<0?-a:a;} /* reference soft limiter */
 static int32_t lr[512];
 static void render(ScEngine *e,ScSong *s,unsigned n){while(n){unsigned b=n>256?256:n;sc_render(e,s,lr,b,4096);n-=b;}}
 static uint32_t gold(void){
@@ -38,7 +40,7 @@ static void sounds(void){
   if(q->cents==0){unsigned want=q->flags&1?q->frames+3*(q->le-q->ls):q->frames,pit=q->root<36?36:q->root>84?84:q->root;int maxd=0;
    for(i=0;i<want;i++)dec[i]=i<q->frames?seq[i]:seq[q->ls+(i-q->ls)%(q->le-q->ls)];
    sc_default(&s);s.tempo=120;s.end=3000;sc_engine_init(&e,8);e.master=1;sc_note(&e,&s,(ScNote){0,1536,pit,k,127,0}); /* engine == reference at unity pitch (every even output frame = a stored sample; the first 64 fade in) */
-   for(f=0;f<want*2;f+=256){sc_render(&e,&s,o,256,4096);for(i=0;i<256 && f+i<want*2;i+=2)if(f+i>=64 && f+i<want*2-4){int ex=(int)(dec[(f+i)/2]/32768.0f*0.055f*8388607),d=o[2*i]-ex;if(d<0)d=-d;if(d>maxd)maxd=d;}}
+   for(f=0;f<want*2;f+=256){sc_render(&e,&s,o,256,4096);for(i=0;i<256 && f+i<want*2;i+=2)if(f+i>=64 && f+i<want*2-4){int ex=(int)(rlim(dec[(f+i)/2]/32768.0f*GAIN)*8388607),d=o[2*i]-ex;if(d<0)d=-d;if(d>maxd)maxd=d;}}
    assert(maxd<=4);}
   for(i=0;i<3;i++){unsigned pit=(unsigned[]){36,60,84}[i],peak=0; /* audible at C2, C4, C6 */
    sc_default(&s);sc_engine_init(&e,8);e.master=1;sc_note(&e,&s,(ScNote){0,96,pit,k,127,0});for(f=0;f<2048;f+=256){unsigned j;sc_render(&e,&s,o,256,4096);for(j=0;j<512;j++){unsigned a=abs(o[j]);if(a>peak)peak=a;}}
@@ -56,6 +58,18 @@ static void sounds(void){
  /* defaults are neutral: a song with every shaping value set explicitly to its neutral value renders exactly as sc_default's */
  {ScSong a,b;unsigned j;sc_default(&a);for(j=0;j<12;j++)sc_add(&a,(ScNote){j*8,24,(uint8_t)(40+j*3),j*3%SC_SOUNDS,90,j%8});b=a;
   for(j=0;j<SC_SOUNDS;j++){b.volume[j]=127;b.tone[j]=127;b.decay[j]=0;b.pan[j]=0;b.tune[j]=0;b.midi_ch[j]=0;}b.swing=0;b.human=0;b.midi_mode=0;assert(render_hash(&a)==render_hash(&b));}
+}
+/* loudness: single C4 at velocity 100 peaks near -12 dBFS (pack levels matched), chords and 16-voice stress go through the soft limiter and stay below full scale */
+static unsigned peakof(const ScSong *s,unsigned n){ScEngine e;unsigned f,i,pk=0;sc_engine_init(&e,16);e.master=1;sc_start(&e);
+ for(f=0;f<n;f+=256){sc_render(&e,s,lr,256,4096);for(i=0;i<512;i++){unsigned a=abs(lr[i]);if(a>pk)pk=a;}}return pk;}
+static void loud(void){
+ ScSong s;unsigned i,p;
+ sc_default(&s);s.end=384;sc_add(&s,(ScNote){0,96,60,3,100,0});p=peakof(&s,44100);
+ if(!sc_placeholder)assert(p>8388607/6.31f*0.8f && p<8388607/3.98f); /* -14 .. -8 dBFS: -12 target, STAR is a few dB under the pack's median */
+ else assert(p>2000);
+ sc_default(&s);s.end=384;for(i=0;i<4;i++)sc_add(&s,(ScNote){0,96,(uint8_t)(60+i*4),3,100,0});assert(peakof(&s,44100)<8388607);
+ sc_default(&s);s.end=384;for(i=0;i<16;i++)sc_add(&s,(ScNote){0,192,(uint8_t)(48+i*2),i,127,i%8});p=peakof(&s,44100);assert(p<8388607 && p>8388607/2); /* limiter engaged (above its -6 dBFS knee), never full scale */
+ sc_default(&s);s.end=384;for(i=0;i<16;i++)sc_add(&s,(ScNote){0,192,60,0,127,i%8});p=peakof(&s,44100);assert(p<8388607 && p>8388607/2);
 }
 static uint32_t pk[256],pf[256];static unsigned np_,fr_;
 static void cap(uint32_t p){if(np_<256){pk[np_]=p;pf[np_]=fr_;}np_++;}
@@ -177,7 +191,7 @@ int main(int argc,char **argv){
  s=t;assert(sc_transpose(&s,0,96,2,-1,2)==1 && s.notes[0].pitch==60 && s.notes[0].layer==0 && s.notes[1].pitch==63 && s.notes[1].layer==0 && s.notes[2].pitch==62 && s.notes[2].layer==0 && s.notes[3].pitch==68 && s.notes[3].layer==SC_FLAT && sc_valid(&s)); /* C#4 keeps its sharp, Gb4 its flat */
  s=t;assert(sc_transpose(&s,0,96,-12,-1,1)==1 && s.notes[0].layer==SC_FLAT && s.notes[1].layer==0 && s.notes[3].layer==SC_FLAT);
  /* defaults render exactly as before the shaping/MIDI work */
- if(sc_placeholder)assert(gold()==0x19bc7683u); /* placeholder pack (make_bank.py --placeholder): regenerated with the ADPCM engine; the SMP pack has no pinned hash */sounds();
+ if(sc_placeholder)assert(gold()==0x03a500e7u); /* placeholder pack (make_bank.py --placeholder): regenerated with the ADPCM engine, then again for the louder voice gain (x10.5) and the soft limiter (every sample changed); the SMP pack has no pinned hash */sounds();loud();
 
  /* swing/human: defaults identical (gold above); swing 50, 8TH grid: delays the off-beat 8th (tick 48) by 24 ticks = 5512 frames, nothing else; 16TH grid: the off-beat 16ths (24, 72) by 12, nothing else */
  sc_default(&s);s.midi_mode=1;s.midi_ch[0]=1;s.end=384;s.swing=50;sc_add(&s,(ScNote){0,6,60,0,100,0});sc_add(&s,(ScNote){24,6,61,0,100,0});sc_add(&s,(ScNote){48,6,62,0,100,0});sc_add(&s,(ScNote){96,6,63,0,100,0});
