@@ -1,0 +1,335 @@
+# Controls per page (docs/CONTROLS.md): keys, STAFF-only ops, sound mute, STOP FIRST, GROOVE/MIDI knobs, EDIT, SELECT, wrap, BARS octave keys
+listen
+master 4096
+wait 100
+tapkey 7
+expect notes 1
+expect triggers 1
+# keys off the staff only audition: song book, MIX, SOUND, MIDI (with out), GROOVE, BARS
+tap GLO
+expect page 2
+tapkey 9
+expect notes 1
+expect triggers 2
+tap GLO
+tap EDIT
+expect page 1
+tapkey 9
+expect notes 1
+expect triggers 3
+tap EDIT
+expect page 3
+tapkey 9
+expect notes 1
+expect triggers 4
+tap EDIT
+expect page 4
+turn K1 1
+turn K2 1
+out
+expect midi_out 0
+tapkey 9
+wait 40
+expect_out USB 90 3E 64
+expect notes 1
+expect triggers 5
+# EDIT held + key off the staff: audition, no erase, no page change
+press EDIT
+tapkey 7
+release EDIT
+expect page 4
+expect notes 1
+tap EDIT
+expect page 5
+tapkey 9
+expect notes 1
+expect triggers 7
+tap EDIT
+expect page 6
+tapkey 9
+expect notes 1
+expect triggers 8
+# REC / SEQ / ARP are STAFF only
+tap EDIT
+tap EDIT
+expect page 1
+tap REC
+tap SEQ
+tap ARP
+expect notes 1
+expect grid 96
+expect loop 0
+tap HOME
+tap SEQ
+expect grid 48
+tap ARP
+expect loop 1
+tap ARP
+tap REC
+expect notes 2
+tap ENV
+expect notes 1
+tap SEQ
+tap SEQ
+tap SEQ
+tap SEQ
+expect grid 96
+# FX mutes the selected sound, not its level: audio and MIDI silent, unmute restores
+wait 2500
+expect volume 127
+tap EDIT
+tap EDIT
+tap EDIT
+expect page 4
+out
+tap FX
+expect smute 1
+expect volume 127
+peakreset
+tapkey 9
+wait 300
+expect_no_out USB 90 3E 64
+expect peak_db_max -90
+tap FX
+expect smute 0
+tapkey 9
+wait 300
+expect_out USB 90 3E 64
+expect peak_db_min -40
+expect volume 127
+tap FX
+tap HOME
+shot muted.png
+expect smute 1
+# MIX: FX mutes the layer, SEL solos it; elsewhere SEL is the view filter and FX the sound mute
+tap EDIT
+expect page 1
+tap FX
+expect mute 1
+expect smute 1
+tap FX
+tap SEL
+expect solo 1
+expect filter 0
+tap SEL
+tap HOME
+tap SEL
+expect filter 1
+expect solo 0
+tap SEL
+tap FX
+expect smute 0
+# playing: refused edits say STOP FIRST (one message), new-note velocity/length on the staff still work
+tap PLAY
+wait 200
+turn K1 5
+said STOP FIRST
+expect tempo 120
+turn K4 1
+said STOP FIRST
+expect end 1536
+turn K2 -5
+unsaid STOP FIRST
+expect velocity 95
+turn K3 -1
+expect length 72
+tap REC
+said STOP FIRST
+tap SEQ
+said STOP FIRST
+tap EDIT
+expect page 1
+turn K2 -5
+said STOP FIRST
+expect volume 127
+turn K3 -5
+said STOP FIRST
+expect velocity 95
+expect length 72
+turn K1 1
+said STOP FIRST
+expect beats 4
+tap REC
+unsaid STOP FIRST
+tap EDIT
+expect page 3
+turn K1 3
+said STOP FIRST
+expect tune 0
+tap EDIT
+turn K4 1
+said STOP FIRST
+expect midi_in 0
+tap EDIT
+turn K3 1
+said STOP FIRST
+expect sgrid 0
+tap EDIT
+tap OCT+
+wait 200
+said STOP FIRST
+tap PLAY
+tap HOME
+# GROOVE K3 swing grid, K4 human mode; MIDI K4 in-channel filter: clamped, saved with the song
+tap EDIT
+tap EDIT
+tap EDIT
+tap EDIT
+expect page 5
+turn K3 1
+expect sgrid 1
+turn K3 5
+expect sgrid 1
+turn K4 1
+expect hmode 1
+spin K4 5
+expect hmode 2
+spin K4 -9
+expect hmode 0
+spin K4 2
+turn K1 20
+tap EDIT
+tap EDIT
+expect page 0
+tap EDIT
+tap EDIT
+tap EDIT
+expect page 4
+expect midi_in 0
+spin K4 -2
+expect midi_in 0
+turn K4 3
+expect midi_in 3
+spin K4 99
+expect midi_in 16
+spin K4 -13
+expect midi_in 3
+tap SAVE
+reboot
+wait 100
+expect sgrid 1
+expect hmode 2
+expect swing 20
+expect midi_in 3
+# MIDI-in channel filter: channel 3 only; other channels' notes ignored, realtime passes
+turn SELECT 1
+midi 90 40 55
+wait 40
+expect notes 1
+midi 92 40 55
+wait 40
+expect notes 2
+tap EDIT
+tap EDIT
+tap EDIT
+expect page 4
+turn K3 2
+midi 91 40 55
+midi USB FA
+expect playing 1
+tap PLAY
+expect playing 0
+turn K3 -2
+tap HOME
+# SELECT: cursor on the staff only; slot in the song book; FROM bar on BARS (TO follows); nothing on MIX/SOUND
+tap HOME
+expect cursor 0
+turn SELECT 2
+expect cursor 192
+tap GLO
+turn SELECT 2
+expect slot 2
+expect cursor 192
+turn SELECT -9
+expect slot 0
+tap GLO
+tap EDIT
+turn SELECT 3
+expect cursor 192
+tap EDIT
+turn SELECT 3
+expect cursor 192
+tap EDIT
+tap EDIT
+tap EDIT
+expect page 6
+turn SELECT 2
+expect bf 3
+expect bt 3
+turn SELECT -9
+expect bf 1
+expect bt 3
+expect cursor 192
+# K4: song end in quarter steps on STAFF/MIX (tile: 4B+1 = 4 bars + 1 beat), nothing in the song book
+tap HOME
+turn K4 1
+expect end 1632
+tap GLO
+turn K4 3
+expect end 1632
+tap GLO
+turn K4 -1
+expect end 1536
+# EDIT: only a clean tap flips the page; any other input while held cancels it
+tap HOME
+press EDIT
+tap SEQ
+release EDIT
+expect page 0
+press EDIT
+turn K1 1
+release EDIT
+expect page 0
+press EDIT
+turn PRESET 1
+release EDIT
+expect page 0
+press EDIT
+tap FX
+release EDIT
+expect page 0
+tap EDIT
+expect page 1
+press EDIT
+turn K2 -5
+turn K4 1
+release EDIT
+expect page 1
+expect volume 127
+expect end 1536
+tap EDIT
+expect page 3
+# ALGO / PRESET wrap like the ribbon
+tap HOME
+expect instrument 1
+turn PRESET -1
+turn PRESET -1
+expect instrument 14
+turn PRESET 1
+expect instrument 0
+spin PRESET -16
+expect instrument 14
+spin PRESET 1
+turn ALGO -1
+expect layer 7
+turn ALGO 1
+expect layer 0
+spin ALGO -9
+expect layer 7
+turn ALGO 1
+# BARS: OCT- + OCT+ together still toggle FREE PLAY (singles transpose, see bars.txt)
+tap EDIT
+tap EDIT
+tap EDIT
+tap EDIT
+tap EDIT
+expect page 6
+press OCT-
+press OCT+
+release OCT-
+release OCT+
+expect free 1
+tap EDIT
+expect free 1
+wait 300
+expect octave 0

@@ -18,3 +18,4 @@ build/host/stamp_host tests/groove.txt build/host
 build/host/stamp_host tests/bars.txt build/host
 build/host/stamp_host tests/autosave.txt build/host
 build/host/stamp_host tests/live.txt build/host
+build/host/stamp_host tests/controls.txt build/host

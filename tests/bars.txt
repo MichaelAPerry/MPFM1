@@ -71,25 +71,41 @@ expect end 1536
 expect first_tick 768
 expect last_tick 1152
 expect valid 1
-# TRANSPOSE bars 2..4 by K4
+# TRANSPOSE bars 2..4 by K4 (1..12): OCT+ up, OCT- down (acts after the 150 ms OCT- + OCT+ window)
 expect first_pitch 60
 tap OCT+
+wait 200
 expect first_pitch 60
 turn K2 2
 tap OCT+
+wait 200
 expect first_pitch 72
+expect octave 0
 turn K4 -30
-expect bx -12
+expect bx 1
+tap OCT-
+wait 200
+expect first_pitch 71
 tap OCT+
+wait 200
+expect first_pitch 72
+turn K4 30
+expect bx 12
+tap OCT-
+wait 200
 expect first_pitch 60
-turn K4 24
 tap OCT+
+wait 200
 tap OCT+
+wait 200
 expect first_pitch 84
 tap OCT+
+wait 200
 expect first_pitch 84
 tap ENV
 expect first_pitch 72
+tap ENV
+tap ENV
 tap ENV
 tap ENV
 tap ENV
@@ -100,6 +116,7 @@ turn K1 -1
 turn K2 -9
 expect bt 1
 tap OCT+
+wait 200
 expect first_pitch 60
 # not while playing
 tap PLAY
