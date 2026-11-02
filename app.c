@@ -6,9 +6,25 @@ static ScEngine engine;
 static PLAT_POOL ScSong history[17];
 static unsigned hist_count,hist_pos;
 static uint8_t wire[SC_BYTES];
+/* Autosave (OBJ_AUTO): 8-byte header (u16 magic, version, slot, flags bit0 dirty, 3 spare) + the working song's SCF bytes */
+#define AMAGIC 0x4150u
+static PLAT_POOL uint8_t arec[8+SC_BYTES];
+static struct { uint32_t sig,seen,act,chk,last; unsigned n; } au; /* sig: last written; seen: last polled; act: last change/key; n: autosaves */
 static const char *gname(unsigned g){return g==96?"1/4":g==48?"1/8":g==24?"1/16":g==32?"1/8T":g==16?"1/16T":0;}
 #define LSTEP (ui.grid%24?16:24) /* K3 length step follows the grid: 24 ticks, 16 on triplet grids */
 static struct { unsigned cursor,instrument,layer,grid,velocity,length,slot,dirty,page,filter,erase,confirm,edit_used,gest,held,help,bf,bt,bg; int octave,last,bx; uint32_t keys,buttons,until,hold; char message[32]; } ui;
+static unsigned apack(void){unsigned n=sc_encode(&song,arec+8);arec[0]=AMAGIC&255;arec[1]=AMAGIC>>8;arec[2]=1;arec[3]=ui.slot;arec[4]=ui.dirty&1;return n?n+8:0;}
+static uint32_t asig(unsigned n){uint32_t h=2166136261u;while(n)h=(h^arec[--n])*16777619u;return h;}
+static void asave(void){unsigned n=apack();au.last=plat_ms();if(n && !plat_store_save(OBJ_AUTO,arec,n)){au.sig=asig(n);au.n++;}} /* a failed write leaves the old record; retried after the rate limit */
+/* every 128 ms while stopped: a changed song, slot or dirty flag restarts the idle time; written after 3 s idle and 20 s since the last write */
+static void autosave(void){
+ uint32_t t=plat_ms(),s;unsigned n;
+ if(engine.playing||ui.held){au.act=t;return;}
+ if(t-au.chk<128)return;
+ au.chk=t;n=apack();s=asig(n);
+ if(s!=au.seen){au.seen=s;au.act=t;}
+ if(n && s!=au.sig && t-au.act>=3000 && t-au.last>=20000)asave();
+}
 static void checkpoint(void) {
  if(hist_pos<16){history[hist_pos++]=song;}else{memmove(history,history+1,15*sizeof *history);history[15]=song;}
  hist_count=hist_pos;ui.dirty=1;
@@ -23,7 +39,10 @@ void app_render(int32_t *lr,uint32_t n,uint32_t master){sc_render(&engine,&song,
 void app_init(void){
  int n;memset(&ui,0,sizeof ui);ui.grid=96;ui.length=96;ui.velocity=100;ui.last=60;ui.bx=12;hist_count=hist_pos=0;
  sc_default(&song);sc_engine_init(&engine,8);engine.midi=midi_out;
- n=plat_store_load(OBJ_SONG0,wire,sizeof wire);if(n>0)sc_decode(&song,wire,n);
+ n=plat_store_load(OBJ_AUTO,arec,sizeof arec); /* restore the working song; any damage falls back to slot 1 */
+ if(n>8 && arec[0]==(AMAGIC&255) && arec[1]==AMAGIC>>8 && arec[2]==1 && arec[3]<8 && sc_decode(&song,arec+8,n-8)){ui.slot=arec[3];ui.dirty=arec[4]&1;snprintf(ui.message,sizeof ui.message,"RESTORED");ui.until=plat_ms()+1600;}
+ else{sc_default(&song);n=plat_store_load(OBJ_SONG0,wire,sizeof wire);if(n>0)sc_decode(&song,wire,n);}
+ au.sig=au.seen=asig(apack());au.act=au.chk=plat_ms();au.last=au.act-20000u;
 }
 static int load_demo(void){
  static const uint8_t melody[16]={60,64,67,72,71,67,64,62,65,69,72,76,74,72,67,60};
@@ -37,7 +56,7 @@ static int load_demo(void){
 #ifdef PLAT_HOST
 int app_host_cmd(const char *cmd,const char *a,const char *b,const char *c,const char *d){
  (void)a;(void)b;(void)c;(void)d;
- if(!strcmp(cmd,"demo")){load_demo();return 1;}return 0;
+ if(!strcmp(cmd,"demo")){load_demo();return 1;}if(!strcmp(cmd,"autocorrupt")){plat_store_save(OBJ_AUTO,"junk junk junk junk",19);return 1;}return 0;
 }
 #endif
 static void enter(unsigned pitch,unsigned vel){
@@ -127,7 +146,7 @@ static void input(void){
     else{int n;plat_unlock(f);n=plat_store_load(ui.slot,wire,sizeof wire);f=plat_lock();checkpoint();if(n>0 && sc_decode(&song,wire,n)){ui.dirty=0;ui.cursor=0;app_say("LOADED","");}else app_say("EMPTY OR BAD SLOT","");ui.confirm=0;}
    }else{unsigned bar=song.beats*96,start=ui.cursor/bar*bar;checkpoint();if(!sc_duplicate(&song,start,bar)){undo();app_say("COPY FAILED","");}else app_say("BAR COPIED","");}
   }
-  if(pressed&(1u<<B_SAVE)){if(ui.held){app_say("BACKUP BUSY","");}else{unsigned n=sc_encode(&song,wire);int rc;sc_stop(&engine);plat_unlock(f);rc=n?plat_store_save(ui.slot,wire,n):-1;f=plat_lock();if(!rc){ui.dirty=0;app_say("SAVED","");}else app_say("SAVE FAILED","");}}
+  if(pressed&(1u<<B_SAVE)){if(ui.held){app_say("BACKUP BUSY","");}else{unsigned n=sc_encode(&song,wire);int rc;sc_stop(&engine);plat_unlock(f);rc=n?plat_store_save(ui.slot,wire,n):-1;if(!rc){ui.dirty=0;asave();}f=plat_lock();if(!rc){app_say("SAVED","");}else app_say("SAVE FAILED","");}}
  }else if(pressed&((1u<<B_SAVE)|(1u<<B_REC)|(1u<<B_ENV)|(1u<<B_LFO)))app_say("STOP FIRST","");
  ui.erase=(btn>>B_EDIT)&1u;
  if((d=plat_enc(EN_SELECT)))ui.cursor=clamp((int)ui.cursor+d*(int)ui.grid,0,(song.end-1)/ui.grid*ui.grid);
@@ -139,6 +158,7 @@ static void input(void){
  if((d=plat_enc(EN_K3))){if(note_edit(1,d)){}else if(ui.page==1 && !engine.playing){checkpoint();song.layers[ui.layer]=clamp(song.layers[ui.layer]+d,0,127);}else ui.length=clamp((int)ui.length+d*(int)LSTEP,(int)LSTEP,1536)/LSTEP*LSTEP;}
  if((d=plat_enc(EN_K4)) && !engine.playing){unsigned minend=song.count?song.notes[song.count-1].tick+1:1;checkpoint();song.end=clamp(song.end+d*96,minend>song.loop_start?minend:(unsigned)song.loop_start+1,65535);if(ui.cursor>=song.end)ui.cursor=(song.end-1)/ui.grid*ui.grid;}}
  if(ui.cursor>=song.end)ui.cursor=(song.end-1)/ui.grid*ui.grid;
+ if(keys!=ui.keys||btn!=ui.buttons)au.act=plat_ms();
  ui.keys=keys;ui.buttons=btn;plat_unlock(f);plat_glow(1);plat_leds((engine.playing?1u<<B_PLAY:0)|(ui.dirty?1u<<B_SAVE:0),keys);
 }
 void app_input_only(void){input();}
@@ -360,7 +380,7 @@ static void draw(void){
 void app_redraw(void){}
 void app_ui_init(void){draw();}
 void app_frame(void){
- input();draw();
+ input();autosave();draw();
  if(ann_on() && ann_where()){
   char t[160];snprintf(t,sizeof t,"Stamp Composer. %s. %s. %u notes. Tempo %u. Layer %u. %s.",
    ui.page==6?"Bars":ui.page==5?"Groove":ui.page==4?"MIDI":ui.page==3?"Sound":ui.page==2?"Song book":ui.page==1?"Mixer":"Staff",character_names[ui.instrument],song.count,song.tempo,ui.layer+1,engine.playing?"Playing":"Stopped");
@@ -369,7 +389,7 @@ void app_frame(void){
  ann_tick(plat_ms());
 }
 int app_expect(const char *s,int *v){
- if(!strcmp(s,"page"))*v=ui.page;else if(!strcmp(s,"notes"))*v=song.count;else if(!strcmp(s,"playing"))*v=engine.playing;else if(!strcmp(s,"dirty"))*v=ui.dirty;else if(!strcmp(s,"instrument"))*v=ui.instrument;else if(!strcmp(s,"tick"))*v=engine.tick;else if(!strcmp(s,"triggers"))*v=engine.triggers;else if(!strcmp(s,"tempo"))*v=song.tempo;else if(!strcmp(s,"cursor"))*v=ui.cursor;else if(!strcmp(s,"grid"))*v=ui.grid;else if(!strcmp(s,"beats"))*v=song.beats;else if(!strcmp(s,"length"))*v=ui.length;
+ if(!strcmp(s,"page"))*v=ui.page;else if(!strcmp(s,"autosaves"))*v=au.n;else if(!strcmp(s,"slot"))*v=ui.slot;else if(!strcmp(s,"notes"))*v=song.count;else if(!strcmp(s,"playing"))*v=engine.playing;else if(!strcmp(s,"dirty"))*v=ui.dirty;else if(!strcmp(s,"instrument"))*v=ui.instrument;else if(!strcmp(s,"tick"))*v=engine.tick;else if(!strcmp(s,"triggers"))*v=engine.triggers;else if(!strcmp(s,"tempo"))*v=song.tempo;else if(!strcmp(s,"cursor"))*v=ui.cursor;else if(!strcmp(s,"grid"))*v=ui.grid;else if(!strcmp(s,"beats"))*v=song.beats;else if(!strcmp(s,"length"))*v=ui.length;
  else if(!strcmp(s,"tune"))*v=song.tune[ui.instrument];else if(!strcmp(s,"tone"))*v=song.tone[ui.instrument];else if(!strcmp(s,"decay"))*v=song.decay[ui.instrument];else if(!strcmp(s,"pan"))*v=song.pan[ui.instrument];
  else if(!strcmp(s,"midi_ch"))*v=song.midi_ch[ui.instrument];else if(!strcmp(s,"midi_mode"))*v=song.midi_mode;else if(!strcmp(s,"midi_clock"))*v=song.midi_clock;else if(!strcmp(s,"tick8"))*v=engine.tick/8;else if(!strcmp(s,"ext_bpm"))*v=(int)(engine.xinc/96+.5f);
  else if(!strcmp(s,"note_vel")||!strcmp(s,"note_len")){unsigned i;for(i=0;i<song.count;i++)if(song.notes[i].tick==ui.cursor && song.notes[i].instrument==ui.instrument && song.notes[i].layer==ui.layer)break;if(i==song.count)return 0;*v=s[5]=='v'?song.notes[i].velocity:song.notes[i].duration;}
@@ -385,7 +405,7 @@ void app_backup_flush(void){}
 void app_backup_hold(int on){ui.held=on;}
 void app_backup_restored(void){
  int n;sc_default(&song);n=plat_store_load(ui.slot,wire,sizeof wire);if(n>0)sc_decode(&song,wire,n);
- hist_count=hist_pos=0;ui.dirty=ui.confirm=0;ui.cursor=0;
+ hist_count=hist_pos=0;ui.dirty=ui.confirm=0;ui.cursor=0;au.last=plat_ms()-20000u; /* the old working copy must not resurrect: rewritten after 3 s idle */
 }
 #ifdef PLAT_WEB
 /* Export only for the browser host; device transfer will use a separate transport. */

@@ -31,7 +31,7 @@ tap REC
 expect notes 8
 tap SAVE
 expect dirty 0
-expect store_writes 1
+expect store_writes 2 # slot + working copy (autosave record)
 reboot
 wait 100
 expect notes 8
