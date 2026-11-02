@@ -38,7 +38,7 @@ static void feed(ScEngine *e,ScSong *s,double bpm,unsigned n,int chk){ /* n cloc
 static void ext(ScSong *s,ScEngine *e,unsigned song_bpm){sc_default(s);s->tempo=song_bpm;s->end=65535;s->midi_clock=2;sc_engine_init(e,8);nt_=1e6;worst_=0;ck_=0;}
 int main(int argc,char **argv){
  ScSong s,t;ScEngine e;uint8_t bytes[SC_BYTES];unsigned n,i,j;
- sc_default(&s);assert(sc_add(&s,(ScNote){0,96,60,0,100,0}));assert(sc_add(&s,(ScNote){96,96,64,6,100,1}));n=sc_encode(&s,bytes);assert(n==146);assert(sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));bytes[49]^=1;assert(!sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));
+ sc_default(&s);assert(sc_add(&s,(ScNote){0,96,60,0,100,0}));assert(sc_add(&s,(ScNote){96,96,64,6,100,1}));n=sc_encode(&s,bytes);assert(n==148);assert(sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));bytes[49]^=1;assert(!sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));
  for(i=30;i<=300;i+=27){sc_default(&s);s.tempo=i;s.end=65535;sc_engine_init(&e,16);sc_start(&e);render(&e,&s,44100*7);assert(e.tick==i*96u*7/60);}
  for(i=24;i<=96;i*=2){sc_default(&s);s.end=i*3;sc_add(&s,(ScNote){0,24,60,0,100,0});sc_add(&s,(ScNote){i,24,64,3,100,0});sc_engine_init(&e,8);sc_start(&e);render(&e,&s,(44100*i+191)/(96*2));assert(e.triggers==1);render(&e,&s,1);assert(e.triggers==2);}
  sc_default(&s);s.end=192;sc_add(&s,(ScNote){0,96,60,0,100,0});sc_add(&s,(ScNote){96,96,64,3,100,0});sc_engine_init(&e,8);sc_start(&e);render(&e,&s,44100);assert(!e.playing && e.triggers==2);
@@ -47,15 +47,37 @@ int main(int argc,char **argv){
  sc_default(&s);for(i=0;i<384;i++)assert(sc_add(&s,(ScNote){i,24,60,i%15,100,i%8}));t=s;assert(!sc_duplicate(&s,0,384));assert(!memcmp(&s,&t,sizeof s));assert(!sc_add(&s,(ScNote){0,24,60,0,100,0}));
 
  /* v1 / v2 wire */
- sc_default(&s);sc_add(&s,(ScNote){0,96,60,0,100,0});n=sc_encode(&s,bytes);memmove(bytes+48,bytes+126,12);n=48+8+4;bytes[4]=1;fix(bytes,n);assert(sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));assert(t.tone[14]==127 && !t.tune[3] && !t.midi_mode);
- sc_default(&s);for(i=0;i<15;i++){s.tune[i]=i-7;s.tone[i]=i*9;s.decay[i]=127-i;s.pan[i]=i*9-64;s.midi_ch[i]=i+1;}s.midi_mode=2;s.midi_clock=1;sc_add(&s,(ScNote){5,9,40,2,90,3});
- n=sc_encode(&s,bytes);assert(n==130+8 && bytes[4]==2);assert(sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));
- for(i=0;i<7;i++){unsigned off[7]={48+0,63,78,93,108,123,124},bad[7]={13,128,128,64,17,3,3};uint8_t k=bytes[off[i]];bytes[off[i]]=bad[i];fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[off[i]]=k;} /* tune,tone,decay,pan,ch,mode,clock */
- bytes[48]=-13;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[48]=-7;bytes[93]=-65;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[93]=-64;bytes[125]=1;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[125]=0;fix(bytes,n);assert(sc_decode(&t,bytes,n));
+ sc_default(&s);sc_add(&s,(ScNote){0,96,60,0,100,0});n=sc_encode(&s,bytes);memmove(bytes+48,bytes+128,12);n=48+8+4;bytes[4]=1;fix(bytes,n);assert(sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));assert(t.tone[14]==127 && !t.tune[3] && !t.midi_mode);
+ sc_default(&s);for(i=0;i<15;i++){s.tune[i]=i-7;s.tone[i]=i*9;s.decay[i]=127-i;s.pan[i]=i*9-64;s.midi_ch[i]=i+1;}s.midi_mode=2;s.midi_clock=1;s.swing=75;s.human=100;sc_add(&s,(ScNote){5,9,40,2,90,3});
+ n=sc_encode(&s,bytes);assert(n==132+8 && bytes[4]==2);assert(sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));
+ for(i=0;i<9;i++){unsigned off[9]={48+0,63,78,93,108,123,124,125,126},bad[9]={13,128,128,64,17,3,3,76,101};uint8_t k=bytes[off[i]];bytes[off[i]]=bad[i];fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[off[i]]=k;} /* tune,tone,decay,pan,ch,mode,clock,swing,human */
+ bytes[48]=-13;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[48]=-7;bytes[93]=-65;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[93]=-64;bytes[127]=1;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[127]=0;fix(bytes,n);assert(sc_decode(&t,bytes,n));
  bytes[60]^=1;assert(!sc_decode(&t,bytes,n));bytes[60]^=1;assert(!sc_decode(&t,bytes,n-1));
- s.midi_ch[0]=17;assert(!sc_encode(&s,bytes));s.midi_ch[0]=1;s.pan[0]=64;assert(!sc_encode(&s,bytes));
+ s.swing=76;assert(!sc_encode(&s,bytes));s.swing=75;s.human=101;assert(!sc_encode(&s,bytes));s.human=100;s.midi_ch[0]=17;assert(!sc_encode(&s,bytes));s.midi_ch[0]=1;s.pan[0]=64;assert(!sc_encode(&s,bytes));
  /* defaults render exactly as before the shaping/MIDI work */
  assert(gold()==0xdf51e7e3u);
+
+ /* swing/human: defaults identical (gold above); swing 50 delays off-beat 8th (tick 48) by 24 ticks = 5512 frames, off-beat 16th (24) by 12, on-beat none */
+ sc_default(&s);s.midi_mode=1;s.midi_ch[0]=1;s.end=384;s.swing=50;sc_add(&s,(ScNote){0,6,60,0,100,0});sc_add(&s,(ScNote){24,6,61,0,100,0});sc_add(&s,(ScNote){48,6,62,0,100,0});sc_add(&s,(ScNote){96,6,63,0,100,0});
+ sc_engine_init(&e,8);e.midi=cap;np_=fr_=0;sc_start(&e);run(&e,&s,44100);
+ {unsigned on[4],c=0;for(i=0;i<np_;i++)if((pk[i]&0xF0FF)==0x9009)on[c++]=pf[i];assert(c==4 && on[0]==1);
+  assert(on[1]-on[0]>=8268 && on[1]-on[0]<=8271 && on[2]-on[0]>=16536 && on[2]-on[0]<=16539 && on[3]-on[0]>=22049 && on[3]-on[0]<=22052);} /* order kept: 60,61,62,63 */
+ {unsigned c=0,last=0;for(i=0;i<np_;i++)if((pk[i]&0xF0FF)==0x9009){assert((pk[i]>>16&255)==60+c++ && pf[i]>=last);last=pf[i];}assert(c==4);}
+ /* delayed trigger never crosses the song end; mute/solo; human deterministic, bounded */
+ sc_default(&s);s.end=50;s.swing=75;sc_add(&s,(ScNote){48,6,60,0,100,0});sc_engine_init(&e,8);sc_start(&e);render(&e,&s,10300);assert(e.playing && e.triggers==0);render(&e,&s,1500);assert(e.triggers==1 && !e.playing); /* tick 48+36 clamps to 49 */
+ {unsigned a[2][18],r,tk;for(r=0;r<2;r++){sc_default(&s);s.human=100;s.midi_mode=1;s.midi_ch[0]=1;s.end=480;for(i=0;i<8;i++)sc_add(&s,(ScNote){i*3,6,60+i,0,100,0});sc_add(&s,(ScNote){96,6,70,0,100,0});
+   sc_engine_init(&e,8);e.midi=cap;np_=fr_=0;sc_start(&e);run(&e,&s,44100);tk=0;for(i=0;i<np_;i++)if((pk[i]&0xF0FF)==0x9009){a[r][tk++]=pf[i];a[r][9+tk-1]=pk[i]>>24;}assert(tk==9);}
+  assert(!memcmp(a[0],a[1],sizeof a[0]));for(i=0;i<9;i++){assert(a[0][i]<=105*230);assert(a[0][9+i]>=80 && a[0][9+i]<=120);}assert(a[0][9]!=100 || a[0][10]!=100 || a[0][11]!=100 || a[0][12]!=100);
+  sc_default(&s);s.human=100;sc_add(&s,(ScNote){0,6,60,0,100,0});sc_engine_init(&e,8);sc_start(&e);render(&e,&s,2000);assert(e.triggers==1);} /* tick 0 note never before 0 */
+ sc_default(&s);sc_add(&s,(ScNote){0,48,60,0,100,2});sc_add(&s,(ScNote){0,48,64,0,100,5});sc_engine_init(&e,8);e.midi=cap;s.midi_mode=1;s.midi_ch[0]=1;
+ e.mute=1u<<2;np_=0;sc_start(&e);run(&e,&s,100);assert(e.triggers==1 && np_==1 && (pk[0]>>16&255)==64 && e.voices[0].active && !e.voices[1].active);
+ e.mute=0;e.solo=1u<<2;sc_stop(&e);np_=0;e.triggers=0;sc_start(&e);run(&e,&s,100);assert(e.triggers==1 && (pk[0]>>16&255)==60);
+ e.solo=1u<<2;e.mute=1u<<2;sc_stop(&e);np_=0;e.triggers=0;sc_start(&e);run(&e,&s,100);assert(e.triggers==0 && np_==0);e.mute=e.solo=0;
+ /* start at a tick: next is the first note at or after it; MIDI Start becomes SPP + Continue */
+ sc_default(&s);s.midi_clock=1;s.end=1000;for(i=0;i<6;i++)sc_add(&s,(ScNote){i*96,24,60,0,100,0});sc_engine_init(&e,8);e.midi=cap;
+ sc_start_at(&e,&s,288);assert(e.playing && e.tick==288 && e.next==3);sc_start_at(&e,&s,289);assert(e.next==4);sc_start_at(&e,&s,2000);assert(e.tick==0 && e.next==0);
+ np_=0;sc_start_at(&e,&s,192);run(&e,&s,1);assert(pk[0]==(3u|0xF2u<<8|8u<<16) && pk[1]==(0xFu|0xFBu<<8) && pk[2]==(0xFu|0xF8u<<8) && e.triggers>=1);
+ sc_stop(&e);np_=0;sc_start_at(&e,&s,0);run(&e,&s,1);assert(pk[0]==(0xFu|0xFAu<<8));
  /* tune, tone, decay, pan */
  sc_default(&s);sc_engine_init(&e,8);s.tune[3]=12;sc_note(&e,&s,(ScNote){0,24,36,3,127,0});s.tune[3]=0;sc_note(&e,&s,(ScNote){0,24,48,3,127,0});assert(e.voices[0].inc==e.voices[1].inc && e.voices[0].inc>8192);
  sc_engine_init(&e,8);s.tune[3]=-12;sc_note(&e,&s,(ScNote){0,24,50,3,127,0});sc_note(&e,&s,(ScNote){0,24,36,3,127,0});assert(e.voices[0].inc>e.voices[1].inc && e.voices[1].inc==8192);

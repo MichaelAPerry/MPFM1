@@ -7,7 +7,7 @@ const e=instance.exports;e._initialize?.();e.web_boot();e.web_master(4096);
 const step=(ms=40)=>{for(let i=0;i<Math.ceil(ms*44.1/128);i++)e.web_render(128);};
 const tap=bit=>{e.web_buttons(1<<bit);step();e.web_buttons(0);step();};
 e.web_keys(1<<7);step();e.web_keys(0);step();assert.equal(e.stamp_count(),1);
-let n=e.stamp_export();assert.equal(n,138);const saved=new Uint8Array(e.memory.buffer,e.stamp_buffer(),n).slice();
+let n=e.stamp_export();assert.equal(n,140);const saved=new Uint8Array(e.memory.buffer,e.stamp_buffer(),n).slice();
 const input=fs.readFileSync(process.argv[3]);new Uint8Array(e.memory.buffer,e.stamp_buffer(),input.length).set(input);assert.equal(e.stamp_import(input.length),1);assert.equal(e.stamp_count(),11);
 tap(10); // PLAY
 new Uint8Array(e.memory.buffer,e.stamp_buffer(),saved.length).set(saved);assert.equal(e.stamp_import(saved.length),0);

@@ -24,7 +24,7 @@ export function attach({node,status:show}) {
  $('import-song').onchange=async()=>{
   const input=$('import-song'),file=input.files[0];if(!file)return;
   if(latest.playing){status('Stop playback before importing.');input.value='';return;}
-  if(file.size>3202){status('This song exceeds the 384-note capacity.');input.value='';return;}
+  if(file.size>3204){status('This song exceeds the 384-note capacity.');input.value='';return;}
   if(latest.count && !window.confirm('Replace the current song? ENV can undo the import.')){input.value='';return;}
   try{const bytes=new Uint8Array(await file.arrayBuffer());port.postMessage({type:'app',action:'import',bytes});}catch{status('Could not read that song file.');}input.value='';
  };
