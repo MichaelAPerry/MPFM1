@@ -1,7 +1,6 @@
 /* SPDX-License-Identifier: MIT. Native fm1-base application; no desktop UI runtime. */
 #include "dsp/stamp.h"
-#include <string.h>
-#include <stdio.h>
+#include "dsp/libc_shim.h"
 static ScSong song;
 static ScEngine engine;
 static PLAT_POOL ScSong history[17];
