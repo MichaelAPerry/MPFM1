@@ -30,10 +30,17 @@ Representative optimized host stress measurements (4000 blocks × 256 frames, re
 - Device-only `dsp/libc_shim.h` (memmove, strcmp, minimal snprintf) matched glibc on 16 app format cases plus truncation under ASan/UBSan.
 - Identity `FM-1_56` chosen after reading all 36 public `fm1.toml` id_prefix values on GitHub: `FM-1_73` is used by gravkode/terykons and haunted-fm1; no published prefix begins with 5. Firmware outside GitHub (e.g. thefirmwarehub.com) was not checked.
 
+## Device package in fm1-emu (joakimeriksson/fm1-emu 9de1ef0)
+
+- Command line (`tests/emu_smoke.sh`): `stamp.fwsc` boots to the compose screen; a chord and two notes placed with keys and SELECT; PLAY shows the playhead and the WAV has the chord and notes 1.00 s apart (two beats at 120 BPM), silence after stop; SAVE shows SAVED. No faults; 1273 LCD frames in 7.5 s.
+- Save/reboot: flash dumped after SAVE and restored into a fresh boot (two-line local fm1-emu patch: `FM1_FLASH_OUT` writes the chip, `FM1_FLASH_IN` calls its `restore_flash` after boot; stock `--raw-flash` is overwritten by the package's flash at boot). The song reloaded with 5 notes and played — [capture](screens/fm1-emu-reboot.png).
+- Browser: fm1-emu's web build with `tools/site_emu.sh` beside the release package `stamp-0.1.fwsc` (`FM-1_56000100`) booted under headless Chromium/Playwright with no console errors; computer-keyboard notes and Space (PLAY) placed three notes and started playback.
+- fm1-emu emulates the CPU and peripherals; it is not hardware. Timing, flash wear, audio output stage and the PI32 erratum are not reproduced faithfully. Emulated runs used the emulator's default 100 MHz clock.
+
 ## Not validated
 
-- The firmware package has not been executed anywhere; boot, display, audio and storage on PI32 are untested. Build reproducibility (byte-identical rebuild) not checked.
-- No device binary was executed in fm1-emu and no physical FM-1 was tested.
+- No physical FM-1 was tested: real boot, display timing, audio quality, input feel and flash storage are unverified. Build reproducibility (byte-identical rebuild) not checked.
+- The full Pages site (`make_site.py`) was not assembled: it needs Emscripten for `build/emu`, which this environment lacks.
 - No linker map, measured runtime peak RAM/stack, audible quality evaluation or sample-fidelity approval.
 - Full browser UI interaction/AudioWorklet scheduling remains unverified. The cloud browser could inspect the reference simulator but could not reach this workspace’s local preview server (`ERR_HTTP_RESPONSE_CODE_FAILURE`). Node WASM tests are distinct from a full browser session.
 - The imported example is an authored fixture of the inspected SMP syntax. A real-world SMP/MPC corpus and proprietary sample-bank comparisons remain outstanding.
