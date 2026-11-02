@@ -47,3 +47,13 @@ EDIT tap cycles STAFF → MIX → SOUND → MIDI → GROOVE → BARS → STAFF; 
 2. **Sample banks**: replace the placeholder PCM with a permission-cleared expressive bank (tools/make_bank.py
    `--wav-dir`); loops and longer tails.
 3. **Hardware voice limit**: measure 8/12/16 voices on a physical FM-1 and set the supported count.
+4. **Live record** with count-in, metronome and quantize.
+5. **Loop selected bars** instead of the whole song.
+6. **Colour themes** for the screen.
+7. **Chord follow / arp**: held chords or arpeggios follow the played key.
+8. **More song slots and song chaining.**
+9. **Recorded automation** of knobs (tone, pan, volume) over time.
+10. **Ratchets and rolls** on single notes.
+11. **Custom stamp sounds from WAV** loaded on the device.
+12. **WAV bounce over USB audio** of the finished song.
+13. **SMF export** of the song as a Standard MIDI File.

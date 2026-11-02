@@ -6,9 +6,9 @@
 
 Pick a character, place a note, and build a song. Fifteen familiar stamps share one polyphonic engine, with eight layers for arranging, a scrolling staff, and a song book that keeps your ideas close.
 
-[Quick start](#play-in-your-browser) · [Controls](docs/CONTROLS.md) · [Manual](web/emu/manual.html) · [Build](#build-it) · [Validation](docs/VALIDATION.md)
+[Quick start](#play-in-your-browser) · [Controls](docs/CONTROLS.md) · [Manual](docs/MANUAL.md) · [Build](#build-it) · [Validation](docs/VALIDATION.md)
 
-> **Development preview:** the native app and browser simulator work in tests. Audio is an original placeholder bank. Hardware firmware still needs the target toolchain and physical validation.
+> **Development preview:** the firmware builds for the FM-1 and runs in the fm1-emu emulator and the browser preview, and the tests pass, but it is **untested on a physical FM-1**. Audio is an original placeholder bank. See the [manual](docs/MANUAL.md) and [install notes](docs/INSTALL.md) before trying a real unit.
 
 ## Play in your browser
 
@@ -40,8 +40,13 @@ These are captures from the **actual 240 × 240 native application**. The browse
 
 - **15 sound roles:** Mario/piano through Heart/bass, selected per note.
 - **Make room for harmony:** a shared eight-voice development default; engine stress tests cover 8, 12 and 16 voices.
-- **Build a phrase:** C2–C6 chromatic entry, chords, quarter/eighth/sixteenth grids, note length, velocity, tempo, looping and song end.
-- **Keep experimenting:** 16 undo levels, bar duplication, eight layers, per-sound levels and eight independent save slots.
+- **Build a phrase:** C2–C6 chromatic entry, chords, quarter/eighth/sixteenth and triplet grids, note length, velocity, tempo, time signature (2–12 beats), looping, song end, and editing existing notes in place.
+- **Shape the sound:** per-sound tune, tone, decay and pan on a SOUND page; layer and sound levels, mute and solo on MIX.
+- **Play it your way:** swing and humanize on a GROOVE page; play from the cursor's bar; a hop-along playback animation.
+- **Work on bars:** a BARS page to copy, move, delete, insert and transpose ranges of bars.
+- **Talk MIDI:** per-sound MIDI out (channel, ON or MIDI ONLY), clock out and clock in (follow an external clock), and MIDI notes in as key presses.
+- **Keep experimenting:** 16 undo levels, eight layers, eight save slots, autosave with restore at power-on, and backup/restore over USB.
+- **Help on screen:** hold HOME for a list of the page's controls; screen mirror over USB.
 - **Small songs:** up to 384 events, at most 3,202 bytes in the checked SCF1 format.
 
 ## Build it
