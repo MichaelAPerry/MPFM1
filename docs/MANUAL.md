@@ -77,7 +77,7 @@ Notes are written on the STAFF page. On every other page the keys only play the 
 | FX | Mute or unmute the selected sound: it goes silent (audio and MIDI) but its level is kept. Works while playing; not saved |
 | SEL | Show every sound, or only the selected one (a view filter) |
 | ENV, LFO | Undo, redo (stopped only) |
-| OCT−, OCT+ | Move the keyboard down or up an octave |
+| OCT−, OCT+ | Move the keyboard down or up an octave. With EDIT held: spelling, sharps or flats (section 4) |
 | SAVE | Save to the current slot (stopped only) |
 | GLO, HOME | Song book, back to the staff |
 
@@ -164,6 +164,10 @@ On SOUND, MIDI, GROOVE and BARS the knobs only turn while the song is stopped; r
 
 **Edit notes you already placed.** Hold **EDIT** on the staff and turn **K2** to change the velocity, or **K3** to change the length, of the selected sound's notes at the cursor. The status line shows NOTE VEL or NOTE LEN. One hold is one undo step. If nothing is there it says NO NOTE HERE.
 
+**Sharps and flats.** Every black key can be written as a sharp (C#) or a flat (Db); it sounds the same. The staff puts a flat on the line or space of the next letter up, with a flat sign (Bb sits on the B line), and the header name reads Bb3 or Eb4. New notes follow the spelling mode, shown in the status line: SHARP, FLAT, or AUTO (the default), which writes D#, G#, A# as Eb, Ab, Bb and C#, F# as sharps. Hold **EDIT** and press **OCT−** to step toward FLAT (SHARP, AUTO, FLAT), or **OCT+** toward SHARP. The press also respells the selected sound's black-key notes at the cursor in that mode (one undo step, stopped only), so pressing it again fixes a chord you entered the other way. The mode is not saved. Keys, MIDI notes and live placement use it. A single press acts after a tenth of a second, so OCT− and OCT+ together still switch FREE PLAY. BARS transpose keeps a flat if the note lands on a black key; a white key becomes a sharp or flat as the mode says. A flat and a sharp of the same pitch at the same place count as the same note.
+
+![A melody with flats and sharps](screens/flats.png "Flats and sharps on the staff")
+
 **Undo and redo.** **ENV** undoes and **LFO** redoes, up to 16 changes. Both only work while stopped.
 
 **Grids.** **SEQ** cycles 1/4, 1/8, 1/16, then the triplet grids 1/8T and 1/16T. The cursor snaps to the new grid. K3 changes length in steps of a 16th, or a triplet 16th on the triplet grids, from one step up to 16 beats.
@@ -174,7 +178,7 @@ On SOUND, MIDI, GROOVE and BARS the knobs only turn while the song is stopped; r
 
 **Live placement.** While the song plays, a key (or a MIDI note) sounds at once and also lands in the song at the playhead, rounded to the nearest step of the grid (triplet grids too). Past the end of the song it lands at the loop start if looping, otherwise on the last step. A note already there is not added twice, and a full song says SONG FULL. Hold **EDIT** and press a key to erase that note at the playhead. Everything you place or erase in one playback run is one undo step. A note placed a little ahead of the playhead sounds again when the playhead reaches it.
 
-**Free play.** Press **OCT-** and **OCT+** together (the second within a tenth of a second of the first) to switch FREE PLAY on or off. The header badge says FREE. Keys then only play the selected sound, stopped or over the song, and never place or erase notes; a note lasts as long as you hold the key. A single OCT press still shifts the octave (on BARS it transposes the bars instead, and both together still toggle FREE PLAY there). FREE PLAY keys work on every page. Free play is not saved.
+**Free play.** Press **OCT-** and **OCT+** together (the second within a tenth of a second of the first) to switch FREE PLAY on or off. The header badge says FREE. Keys then only play the selected sound, stopped or over the song, and never place or erase notes; a note lasts as long as you hold the key. A single OCT press still shifts the octave (on BARS it transposes the bars instead, with EDIT held on the staff it sets the spelling, and both together still toggle FREE PLAY there). FREE PLAY keys work on every page. Free play is not saved.
 
 **Stopped only.** Settings knobs, bars operations, undo, redo and saving work only while the song is stopped.
 
