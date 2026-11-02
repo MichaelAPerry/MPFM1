@@ -187,7 +187,7 @@ static void input(void){
   if(pressed&(1u<<B_SAVE)){if(ui.held){app_say("BACKUP BUSY","");}else{unsigned n=sc_encode(&song,wire);int rc;sc_stop(&engine);plat_unlock(f);rc=n?plat_store_save(ui.slot,wire,n):-1;if(!rc){ui.dirty=0;asave();}f=plat_lock();if(!rc){app_say("SAVED","");}else app_say("SAVE FAILED","");}}
  }else if(pressed&((1u<<B_SAVE)|(1u<<B_ENV)|(1u<<B_LFO)|(ui.page==0?(1u<<B_REC)|(1u<<B_SEQ)|(1u<<B_ARP):ui.page==2?1u<<B_REC:0)))app_say("STOP FIRST","");
  if(en[0]){if(!ui.page)ui.cursor=clamp((int)ui.cursor+en[0]*(int)ui.grid,0,(song.end-1)/ui.grid*ui.grid);else if(ui.page==2)pick(en[0]);else if(ui.page==6)bars_knob(0,en[0]);} /* SELECT: cursor / FROM bar / slot */
- if(en[1])ui.instrument=WRAP(ui.instrument,en[1],15);
+ if(en[1])ui.instrument=WRAP(ui.instrument,en[1],SC_SOUNDS);
  if(en[2])ui.layer=WRAP(ui.layer,en[2],8);
  if(ui.erase && ui.page);else if(ui.page>2){for(k=0;k<4;k++)if(en[3+k] && stopped())shape(k,en[3+k]);}else{ /* EDIT+knob off the staff: nothing */
  if((d=en[3])){if(ui.page==2)pick(d);else if(stopped()){if(ui.page==1){int b=clamp(song.beats+d,2,12);if(b!=song.beats){checkpoint();song.beats=b;}}else{checkpoint();song.tempo=clamp(song.tempo+d,30,300);}}}
@@ -202,17 +202,18 @@ void app_input_only(void){input();}
 static int diatonic(unsigned p){static const uint8_t d[12]={0,0,1,1,2,3,3,4,4,5,5,6};return (int)(p/12)*7+d[p%12];}
 /* Palette and notes share the exact pixel assets used by the browser. */
 #include "assets/stamps.h"
-static const char *const character_names[15]={"MARIO","MUSHROOM","YOSHI","STAR","FLOWER","GAME BOY","DOG","CAT","PIG","SWAN","FACE","PLANE","BOAT","CAR","HEART"};
+static const char *const character_names[SC_SOUNDS]={"MARIO","MUSHROOM","YOSHI","STAR","FLOWER","GAME BOY","DOG","CAT","PIG","SWAN","FACE","PLANE","BOAT","CAR","HEART","PIRANHA","COIN","SHY GUY","BOO","LUIGI","PEACH","FEATHER","BULLET BILL","GOOMBA","BOB-OMB","SPINY","FRUIT","1-UP","MOON","EGG","GNOME"};
+#define IST(i) ((i)<15?(i):0) /* TEMP: sprites exist for 0..14 only; the UI pass draws the other 16 */
 #define INK RGB(39,45,59)
 #define PAPER RGB(255,249,229)
 #define ACCENT RGB(226,69,62)
 #define TEAL RGB(27,121,122)
 #define MUTED RGB(157,153,137)
-static void stamp(int x,int y,unsigned id,unsigned scale){
+static void stamp(int x,int y,unsigned id,unsigned scale,unsigned mute){
  unsigned a,b;
  for(a=0;a<18;a++)for(b=0;b<16;b++){
   uint16_t c=stamp_pixels[id][a*16+b];
-  if(c!=1 && !(engine.smute>>id&1 && (a+b&1)))cv_rect(x+(int)(b*scale),y+(int)(a*scale),scale,scale,c);
+  if(c!=1 && !(mute && (a+b&1)))cv_rect(x+(int)(b*scale),y+(int)(a*scale),scale,scale,c);
  }
 }
 static void note_label(unsigned pitch,unsigned flat,char *out){
@@ -284,10 +285,10 @@ static void draw(void){
  cv_rect(0,25,240,47,PAPER);
  for(i=0;i<5;i++){
   int id=(int)selected+(int)i-2,x=6+(int)i*31;
-  if(id<0)id+=15;
-  if(id>=15)id-=15;
+  if(id<0)id+=SC_SOUNDS;
+  if(id>=SC_SOUNDS)id-=SC_SOUNDS;
   if(i==2){cv_rect(x,28,28,24,RGB(250,212,104));cv_rect(x,52,28,2,ACCENT);}
-  stamp(x+6,31,(unsigned)id,1);
+  stamp(x+6,31,IST((unsigned)id),1,engine.smute>>id&1);
   if(engine.smute>>id&1)cv_text(x+1,29,&FONT_T,"M",ACCENT);
  }
  cv_text(164,31,&FONT_B,note,INK);
@@ -334,12 +335,12 @@ static void draw(void){
  }else if(ui.page==4){
   cv_begin(240,112,PAPER);
   cv_text(10,4,&FONT_B,"MIDI OUT",INK);
-  for(i=0;i<15;i++){
+  for(i=0;i<15 && selected/15*15+i<SC_SOUNDS;i++){unsigned q=selected/15*15+i; /* 15 per page (TEMP: UI pass) */
    int x=8+(int)(i%5)*46,y=26+(int)(i/5)*22;
-   cv_rect(x,y,44,20,i==selected?TEAL:RGB(233,225,202));
-   stamp(x+2,y+1,i,1);
-   if(song.midi_ch[i])snprintf(t,sizeof t,"%u",song.midi_ch[i]);else snprintf(t,sizeof t,"--");
-   cv_text(x+24,y+5,&FONT_T,t,i==selected?C_WHITE:INK);
+   cv_rect(x,y,44,20,q==selected?TEAL:RGB(233,225,202));
+   stamp(x+2,y+1,IST(q),1,engine.smute>>q&1);
+   if(song.midi_ch[q])snprintf(t,sizeof t,"%u",song.midi_ch[q]);else snprintf(t,sizeof t,"--");
+   cv_text(x+24,y+5,&FONT_T,t,q==selected?C_WHITE:INK);
   }
   {char w[8];if(song.midi_in)snprintf(w,sizeof w,"%u",song.midi_in);else snprintf(w,sizeof w,"OMNI");
   snprintf(t,sizeof t,"MODE %s  CLOCK %s  IN %s",song.midi_mode==2?"ONLY":song.midi_mode?"ON":"OFF",CKN,w);}
@@ -379,7 +380,7 @@ static void draw(void){
   snprintf(t,sizeof t,"%s%+d OCT",ui.filter?"SOLO VIEW ":"",shift);cv_text(133,0,&FONT_T,t,MUTED);
   cv_rect(cursor_x-1,18,22,85,RGB(250,225,184));
   for(i=0;i<5;i++)cv_rect(25,39+i*8,208,1,RGB(177,170,148));
-  stamp(5,42,15,1);
+  stamp(5,42,15,1,0);
   for(i=0;i<6;i++){
    int x=39+(int)i*32;unsigned tick=start+i*step;
    if(tick%(song.beats*96)==0)cv_rect(x-5,29,1,67,RGB(157,153,137));
@@ -392,14 +393,14 @@ static void draw(void){
    if(y<27 || y>91){cv_text(x+4,y<27?16:88,&FONT_T,y<27?"+":"-",MUTED);continue;}
    if(y>=79)for(k=79;k<=y;k+=8)cv_rect(x-3,k,22,1,MUTED);
    if(y<=31)for(k=31;k>=y;k-=8)cv_rect(x-3,k,22,1,MUTED);
-   stamp(x,y-9,n.instrument,1);
+   stamp(x,y-9,IST(n.instrument),1,engine.smute>>n.instrument&1);
    if(fl){static const uint8_t fg[8]={8,8,8,8,14,9,9,14};int r,c;for(r=0;r<8;r++)for(c=0;c<4;c++)if(fg[r]>>(3-c)&1)cv_rect(x-7+c,y-9+r,1,1,INK);} /* flat sign: 4x8 pixels, bowl on the note's line */
    else if(sc_black(n.pitch))cv_text(x-7,y-8,&FONT_T,"#",INK);
   }
   cv_rect(cursor_x-3,28,2,66,ACCENT);
   if(engine.playing){ /* hop: one arc per grid step, tall when a note starts at the next step (landing), else a small bounce */
    unsigned p=active%step,h=2;for(i=0;i<song.count;i++)if(song.notes[i].tick/step==active/step+1){h=8;break;}
-   stamp(cursor_x,11-(int)(h*4*p*(step-p)/(step*step)),selected,1);}
+   stamp(cursor_x,11-(int)(h*4*p*(step-p)/(step*step)),IST(selected),1,engine.smute>>selected&1);}
   else cv_rect(cursor_x+4,19,5,4,ACCENT);
   if(ui.free)cv_text(40,85,&FONT_XS,"FREE PLAY",ACCENT);else if(!song.count)cv_text(40,85,&FONT_XS,"PLAY A KEY TO PLACE A NOTE",TEAL);
   cv_blit(0,72);
@@ -464,7 +465,7 @@ SC_WEB unsigned stamp_playing(void){return engine.playing;}
 SC_WEB unsigned stamp_instrument(void){return ui.instrument;}
 SC_WEB unsigned stamp_dirty(void){return ui.dirty;}
 SC_WEB unsigned stamp_position(void){return engine.playing?engine.tick:ui.cursor;}
-SC_WEB int stamp_select(unsigned id){if(id>=15)return 0;ui.instrument=id;return 1;}
+SC_WEB int stamp_select(unsigned id){if(id>=SC_SOUNDS)return 0;ui.instrument=id;return 1;}
 SC_WEB int stamp_demo(void){return load_demo();}
 SC_WEB void stamp_transport(void){if(engine.playing)sc_stop(&engine);else sc_start(&engine);}
 #endif

@@ -3,29 +3,33 @@
 #include <stdint.h>
 #define SC_EVENTS 384
 #define SC_VOICES 16
+#define SC_SOUNDS 31 /* instruments, SMP order */
 #define SC_PPQN 96
 #define SC_MIDIQ 32 /* pending MIDI note-offs */
 #define SC_PEND 32 /* delayed (swing/human) triggers waiting */
-#define SC_BYTES (132+SC_EVENTS*8) /* v2: 48 head + 79 sound block + 1 pad + events + CRC */
+#define SC_BYTES (220+SC_EVENTS*8) /* v2: 216 head (16 common, 31 volumes, 8 layers, 5x31 shaping/MIDI, 5 global, 1 pad) + events + CRC */
 #define SC_FLAT 0x80 /* ScNote.layer bit 7 (also the wire's): spelled as the flat of the next letter (Bb, not A#); black keys only, no effect on sound. The layer is layer&127 */
 typedef struct { uint16_t tick, duration; uint8_t pitch, instrument, velocity, layer; } ScNote;
 typedef struct {
  uint16_t count, tempo, end, loop_start;
- uint8_t loop, beats, volume[15], layers[8], swing, human; /* swing 0..75: % of the half-beat the off-beat is late (sgrid 0: off-beat 8ths, tick%96==48, of 48 ticks; 1: off-beat 16ths, tick%48==24, of 24); human 0..100: timing +-8 ticks, velocity +-20 at 100 (hmode 0 both, 1 timing only, 2 velocity only) */
- int8_t tune[15], pan[15]; uint8_t tone[15], decay[15], midi_ch[15], midi_mode, midi_clock, sgrid, hmode, midi_in; /* midi_in: MIDI-in channel filter, 0 omni/1..16; tune -12..12, tone 127 open, decay 0 = short, pan -64..63, ch 0 off/1..16, mode 0 off/1 +internal/2 MIDI only, clock 0 off/1 out/2 in */
+ uint8_t loop, beats, volume[SC_SOUNDS], layers[8], swing, human; /* swing 0..75: % of the half-beat the off-beat is late (sgrid 0: off-beat 8ths, tick%96==48, of 48 ticks; 1: off-beat 16ths, tick%48==24, of 24); human 0..100: timing +-8 ticks, velocity +-20 at 100 (hmode 0 both, 1 timing only, 2 velocity only) */
+ int8_t tune[SC_SOUNDS], pan[SC_SOUNDS]; uint8_t tone[SC_SOUNDS], decay[SC_SOUNDS], midi_ch[SC_SOUNDS], midi_mode, midi_clock, sgrid, hmode, midi_in; /* midi_in: MIDI-in channel filter, 0 omni/1..16; tune -12..12, tone 127 open, decay 0 = short, pan -64..63, ch 0 off/1..16, mode 0 off/1 +internal/2 MIDI only, clock 0 off/1 out/2 in */
  ScNote notes[SC_EVENTS];
 } ScSong;
-typedef struct { uint32_t pos, inc, left, rel, age; float gain, last, tail, lp, k, gl, gr; uint8_t instrument, pitch, active, fade, relp; } ScVoice;
+/* Sound pack entry (tools/adpcm.py, bank.h): IMA ADPCM, 22050 Hz mono, blocks of 256 samples = 4-byte state header (pred s16, index u8, 0) + 128 bytes. Looped: frames = loop end; lp/li = decoder state at ls. Pitch 0 cents at key `root`, `scale` cents per key. */
+typedef struct { uint32_t off, frames, ls, le; int16_t lp; uint8_t li, flags, root, scale; int16_t cents; } ScInst;
+extern const ScInst sc_inst[SC_SOUNDS]; extern const uint8_t sc_adpcm[]; extern const uint8_t sc_placeholder;
+typedef struct { uint32_t frac, inc, n, left, rel, age; int32_t pred, s0, s1; float gain, last, tail, lp, k, gl, gr; uint8_t idx, instrument, pitch, active, fade, relp, end; } ScVoice; /* frac: 16.16 phase between s0 and s1 (decoded samples), n: next sample to decode */
 typedef struct {
  ScVoice voices[SC_VOICES]; uint32_t phase, tick, age, triggers, steals;
- uint16_t next; uint8_t playing, limit, mute, solo, cont, npd; uint16_t smute; float master; /* mute/solo: layer bit masks, smute: sound bit mask (performance, not in the song; a muted sound makes no audio and no MIDI); cont: next clock Start is SPP+Continue */
+ uint16_t next; uint8_t playing, limit, mute, solo, cont, npd; uint32_t smute; float master; /* mute/solo: layer bit masks, smute: sound bit mask (performance, not in the song; a muted sound makes no audio and no MIDI); cont: next clock Start is SPP+Continue */
  uint32_t rng; struct { uint16_t at; ScNote n; } pd[SC_PEND]; /* humanize PRNG (seeded per start); triggers due at tick `at` */
  void (*midi)(uint32_t pkt); /* NULL = no MIDI; set after sc_engine_init. USB-MIDI packet: cin | status<<8 | d1<<16 | d2<<24; called from sc_note/sc_render/sc_stop */
  uint32_t frames, due, clkc; uint16_t chused, np; uint8_t clk; /* frame clock, next note-off due, tick count, channels used, pending count, clock running */
  struct { uint32_t due; uint8_t ch, note; } pend[SC_MIDIQ];
  uint32_t xr[25], xn, xlast; int32_t xt; float xinc; uint8_t xl, xw; /* ext clock: last 25 stamps (us), count, frame of last clock, target tick (4/clock), measured tick rate (tempo*96, 0 = none), locked, waiting for 1st clock */
 } ScEngine;
-extern const char *const sc_names[15];
+extern const char *const sc_names[SC_SOUNDS];
 void sc_default(ScSong *s);
 int sc_valid(const ScSong *s);
 int sc_add(ScSong *s, ScNote n);

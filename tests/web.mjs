@@ -7,7 +7,7 @@ const e=instance.exports;e._initialize?.();e.web_boot();e.web_master(4096);
 const step=(ms=40)=>{for(let i=0;i<Math.ceil(ms*44.1/128);i++)e.web_render(128);};
 const tap=bit=>{e.web_buttons(1<<bit);step();e.web_buttons(0);step();};
 e.web_keys(1<<7);step();e.web_keys(0);step();assert.equal(e.stamp_count(),1);
-let n=e.stamp_export();assert.equal(n,140);const saved=new Uint8Array(e.memory.buffer,e.stamp_buffer(),n).slice();
+let n=e.stamp_export();assert.equal(n,228);const saved=new Uint8Array(e.memory.buffer,e.stamp_buffer(),n).slice();
 const input=fs.readFileSync(process.argv[3]);new Uint8Array(e.memory.buffer,e.stamp_buffer(),input.length).set(input);assert.equal(e.stamp_import(input.length),1);assert.equal(e.stamp_count(),11);
 tap(10); // PLAY
 new Uint8Array(e.memory.buffer,e.stamp_buffer(),saved.length).set(saved);assert.equal(e.stamp_import(saved.length),0);
@@ -18,8 +18,8 @@ new Uint8Array(e.memory.buffer,e.stamp_buffer(),saved.length).set(saved);assert.
 console.log('WASM: key editing, import/export, playback audio, import refusal during playback, persistence/reboot passed; peak',peak);
 
 
-assert.equal(e.stamp_select(14),1);assert.equal(e.stamp_instrument(),14);
-assert.equal(e.stamp_select(15),0);assert.equal(e.stamp_instrument(),14);
+assert.equal(e.stamp_select(30),1);assert.equal(e.stamp_instrument(),30);
+assert.equal(e.stamp_select(31),0);assert.equal(e.stamp_instrument(),30);
 assert.equal(e.stamp_demo(),1);assert.equal(e.stamp_count(),32);assert.equal(e.stamp_dirty(),1);
 e.stamp_transport();assert.equal(e.stamp_playing(),1);assert.equal(e.stamp_demo(),0);
 e.stamp_transport();assert.equal(e.stamp_playing(),0);
