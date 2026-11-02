@@ -1,8 +1,8 @@
-"""Strict SMP text subset to SCF1. No audio or character art is bundled."""
+"""Strict SMP text subset to SCF1 (all 31 SMP instruments). No audio or character art is bundled."""
 import argparse, pathlib, re, struct, zlib
-ROLES='MARIO MUSHROOM YOSHI STAR FLOWER GAMEBOY DOG CAT PIG SWAN FACE PLANE BOAT CAR HEART'.split()
+ROLES='MARIO MUSHROOM YOSHI STAR FLOWER GAMEBOY DOG CAT PIG SWAN FACE PLANE BOAT CAR HEART PIRANHA COIN SHYGUY BOO LUIGI PEACH FEATHER BULLETBILL GOOMBA BOBOMB SPINY FRUIT ONEUP MOON EGG GNOME'.split() # SMPInstrument enum order = our sound ids (by name: the SF2 programs of COIN and PIRANHA are swapped, not the order)
 
-def convert(text,acknowledge=False):
+def convert(text,acknowledge=True):  # acknowledge: kept for old callers, no longer required
     lines=[s.strip() for s in text.splitlines() if s.strip()]
     if not lines or not lines[0].startswith('TEMPO:'): raise ValueError('Requires SMP text, not legacy MPC or an arrangement')
     props={}
@@ -15,7 +15,6 @@ def convert(text,acknowledge=False):
     if not 30<=tempo<=300 or tempo!=int(tempo):raise ValueError('Requires integer tempo 30..300; no rounding performed')
     if int(props['EXT'])!=0:raise ValueError('Note extensions unsupported')
     if props['TIME'] not in ('3/4','4/4','3','4'):raise ValueError('Only 3/4 and 4/4 supported')
-    if not acknowledge:raise ValueError('Use --placeholder-bank to acknowledge changed timbres and envelopes; original SoundFont is not imported')
     beats=int(props['TIME'][0]);notes=[];seen=set();last=-1
     for lineno,line in enumerate(lines[1:],2):
         parts=[s.strip() for s in line.split(',')];m=re.fullmatch(r'(\d+):(\d+)',parts[0])
@@ -43,15 +42,16 @@ def convert(text,acknowledge=False):
     for note in notes:
         following=next((n[0] for n in notes if n[0]>note[0] and n[3]==note[3]),end)
         note[1]=following-note[0]
-    v2=any(n[5] for n in notes)  # the flat flag (layer bit 7) needs SCF v2: sound block 48..127 at defaults (tone 127 open), else v1
-    head=bytearray(128 if v2 else 48);struct.pack_into('<4sHHHHHBB',head,0,b'SCF1',2 if v2 else 1,len(notes),int(tempo),end,0,0,beats);head[16:39]=bytes([127])*23
-    if v2:head[63:78]=bytes([127])*15
+    v2=any(n[5] or n[3]>14 for n in notes)  # the flat flag (layer bit 7) or a sound above 14 needs SCF v2 (31 sounds: volume 127 at 16, layers 127 at 47, tone 127 at 86), else v1
+    head=bytearray(216 if v2 else 48);struct.pack_into('<4sHHHHHBB',head,0,b'SCF1',2 if v2 else 1,len(notes),int(tempo),end,0,0,beats)
+    if v2:head[16:55]=bytes([127])*39;head[86:117]=bytes([127])*31
+    else:head[16:39]=bytes([127])*23
     payload=bytes(head)+b''.join(struct.pack('<HHBBBB',*n) for n in notes)
     return payload+struct.pack('<I',zlib.crc32(payload))
 
 def main():
-    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('input',type=pathlib.Path);ap.add_argument('output',type=pathlib.Path);ap.add_argument('--placeholder-bank',action='store_true');a=ap.parse_args()
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('input',type=pathlib.Path);ap.add_argument('output',type=pathlib.Path);ap.add_argument('--placeholder-bank',action='store_true',help='accepted and ignored (old scripts)');a=ap.parse_args()
     try: data=convert(a.input.read_text(),a.placeholder_bank)
     except (ValueError,OverflowError) as e:ap.exit(2,str(e)+'\n')
-    a.output.write_bytes(data);print(f'{len(data)} bytes; musical events converted. WARNING: placeholder timbres/envelopes; no full SMP/MPC compatibility.')
+    a.output.write_bytes(data);print(f'{len(data)} bytes; musical events converted. Note: one sample per instrument and simplified envelopes, so not identical to SMP/MPC playback.')
 if __name__=='__main__':main()
