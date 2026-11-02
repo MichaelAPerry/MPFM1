@@ -25,6 +25,17 @@ static float energy(const ScSong *s,unsigned ch,unsigned a,unsigned b,float *hf)
  sc_note(&e,s,(ScNote){0,24,ep,3,127,0});
  for(f=0;f<b;f++){sc_render(&e,s,lr,1,4096);if(f>a){sum+=(float)abs(lr[ch]);*hf+=(float)abs(lr[ch]-pv);}pv=lr[ch];}
  return sum;}
+
+/* external clock: clocks arrive at the first 64-frame block boundary after their true time (as the render's blocks do), stamped true time +-1 ms */
+static uint32_t rng_=1;static double nt_,worst_;static int ck_;
+static int jit(void){rng_=rng_*1664525u+1013904223u;return (int)(rng_>>16)%2001-1000;}
+static double pos(const ScEngine *e){return e->tick+e->phase/(60.0*44100);}
+static void feed(ScEngine *e,ScSong *s,double bpm,unsigned n,int chk){ /* n clocks; chk: |pos-4*ck_| <= 2 after each */
+ while(n--){nt_+=60e6/(bpm*24);while(e->frames*1e6/44100<nt_)sc_render(e,s,lr,64,4096);
+  sc_ext_clock(e,s,(uint32_t)(nt_+jit()));
+  if(chk&&e->playing&&!e->xw){double d=pos(e)-4.0*ck_;if(d<0)d=-d;if(d>worst_)worst_=d;assert(d<=2.0);}
+  ck_++;}}
+static void ext(ScSong *s,ScEngine *e,unsigned song_bpm){sc_default(s);s->tempo=song_bpm;s->end=65535;s->midi_clock=2;sc_engine_init(e,8);nt_=1e6;worst_=0;ck_=0;}
 int main(int argc,char **argv){
  ScSong s,t;ScEngine e;uint8_t bytes[SC_BYTES];unsigned n,i,j;
  sc_default(&s);assert(sc_add(&s,(ScNote){0,96,60,0,100,0}));assert(sc_add(&s,(ScNote){96,96,64,6,100,1}));n=sc_encode(&s,bytes);assert(n==146);assert(sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));bytes[49]^=1;assert(!sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));
@@ -39,7 +50,7 @@ int main(int argc,char **argv){
  sc_default(&s);sc_add(&s,(ScNote){0,96,60,0,100,0});n=sc_encode(&s,bytes);memmove(bytes+48,bytes+126,12);n=48+8+4;bytes[4]=1;fix(bytes,n);assert(sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));assert(t.tone[14]==127 && !t.tune[3] && !t.midi_mode);
  sc_default(&s);for(i=0;i<15;i++){s.tune[i]=i-7;s.tone[i]=i*9;s.decay[i]=127-i;s.pan[i]=i*9-64;s.midi_ch[i]=i+1;}s.midi_mode=2;s.midi_clock=1;sc_add(&s,(ScNote){5,9,40,2,90,3});
  n=sc_encode(&s,bytes);assert(n==130+8 && bytes[4]==2);assert(sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));
- for(i=0;i<7;i++){unsigned off[7]={48+0,63,78,93,108,123,124},bad[7]={13,128,128,64,17,3,2};uint8_t k=bytes[off[i]];bytes[off[i]]=bad[i];fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[off[i]]=k;} /* tune,tone,decay,pan,ch,mode,clock */
+ for(i=0;i<7;i++){unsigned off[7]={48+0,63,78,93,108,123,124},bad[7]={13,128,128,64,17,3,3};uint8_t k=bytes[off[i]];bytes[off[i]]=bad[i];fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[off[i]]=k;} /* tune,tone,decay,pan,ch,mode,clock */
  bytes[48]=-13;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[48]=-7;bytes[93]=-65;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[93]=-64;bytes[125]=1;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[125]=0;fix(bytes,n);assert(sc_decode(&t,bytes,n));
  bytes[60]^=1;assert(!sc_decode(&t,bytes,n));bytes[60]^=1;assert(!sc_decode(&t,bytes,n-1));
  s.midi_ch[0]=17;assert(!sc_encode(&s,bytes));s.midi_ch[0]=1;s.pan[0]=64;assert(!sc_encode(&s,bytes));
@@ -74,6 +85,32 @@ int main(int argc,char **argv){
  sc_note(&e,&s,(ScNote){0,96,70,0,100,0});assert(np_==SC_MIDIQ+2 && e.np==SC_MIDIQ && pk[SC_MIDIQ]>>24==0 && (pk[SC_MIDIQ]&0xFFFF)==(8u|0x80u<<8));
  sc_note(&e,&s,(ScNote){0,96,70,0,100,0});assert(np_==SC_MIDIQ+4 && e.np==SC_MIDIQ); /* same note again: its off first */
  np_=0;sc_stop(&e);assert(np_==SC_MIDIQ+1 && e.np==0);
+
+ /* external clock sync (midi_clock 2): follows the clocks, not the song tempo */
+ sc_default(&s);s.midi_clock=2;n=sc_encode(&s,bytes);assert(n && sc_decode(&t,bytes,n) && t.midi_clock==2);s.midi_clock=3;assert(!sc_valid(&s));
+ {double bpms[2]={120,90};
+  for(i=0;i<2;i++){
+   ext(&s,&e,i?120:77);sc_add(&s,(ScNote){0,24,60,0,100,0});feed(&e,&s,bpms[i],30,0);sc_ext_start(&e,&s,0);assert(e.playing && e.xw && e.tick==0 && e.triggers==0);
+   run(&e,&s,64);assert(e.tick==0 && e.triggers==0); /* waits for the first clock */
+   ck_=0;feed(&e,&s,bpms[i],1,1);run(&e,&s,1);assert(e.triggers==1 && !e.xw);
+   feed(&e,&s,bpms[i],64*4*24-1,1); /* 64 bars of 4/4 */
+   assert(e.xinc/96>bpms[i]*0.99 && e.xinc/96<bpms[i]*1.01);printf("ext clock %g BPM (song %u): 64 bars, worst |tick-4*clocks| = %.2f ticks, measured %.2f BPM\n",bpms[i],s.tempo,worst_,e.xinc/96);
+  }}
+ /* stop, continue, start */
+ ext(&s,&e,120);feed(&e,&s,100,30,0);sc_ext_start(&e,&s,0);ck_=0;feed(&e,&s,100,100,1);
+ {unsigned tk=e.tick;assert(e.playing && tk>380);sc_stop(&e);assert(!e.playing);feed(&e,&s,100,24,0);assert(e.tick==tk && !e.playing); /* clocks after Stop do nothing */
+  sc_ext_start(&e,&s,1);assert(e.playing && e.xw && e.tick==tk);run(&e,&s,64);assert(e.tick==tk);feed(&e,&s,100,51,0);assert(e.tick>=tk+196 && e.tick<=tk+204); /* continue: from the playhead, at the next clock */
+  sc_ext_start(&e,&s,1);assert(!e.xw); /* already playing: ignored */
+  sc_ext_start(&e,&s,0);assert(e.tick==0 && e.xw);}
+ /* tempo change 100 -> 150 BPM mid-song: locked again within 3 beats */
+ ext(&s,&e,120);feed(&e,&s,100,30,0);sc_ext_start(&e,&s,0);ck_=0;feed(&e,&s,100,48,1);
+ feed(&e,&s,150,72,0);assert(e.xinc/96>148 && e.xinc/96<152);worst_=0;feed(&e,&s,150,96,1);printf("ext clock tempo change 100->150: measured %.2f BPM, locked after 3 beats (worst %.2f ticks)\n",e.xinc/96,worst_);
+ /* clocks lost for 1 s: plays on at the last tempo, relocks; IN sends no clock out */
+ ext(&s,&e,120);e.midi=cap;np_=0;feed(&e,&s,120,30,0);sc_ext_start(&e,&s,0);feed(&e,&s,120,48,0);
+ {unsigned tk=e.tick;run(&e,&s,44100);assert(e.playing && e.tick>=tk+100 && e.tick<=tk+195);nt_+=1e6; /* lock holds back to 1/4 speed for 500 ms, then free-runs */
+  feed(&e,&s,120,48,0);assert(e.playing && pos(&e)-(double)e.xt<2 && pos(&e)-(double)e.xt>-2);}
+ for(i=0;i<np_;i++)assert(pk[i]!=(0xFu|0xF8u<<8) && pk[i]!=(0xFu|0xFAu<<8));
+ sc_stop(&e);sc_start(&e);assert(!e.xl);run(&e,&s,44100);assert(e.tick>=190 && e.tick<=194); /* local PLAY: free-runs at the measured tempo */
  if(argc>1){FILE *fp=fopen(argv[1],"rb");assert(fp);n=fread(bytes,1,sizeof bytes,fp);fclose(fp);assert(sc_decode(&s,bytes,n));assert(s.count==11);assert(s.notes[0].pitch==60);}
  printf("sizeof song=%zu, note=%zu, engine=%zu, voice=%zu; wire max=%d; history=%zu\n",sizeof s,sizeof(ScNote),sizeof e,sizeof(ScVoice),SC_BYTES,17*sizeof s);
  for(i=8;i<=16;i+=4){clock_t begin;double sec;sc_default(&s);sc_engine_init(&e,i);begin=clock();

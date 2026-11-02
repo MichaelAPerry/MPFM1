@@ -10,7 +10,7 @@ int sc_valid(const ScSong *s) {
  for(i=0;i<15;i++) if(s->volume[i]>127) return 0;
  for(i=0;i<8;i++) if(s->layers[i]>127) return 0;
  for(i=0;i<15;i++) if(s->tune[i]<-12 || s->tune[i]>12 || s->tone[i]>127 || s->decay[i]>127 || s->pan[i]<-64 || s->pan[i]>63 || s->midi_ch[i]>16) return 0;
- if(s->midi_mode>2 || s->midi_clock>1) return 0;
+ if(s->midi_mode>2 || s->midi_clock>2) return 0;
  for(i=0;i<s->count;i++) if(!valid_note(s->notes[i],s->end) || (i && s->notes[i].tick<s->notes[i-1].tick)) return 0;
  return 1;
 }
@@ -50,6 +50,8 @@ int sc_decode(ScSong *s,const uint8_t *in,unsigned len) {
  if(!sc_valid(&t)) return 0; *s=t; return 1;
 }
 void sc_engine_init(ScEngine *e,unsigned voices){memset(e,0,sizeof *e);e->limit=voices>=1 && voices<=16?voices:8;}
+#define XT (60u*44100) /* phase units per tick, with tempo*96 added per frame */
+static uint32_t rate(const ScEngine *e,const ScSong *s){return s->midi_clock==2 && e->xinc?(uint32_t)(e->xinc+.5f):s->tempo*96u;} /* ext: measured */
 static void mp(ScEngine *e,unsigned cin,unsigned st,unsigned a,unsigned b){e->midi(cin|st<<8|a<<16|b<<24);} /* USB-MIDI packet, cable 0 */
 static void moff(ScEngine *e,unsigned k){mp(e,8,0x80|e->pend[k].ch,e->pend[k].note,0);e->pend[k]=e->pend[--e->np];}
 static void mdue(ScEngine *e){unsigned k;
@@ -64,13 +66,13 @@ static void mon(ScEngine *e,unsigned ch,unsigned note,unsigned vel,uint32_t len)
 }
 void sc_stop(ScEngine *e){unsigned i;e->playing=0;for(i=0;i<e->limit;i++)if(e->voices[i].left>128){e->voices[i].left=128;e->voices[i].rel=0;}
  if(e->midi){while(e->np)moff(e,0);for(i=0;i<16;i++)if(e->chused>>i&1)mp(e,11,0xB0|i,123,0);e->chused=0;if(e->clk)mp(e,15,0xFC,0,0);}
- e->clk=0;
+ e->clk=0;e->xl=e->xw=0;
 }
 void sc_start(ScEngine *e){sc_stop(e);e->tick=0;e->phase=0;e->next=0;e->clkc=0;e->playing=1;}
 void sc_note(ScEngine *e,const ScSong *s,ScNote n){
  unsigned i,best=0,ins=n.instrument;ScVoice *v;uint32_t oldest=0,len;int pi;
  if(!valid_note(n,65535) || !n.velocity || !s->volume[ins] || !s->layers[n.layer])return;
- len=(uint32_t)n.duration*55125u/(s->tempo*2u); /* =duration*60*44100/(tempo*96), 32-bit exact: no 64-bit multiply (bsp docs/CPU.md) */
+ len=(uint32_t)n.duration*55125u/(rate(e,s)/48u); /* =duration*60*44100/(tempo*96), 32-bit exact: no 64-bit multiply (bsp docs/CPU.md) */
  if(s->midi_mode && s->midi_ch[ins] && e->midi){pi=n.pitch+s->tune[ins];mon(e,s->midi_ch[ins]-1,pi<0?0:pi>127?127:pi,n.velocity,len);}
  if(s->midi_mode==2 && s->midi_ch[ins]){e->triggers++;return;}
  for(i=0;i<e->limit;i++){if(!e->voices[i].active){best=i;break;}if(e->age-e->voices[i].age>=oldest){oldest=e->age-e->voices[i].age;best=i;}}
@@ -82,13 +84,25 @@ void sc_note(ScEngine *e,const ScSong *s,ScNote n){
  v->gl=v->gr=1.0f;if(s->pan[ins]>0)v->gl=(64-s->pan[ins])/64.0f;else if(s->pan[ins]<0)v->gr=(64+s->pan[ins])/64.0f;
  v->gain=(float)n.velocity*s->volume[ins]*s->layers[n.layer]/(127.0f*127.0f*127.0f)*0.055f;e->triggers++;
 }
+void sc_ext_clock(ScEngine *e,const ScSong *s,uint32_t us){unsigned c;uint32_t d;float r;(void)s;
+ if(e->xn && us-e->xr[(e->xn-1)%25]>500000u)e->xn=0; /* gap: measure afresh */
+ e->xr[e->xn++%25]=us;c=e->xn<25?e->xn-1:24;d=us-e->xr[(e->xn-1-c)%25];
+ if(c>=4 && d){r=240000000.0f*c/d;e->xinc=r<2880?2880:r>28800?28800:r;} /* 4*XT/(frames per clock) = 2.4e8*c/span_us */
+ if(e->xl){if(e->xw){e->xw=0;e->xt=e->tick;}else if((int32_t)(e->frames-e->xlast)>22050)e->xt=(e->tick+2)&~3; /* lost clocks >500 ms: re-anchor */ else e->xt+=4;}
+ e->xlast=e->frames;
+}
+void sc_ext_start(ScEngine *e,const ScSong *s,int cont){
+ if(cont && e->playing)return;
+ if(cont && e->tick<s->end){sc_stop(e);e->phase=0;e->clkc=0;e->next=0;while(e->next<s->count && s->notes[e->next].tick<e->tick)e->next++;e->playing=1;}else sc_start(e);
+ e->xl=e->xw=1;
+}
 void sc_render(ScEngine *e,const ScSong *s,int32_t *lr,unsigned n,unsigned master){
- unsigned f,i; const uint32_t threshold=60u*44100;
+ unsigned f,i; const uint32_t threshold=XT;
  for(f=0;f<n;f++){
   float mix=0,mr=0;
   if(e->np && (int32_t)(e->frames-e->due)>=0)mdue(e);
-  if(e->playing){
-   if(e->midi && s->midi_clock && !e->clk){e->clk=1;mp(e,15,0xFA,0,0);mp(e,15,0xF8,0,0);}
+  if(e->playing && !e->xw){
+   if(e->midi && s->midi_clock==1 && !e->clk){e->clk=1;mp(e,15,0xFA,0,0);mp(e,15,0xF8,0,0);}
    while(e->next<s->count && s->notes[e->next].tick<=e->tick)sc_note(e,s,s->notes[e->next++]);}
   for(i=0;i<e->limit;i++){
    ScVoice *v=&e->voices[i];float sample=0;
@@ -109,9 +123,12 @@ void sc_render(ScEngine *e,const ScSong *s,int32_t *lr,unsigned n,unsigned maste
   if(mix>1)mix=1;if(mix< -1)mix=-1;if(mr>1)mr=1;if(mr< -1)mr=-1;
   lr[2*f]=(int32_t)(mix*e->master*8388607);lr[2*f+1]=(int32_t)(mr*e->master*8388607);
   e->frames++;
-  if(e->playing){e->phase+=s->tempo*96u;if(e->phase>=threshold){e->phase-=threshold;e->tick++;
-   if(e->midi && s->midi_clock && !(++e->clkc&3))mp(e,15,0xF8,0,0);
-   if(e->tick>=s->end){if(s->loop){e->tick=s->loop_start;e->next=0;while(e->next<s->count && s->notes[e->next].tick<e->tick)e->next++;}else sc_stop(e);}
+  if(e->playing && !e->xw){uint32_t inc=rate(e,s);
+   if(e->xl && s->midi_clock==2 && (int32_t)(e->frames-e->xlast)<=22050){float er=(int32_t)(e->xt-e->tick)-e->phase*(1.0f/XT),g=1+(er+2)*.125f; /* ideal er -4..0; crawl at 1/4 when 10+ ticks ahead, up to 3x when behind */
+    inc=(uint32_t)(inc*(g<.25f?.25f:g>3?3:g));}
+   e->phase+=inc;if(e->phase>=threshold){e->phase-=threshold;e->tick++;
+   if(e->midi && s->midi_clock==1 && !(++e->clkc&3))mp(e,15,0xF8,0,0);
+   if(e->tick>=s->end){if(s->loop){e->xt-=e->tick-s->loop_start;e->tick=s->loop_start;e->next=0;while(e->next<s->count && s->notes[e->next].tick<e->tick)e->next++;}else sc_stop(e);}
   }}
  }
 }
