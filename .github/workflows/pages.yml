@@ -1,0 +1,63 @@
+# SPDX-License-Identifier: MIT
+# The site (GitHub Pages): fm1-base's tools/make_site.py around a published release's attested package (front page,
+# web installer, manual, emu/ = the WASM preview, firmware/), plus fm1-emu/ = that same package emulated
+# (tools/site_emu.sh). Runs when a release is published, or by hand with a release tag.
+name: Pages
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "the release tag (vX.Y) whose package the site carries"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
+          submodules: recursive
+      - uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 4.0.20
+      - name: Site
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          set -euo pipefail
+          sudo apt-get install -y -qq libfribidi0
+          python3 -m pip install -q Pillow
+          version=${TAG#v}
+          mkdir -p build/release
+          gh release download "$TAG" --pattern "stamp-$version.fwsc" --dir build/release
+          ./build.sh --web
+          python3 base/tools/make_site.py . "build/release/stamp-$version.fwsc" "$version" build/site
+          tools/site_emu.sh build/site "$version"
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
