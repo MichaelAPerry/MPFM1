@@ -4,20 +4,20 @@ Hardware/API source: pinned `base/include/plat.h` and `base/device/lcd.c`: 240×
 
 | Control | Action |
 | --- | --- |
-| Note keys | Insert/audition at cursor; multiple presses form a chord; cursor stays until moved |
+| Note keys | Insert/audition at cursor (stopped only; while playing the message is STOP TO EDIT and nothing sounds); multiple presses form a chord; cursor stays until moved |
 | SELECT encoder | Move time cursor one selected grid step (1/4, 1/8, 1/16, 1/8T, 1/16T) |
 | PRESET | Choose one of fifteen sounds |
 | ALGO | Choose layer 1–8 |
-| K1 | Tempo 30–300 BPM; MIX page: BEATS per bar 2–12 (time signature n/4, default 4); song book: save slot; SOUND page: tune −12..+12; MIDI page: the sound's channel (OFF, 1–16) |
+| K1 | Tempo 30–300 BPM (stopped only); MIX page: BEATS per bar 2–12 (time signature n/4, default 4); song book: save slot; SOUND page: tune −12..+12; MIDI page: the sound's channel (OFF, 1–16) |
 | K2 | New-note velocity; MIX page: selected instrument volume (0 mutes); SOUND: tone 0..127; MIDI: mode OFF / ON / MIDI ONLY. Hold EDIT on the staff: velocity of the selected sound's notes at the cursor |
 | K3 | New-note duration in 24-tick steps (16 on the triplet grids); MIX page: layer volume (0 mutes); SOUND: decay 0..127; MIDI: clock OFF / OUT / IN (follow external clock; below). Hold EDIT on the staff: length (24-tick steps) of the notes at the cursor |
 | K4 | Song end in quarter-note steps; cannot cut off existing event starts; SOUND page: pan L64..R63 |
 | PLAY | Play from beginning / stop. Hold EDIT and press PLAY: play from the start of the cursor's bar (MIDI clock out: Song Position Pointer + Continue instead of Start) |
 | OCT− / OCT+ | Shift keyboard by octave |
-| SEQ | Cycle grid: 1/4 (96 ticks), 1/8 (48), 1/16 (24), 1/8T (32), 1/16T (16 ticks, triplets) |
-| ARP | Toggle whole-song looping |
-| FX | Mute/unmute selected sound (unmute restores level 127). MIX page: mute/unmute the selected layer (live, also while playing, not saved) |
-| ENV / LFO | Undo / redo |
+| SEQ | (stopped only) Cycle grid: 1/4 (96 ticks), 1/8 (48), 1/16 (24), 1/8T (32), 1/16T (16 ticks, triplets) |
+| ARP | Toggle whole-song looping (an undoable song edit, stopped only) |
+| FX | Mute/unmute selected sound (unmute restores level 127; stopped only). MIX page: mute/unmute the selected layer (live, also while playing, not saved) |
+| ENV / LFO | Undo / redo (stopped only; during playback the message is STOP FIRST) |
 | REC | Duplicate cursor's whole bar into next bar, preserving existing notes; capacity checked |
 | EDIT | Tap to cycle STAFF → MIX → SOUND → MIDI → GROOVE → BARS → STAFF; hold with a key to erase matching pitch/sound/layer at cursor; hold and turn K2/K3 to edit the notes at the cursor (one undo step per hold) |
 | SEL | Show all sounds / only selected sound. MIX page: solo/unsolo the selected layer (live, not saved; with any solo set, only soloed layers sound) |
