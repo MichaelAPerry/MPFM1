@@ -11,6 +11,7 @@ this branch; **Next** items are designed but not started. Validation lives in VA
 | MIDI out per sound | Per sound: channel OFF or 1–16. Note-on at trigger with the note's velocity; note-off after its length; all notes off on stop. Auditions while editing go out too. | Song (SCF v2) |
 | MIDI mode | OFF, ON (internal + MIDI) or MIDI ONLY (internal muted, e.g. driving a synth). | Song |
 | MIDI clock out | Optional 24 PPQN clock with Start/Stop, following the song tempo. | Song |
+| External clock sync | MIDI page K3 clock IN: Start/Continue/Stop and 24 PPQN clocks (USB, Bluetooth, TRS) drive playback; tempo is measured (mean of 24 intervals) and the playhead is phase-locked to 4 ticks per clock; header shows EXT. See CONTROLS.md. | Song (`midi_clock` 2) |
 | MIDI in note entry | Notes arriving on USB MIDI act as key presses: audition and place at the cursor with the selected sound. | — |
 | Edit existing notes | Hold EDIT and turn K2/K3: velocity/length of the selected sound's notes at the cursor. | Song |
 | Triplet grids | SEQ cycles 1/4, 1/8, 1/16, 1/8T (32 ticks), 1/16T (16 ticks); K3 length steps follow the grid (16 ticks on triplets). | — |
@@ -29,13 +30,12 @@ EDIT tap cycles STAFF → MIX → SOUND → MIDI → STAFF; GLO toggles the song
 | --- | --- | --- | --- | --- |
 | MIX | beats per bar | sound volume | layer volume | song end |
 | SOUND | tune | tone | decay | pan |
-| MIDI | sound's channel | MIDI mode | clock out | — |
+| MIDI | sound's channel | MIDI mode | clock OFF/OUT/IN | — |
 
 ## Next
 
-1. **External clock sync**: follow MIDI clock/Start/Stop from USB; tempo display shows EXT.
-2. **Sections and chains**: name up to 8 bar ranges and chain them into a song (needs SCF v3 with explicit
+1. **Sections and chains**: name up to 8 bar ranges and chain them into a song (needs SCF v3 with explicit
    migration; FORMAT.md forbids reusing reserved bytes).
-3. **Sample banks**: replace the placeholder PCM with a permission-cleared expressive bank (tools/make_bank.py
+2. **Sample banks**: replace the placeholder PCM with a permission-cleared expressive bank (tools/make_bank.py
    `--wav-dir`); loops and longer tails.
-4. **Hardware voice limit**: measure 8/12/16 voices on a physical FM-1 and set the supported count.
+3. **Hardware voice limit**: measure 8/12/16 voices on a physical FM-1 and set the supported count.

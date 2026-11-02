@@ -10,7 +10,7 @@ Hardware/API source: pinned `base/include/plat.h` and `base/device/lcd.c`: 240×
 | ALGO | Choose layer 1–8 |
 | K1 | Tempo 30–300 BPM; MIX page: BEATS per bar 2–12 (time signature n/4, default 4); song book: save slot; SOUND page: tune −12..+12; MIDI page: the sound's channel (OFF, 1–16) |
 | K2 | New-note velocity; MIX page: selected instrument volume (0 mutes); SOUND: tone 0..127; MIDI: mode OFF / ON / MIDI ONLY. Hold EDIT on the staff: velocity of the selected sound's notes at the cursor |
-| K3 | New-note duration in 24-tick steps (16 on the triplet grids); MIX page: layer volume (0 mutes); SOUND: decay 0..127; MIDI: clock out OFF/ON. Hold EDIT on the staff: length (24-tick steps) of the notes at the cursor |
+| K3 | New-note duration in 24-tick steps (16 on the triplet grids); MIX page: layer volume (0 mutes); SOUND: decay 0..127; MIDI: clock OFF / OUT / IN (follow external clock; below). Hold EDIT on the staff: length (24-tick steps) of the notes at the cursor |
 | K4 | Song end in quarter-note steps; cannot cut off existing event starts; SOUND page: pan L64..R63 |
 | PLAY | Play from beginning / stop |
 | OCT− / OCT+ | Shift keyboard by octave |
@@ -26,7 +26,9 @@ Hardware/API source: pinned `base/include/plat.h` and `base/device/lcd.c`: 240×
 | REC in song-book view | First press arms load; second loads that slot. Load can be undone |
 | HOME | Return to staff, cursor zero; cancel pending load |
 | MASTER | Smoothed audio level |
-| MIDI in (USB) | Note-on C2–C6 acts as that key: audition and place at the cursor with the selected sound, layer and the message's velocity (erase and playback rules apply); note-off and other messages are ignored |
+| MIDI in (USB, Bluetooth, TRS) | Note-on C2–C6 acts as that key: audition and place at the cursor with the selected sound, layer and the message's velocity (erase and playback rules apply); note-off and other messages are ignored |
+
+Clock IN (MIDI page K3): 0xFA Start plays from tick 0, 0xFB Continue from the playhead where playback last stopped (from 0 after the song end), 0xFC Stop stops; Start and Continue begin at the next 0xF8 clock. PLAY still starts and stops locally, at the last measured tempo and unlocked from the clocks. The tempo is the mean of the last 24 clock intervals; the header shows that BPM and EXT. The playhead is held within a few ticks (a quarter note is 96) of 4 ticks per clock, so it cannot drift. If clocks stop for over 500 ms playback continues at the last tempo and relocks when they return. IN sends no clock out. Clocks are read in the main loop (the platform queues MIDI without timestamps), so their stamps carry up to a frame of jitter, which the averaging and the phase lock absorb.
 
 BEATS is song data (undoable, saved, disabled during playback): bar lines, BAR n, REC bar copy and song-end bars follow it. During playback the selected sound's character hops along the staff at the playhead, landing on each step before a note starts. Screen mirror (fm1.toml `mirror = true`): the screen and panel can be mirrored to a computer over USB; the app repaints every frame, so a dropped part heals itself.
 

@@ -16,6 +16,7 @@ static void checkpoint(void) {
 static void undo(void){if(hist_pos){if(hist_pos==hist_count)history[hist_pos]=song;song=history[--hist_pos];ui.dirty=1;}}
 static void redo(void){if(hist_pos<hist_count){song=history[++hist_pos];ui.dirty=1;}}
 void app_say(const char *a,const char *b){snprintf(ui.message,sizeof ui.message,"%s %s",a?a:"",b?b:"");ui.until=plat_ms()+1600;ann_say(a,b,ANN_NOW);}
+#define CKN (song.midi_clock==2?"IN":song.midi_clock?"OUT":"OFF")
 static void midi_out(uint32_t p){plat_midi_out(p);}
 void app_panic(void){sc_stop(&engine);memset(engine.voices,0,sizeof engine.voices);}
 void app_render(int32_t *lr,uint32_t n,uint32_t master){sc_render(&engine,&song,lr,n,master);}
@@ -50,7 +51,7 @@ static void enter(unsigned pitch,unsigned vel){
 static void shape(int k,int d){
  unsigned u=ui.instrument;int v,lo=0,hi=127;
  if(ui.page==3){v=k==0?song.tune[u]:k==1?song.tone[u]:k==2?song.decay[u]:song.pan[u];if(k==0)lo=-12,hi=12;if(k==3)lo=-64,hi=63;}
- else{if(k>2)return;v=k==0?song.midi_ch[u]:k==1?song.midi_mode:song.midi_clock;hi=k==0?16:k==1?2:1;}
+ else{if(k>2)return;v=k==0?song.midi_ch[u]:k==1?song.midi_mode:song.midi_clock;hi=k?2:16;}
  d=clamp(v+d,lo,hi);if(d==v)return;checkpoint();
  if(ui.page==3){if(k==0)song.tune[u]=d;else if(k==1)song.tone[u]=d;else if(k==2)song.decay[u]=d;else song.pan[u]=d;}
  else if(k==0)song.midi_ch[u]=d;else if(k==1)song.midi_mode=d;else song.midi_clock=d;
@@ -73,7 +74,8 @@ static void input(void){
  uint32_t keys=plat_keys(),btn=plat_buttons(),pressed=btn&~ui.buttons,f=plat_lock();unsigned k;int d;
  ui.erase=(btn>>B_EDIT)&1u;
  if(pressed&(1u<<B_EDIT))ui.edit_used=ui.gest=0;
- {uint32_t pkt;int port;while(plat_midi_in(&pkt,&port)){unsigned st=pkt>>8&0xF0u,p=pkt>>16&0x7Fu,v=pkt>>24&0x7Fu;if(st==0x90u && v && p>=36 && p<=84)enter(p,v);}}
+ {uint32_t pkt;int port;while(plat_midi_in(&pkt,&port)){unsigned rt=pkt>>8&0xFFu,st=rt&0xF0u,p=pkt>>16&0x7Fu,v=pkt>>24&0x7Fu;if(song.midi_clock==2){if(rt==0xF8u)sc_ext_clock(&engine,&song,plat_ms()*1000u);else if(rt==0xFAu||rt==0xFBu)sc_ext_start(&engine,&song,rt&1);else if(rt==0xFCu)sc_stop(&engine);} /* clock in: read here (main loop, under the lock) and stamped on read, in ms (the 24-interval mean averages the quantizing) */
+  if(st==0x90u && v && p>=36 && p<=84)enter(p,v);}}
  for(k=0;k<NKEYS;k++)if((keys&~ui.keys)&(1u<<k)){int pitch=53+(int)k+12*ui.octave;if(pitch>=36 && pitch<=84)enter(pitch,ui.velocity);else app_say("C2 TO C6","");}
  if(pressed&(1u<<B_PLAY)){if(engine.playing)sc_stop(&engine);else sc_start(&engine);}
  if(pressed&(1u<<B_OCTDN))ui.octave=clamp(ui.octave-1,-2,2);
@@ -146,7 +148,7 @@ static void tiles_shape(void){
  }else{
   if(song.midi_ch[u])snprintf(t,sizeof t,"%u",song.midi_ch[u]);else snprintf(t,sizeof t,"OFF");tile(4,2,55,"K1 CH",t);
   tile(63,2,55,"K2 MODE",song.midi_mode==2?"ONLY":song.midi_mode?"ON":"OFF");
-  tile(122,2,55,"K3 CLOCK",song.midi_clock?"ON":"OFF");tile(181,2,55,"K4","-");
+  tile(122,2,55,"K3 CLOCK",CKN);tile(181,2,55,"K4","-");
  }
 }
 static void draw(void){
@@ -160,8 +162,8 @@ static void draw(void){
  cv_begin(240,72,INK);
  cv_rect(0,0,4,24,ACCENT);
  cv_text(10,3,&FONT_B,"STAMP",C_WHITE);
- snprintf(t,sizeof t,"%03u",song.tempo);cv_text(140,3,&FONT_B,t,C_WHITE);
- cv_text(168,8,&FONT_T,"BPM",RGB(162,182,188));
+ snprintf(t,sizeof t,"%03u",song.midi_clock==2 && engine.xinc?(unsigned)(engine.xinc/96+.5f):song.tempo);cv_text(140,3,&FONT_B,t,C_WHITE); /* IN: measured tempo */
+ cv_text(168,8,&FONT_T,song.midi_clock==2?"EXT":"BPM",RGB(162,182,188));
  cv_rect(197,4,37,17,engine.playing?TEAL:RGB(71,78,88));
  cv_text(201,5,&FONT_XS,engine.playing?"PLAY":"EDIT",C_WHITE);
  cv_rect(0,25,240,47,PAPER);
@@ -201,7 +203,7 @@ static void draw(void){
    if(song.midi_ch[i])snprintf(t,sizeof t,"%u",song.midi_ch[i]);else snprintf(t,sizeof t,"--");
    cv_text(x+24,y+5,&FONT_T,t,i==selected?C_WHITE:INK);
   }
-  snprintf(t,sizeof t,"MODE %s   CLOCK %s",song.midi_mode==2?"MIDI ONLY":song.midi_mode?"ON":"OFF",song.midi_clock?"ON":"OFF");
+  snprintf(t,sizeof t,"MODE %s   CLOCK %s",song.midi_mode==2?"MIDI ONLY":song.midi_mode?"ON":"OFF",CKN);
   cv_text(10,96,&FONT_T,t,TEAL);
   cv_blit(0,72);
  }else if(ui.page==2){
@@ -283,7 +285,7 @@ void app_frame(void){
 int app_expect(const char *s,int *v){
  if(!strcmp(s,"page"))*v=ui.page;else if(!strcmp(s,"notes"))*v=song.count;else if(!strcmp(s,"playing"))*v=engine.playing;else if(!strcmp(s,"dirty"))*v=ui.dirty;else if(!strcmp(s,"instrument"))*v=ui.instrument;else if(!strcmp(s,"tick"))*v=engine.tick;else if(!strcmp(s,"triggers"))*v=engine.triggers;else if(!strcmp(s,"tempo"))*v=song.tempo;else if(!strcmp(s,"cursor"))*v=ui.cursor;else if(!strcmp(s,"grid"))*v=ui.grid;else if(!strcmp(s,"beats"))*v=song.beats;else if(!strcmp(s,"length"))*v=ui.length;
  else if(!strcmp(s,"tune"))*v=song.tune[ui.instrument];else if(!strcmp(s,"tone"))*v=song.tone[ui.instrument];else if(!strcmp(s,"decay"))*v=song.decay[ui.instrument];else if(!strcmp(s,"pan"))*v=song.pan[ui.instrument];
- else if(!strcmp(s,"midi_ch"))*v=song.midi_ch[ui.instrument];else if(!strcmp(s,"midi_mode"))*v=song.midi_mode;else if(!strcmp(s,"midi_clock"))*v=song.midi_clock;
+ else if(!strcmp(s,"midi_ch"))*v=song.midi_ch[ui.instrument];else if(!strcmp(s,"midi_mode"))*v=song.midi_mode;else if(!strcmp(s,"midi_clock"))*v=song.midi_clock;else if(!strcmp(s,"tick8"))*v=engine.tick/8;else if(!strcmp(s,"ext_bpm"))*v=(int)(engine.xinc/96+.5f);
  else if(!strcmp(s,"note_vel")||!strcmp(s,"note_len")){unsigned i;for(i=0;i<song.count;i++)if(song.notes[i].tick==ui.cursor && song.notes[i].instrument==ui.instrument && song.notes[i].layer==ui.layer)break;if(i==song.count)return 0;*v=s[5]=='v'?song.notes[i].velocity:song.notes[i].duration;}
  else return 0;
  return 1;

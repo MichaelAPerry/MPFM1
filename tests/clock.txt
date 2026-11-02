@@ -1,0 +1,38 @@
+# External MIDI clock (midi_clock 2): FA Start, F8 clocks, FB Continue, FC Stop over the host's MIDI in
+wait 100
+tap EDIT
+tap EDIT
+tap EDIT
+expect page 4
+turn K3 2
+expect midi_clock 2
+turn K3 9
+expect midi_clock 2
+tap HOME
+tapkey 9
+tapkey 11
+expect notes 2
+clock 30 20
+midi USB FA
+expect playing 1
+expect tick 0
+clock 1 20
+clock 24 20
+expect playing 1
+expect ext_bpm 125
+clock 24 20
+expect tick8 24
+shot ext.png
+midi USB FC
+expect playing 0
+clock 24 20
+expect playing 0
+midi USB FB
+expect playing 1
+clock 25 20
+midi USB FC
+expect playing 0
+tap PLAY
+expect playing 1
+tap PLAY
+expect playing 0
