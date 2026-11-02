@@ -29,7 +29,7 @@ Stamp Composer FM-1 turns the M-VAVE FM-1 into a little music maker in the spiri
 The 240 by 240 screen has four parts, top to bottom.
 
 - **Header.** The name STAMP, the tempo in BPM, and a small badge that says EDIT, or PLAY while the song is playing. When the FM-1 follows an outside clock, BPM changes to EXT and the number shows the tempo it has measured.
-- **Character ribbon.** Five stamps in a row. The one in the highlighted box is your current sound; turn PRESET to slide the row along. To its right are the last note you played (like C4) and your layer (LAYER 1 to 8). A layer that is muted shows M, and when other layers are soloed this one shows OFF. A line under the ribbon names the sound, like MARIO / PIANO.
+- **Character ribbon.** Five stamps in a row. The one in the highlighted box is your current sound; turn PRESET to slide the row along. To its right are the last note you played (like C4) and your layer (LAYER 1 to 8). A layer that is muted shows M, and when other layers are soloed this one shows OFF. A muted sound is drawn as a checkered stamp with an M. A line under the ribbon names the sound, like MARIO / PIANO.
 - **The staff.** Six steps are shown at a time, numbered along the bottom, with the bar number and LOOP on or off, and the octave shift. Notes appear as the character that plays them. Sharps are marked, extra lines appear for high and low notes, and the staff slides to another octave band when you play out of range. While a song plays, your selected character hops along the staff in time.
 - **Four knob tiles and the status line.** The tiles show what knobs K1 to K4 do right now and their values. Under them, the status line shows the grid, the note count and SAVED or UNSAVED. Short messages (SAVED, STOP FIRST, SONG FULL) flash there for a moment.
 
@@ -37,7 +37,7 @@ The 240 by 240 screen has four parts, top to bottom.
 
 ## 2. Your first song in two minutes
 
-1. Turn **PRESET** to pick a character. Press a few keys: each one plays and places a note at the cursor.
+1. Turn **PRESET** to pick a character. Press a few keys on the STAFF page: each one plays and places a note at the cursor.
 2. Turn **SELECT** to move the cursor one step along. Place another note.
 3. Press several keys together for a **chord**. They all land on the same step.
 4. Press **SEQ** to change the step size, then add quicker notes.
@@ -47,7 +47,7 @@ The 240 by 240 screen has four parts, top to bottom.
 8. Turn **K1** to change the tempo, and press **ARP** to loop the song.
 9. Press **SAVE** to keep the song in the current slot. Your work is also saved on its own (see section 9).
 
-Notes can only be placed while the song is stopped.
+Notes are written on the STAFF page. On every other page the keys only play the selected sound.
 
 ---
 
@@ -68,14 +68,14 @@ Notes can only be placed while the song is stopped.
 | K1 | Tempo, 30 to 300 BPM (stopped only) |
 | K2 | Velocity (how hard) for new notes |
 | K3 | Length of new notes |
-| K4 | Song end, in whole quarter notes; it cannot cut off notes already placed (stopped only) |
+| K4 | Song end, in whole quarter notes; it cannot cut off notes already placed (stopped only). The tile shows bars and beats: 4B+2 is 4 bars and 2 beats, 4 BAR is exactly four |
 | PLAY | Start from the beginning, or stop |
-| EDIT | Tap for the next page. Hold it for erasing and note editing (section 4) |
+| EDIT | Tap for the next page (a clean tap: pressing anything else while holding EDIT does not change the page). Hold it for erasing and note editing (section 4) |
 | SEQ | Change the grid (stopped only) |
 | ARP | Loop the whole song on or off (stopped only) |
 | REC | Copy the cursor's bar into the next bar (stopped only) |
-| FX | Mute or unmute the selected sound (stopped only) |
-| SEL | Show every sound, or only the selected one |
+| FX | Mute or unmute the selected sound: it goes silent (audio and MIDI) but its level is kept. Works while playing; not saved |
+| SEL | Show every sound, or only the selected one (a view filter) |
 | ENV, LFO | Undo, redo (stopped only) |
 | OCT−, OCT+ | Move the keyboard down or up an octave |
 | SAVE | Save to the current slot (stopped only) |
@@ -86,14 +86,14 @@ Notes can only be placed while the song is stopped.
 | Control | What it does |
 | --- | --- |
 | K1 | Beats per bar, 2 to 12 (the time signature is the number over 4; stopped only) |
-| K2 | Volume of the selected sound; 0 mutes it |
-| K3 | Volume of the selected layer; 0 mutes it |
-| K4 | Song end |
+| K2 | Volume of the selected sound; 0 mutes it (stopped only) |
+| K3 | Volume of the selected layer; 0 mutes it (stopped only) |
+| K4 | Song end (stopped only) |
 | ALGO | Pick the layer |
 | FX | Mute or unmute the layer, even while playing |
 | SEL | Solo or unsolo the layer, even while playing |
 
-Mute and solo are for performing. They are not saved and reset at power-up. A silent layer sends no MIDI either. If any layer is soloed, only soloed layers sound.
+Only on MIX do FX and SEL work on the layer. On every other page except BARS, FX mutes the sound and SEL filters the view. Mute and solo are for performing. They are not saved and reset at power-up. A silent layer sends no MIDI either. If any layer is soloed, only soloed layers sound.
 
 ### SOUND
 
@@ -111,6 +111,7 @@ Mute and solo are for performing. They are not saved and reset at power-up. A si
 | K1 | This sound's MIDI channel: OFF or 1 to 16 |
 | K2 | Mode: OFF, ON, or MIDI ONLY |
 | K3 | Clock: OFF, OUT, or IN |
+| K4 | MIDI-in channel: OMNI (every channel) or 1 to 16. Notes on other channels are ignored; clock and Start/Stop always get through |
 
 ### GROOVE
 
@@ -118,6 +119,8 @@ Mute and solo are for performing. They are not saved and reset at power-up. A si
 | --- | --- |
 | K1 | Swing, 0 to 75 |
 | K2 | Human, 0 to 100 |
+| K3 | Swing grid: 8TH (off-beat eighths) or 16TH (off-beat sixteenths) |
+| K4 | Human mode: TIME+VEL, TIME only, or VEL only |
 
 ### BARS
 
@@ -126,15 +129,17 @@ Mute and solo are for performing. They are not saved and reset at power-up. A si
 | K1 | FROM bar |
 | K2 | TO bar (never before FROM) |
 | K3 | TARGET bar |
-| K4 | Transpose, −12 to +12 semitones |
+| SELECT | Choose the FROM bar (TO follows if needed) |
+| K4 | Transpose amount, 1 to 12 semitones |
 | REC | Copy the bars to TARGET |
 | FX | Move the bars to TARGET |
 | SEQ | Delete the bars |
 | ARP | Insert empty bars at FROM |
-| OCT+ | Transpose the bars by K4 |
+| OCT− | Transpose the bars down by K4 |
+| OCT+ | Transpose the bars up by K4 (OCT− and OCT+ together still toggle FREE PLAY, so a single press waits a moment) |
 | SEL | Copy, move and transpose touch only the selected sound |
 
-On SOUND, MIDI, GROOVE and BARS the knobs only turn while the song is stopped. A hint line at the bottom of each page lists the main buttons.
+On SOUND, MIDI, GROOVE and BARS the knobs only turn while the song is stopped; refused changes say STOP FIRST. On these pages, MIX and the song book, the keys only audition the selected sound, and REC (bar copy), SEQ and ARP do nothing; they belong to the STAFF page. A hint line at the bottom of each page lists the main buttons.
 
 ### Song book
 
@@ -142,7 +147,9 @@ On SOUND, MIDI, GROOVE and BARS the knobs only turn while the song is stopped. A
 
 | Control | What it does |
 | --- | --- |
-| K1 | Choose the slot, 1 to 8 |
+| K1, SELECT | Choose the slot, 1 to 8 |
+| K2, K3 | Velocity and length of new notes |
+| FX | Mute or unmute the selected sound |
 | SAVE | Write the song into that slot |
 | REC | First press arms a load, second press loads the slot |
 | GLO or HOME | Back to the staff |
@@ -167,7 +174,7 @@ On SOUND, MIDI, GROOVE and BARS the knobs only turn while the song is stopped. A
 
 **Live placement.** While the song plays, a key (or a MIDI note) sounds at once and also lands in the song at the playhead, rounded to the nearest step of the grid (triplet grids too). Past the end of the song it lands at the loop start if looping, otherwise on the last step. A note already there is not added twice, and a full song says SONG FULL. Hold **EDIT** and press a key to erase that note at the playhead. Everything you place or erase in one playback run is one undo step. A note placed a little ahead of the playhead sounds again when the playhead reaches it.
 
-**Free play.** Press **OCT-** and **OCT+** together (the second within a tenth of a second of the first) to switch FREE PLAY on or off. The header badge says FREE. Keys then only play the selected sound, stopped or over the song, and never place or erase notes; a note lasts as long as you hold the key. A single OCT press still shifts the octave. Free play is not saved.
+**Free play.** Press **OCT-** and **OCT+** together (the second within a tenth of a second of the first) to switch FREE PLAY on or off. The header badge says FREE. Keys then only play the selected sound, stopped or over the song, and never place or erase notes; a note lasts as long as you hold the key. A single OCT press still shifts the octave (on BARS it transposes the bars instead, and both together still toggle FREE PLAY there). FREE PLAY keys work on every page. Free play is not saved.
 
 **Stopped only.** Settings knobs, bars operations, undo, redo and saving work only while the song is stopped.
 
@@ -192,7 +199,7 @@ The audio is a placeholder sound set made for development, not the original game
 
 **Shaping.** On the SOUND page each sound gets its own tune, tone, decay and pan. Tone is a gentle filter, decay sets how long a note rings after its length, and pan places it left or right. A fresh song starts neutral: tune 0, tone 127, decay 0, pan centre. These are saved with the song and can be undone.
 
-**Levels.** On MIX, each sound and each of the eight layers has a volume. Quick mute of a sound: press FX on any page except MIX or BARS. Unmuting brings it back to full level.
+**Levels.** On MIX, each sound and each of the eight layers has a volume. Quick mute of a sound: press FX on any page except MIX or BARS. The sound goes silent (audio and MIDI) while its level stays as it was, and FX again brings it back. A mute is for performing: it is not saved and resets at power-up.
 
 ---
 
@@ -204,7 +211,7 @@ The FM-1 can play other gear while it plays itself.
 - **Mode.** OFF sends nothing, **ON** plays the internal sound and sends MIDI, **MIDI ONLY** mutes the internal sound so you can drive a synth.
 - **Clock OUT.** The FM-1 sends start, stop and clock at the song's tempo.
 - **Clock IN.** Set K3 to IN and the FM-1 follows an outside machine: its Start plays from the beginning, Continue picks up where it stopped, Stop stops. The header shows EXT and the tempo it measured. PLAY still starts and stops by hand, at that tempo. If the clock goes quiet for half a second, playback carries on at the last tempo and locks again when the clock returns. IN does not send clock out.
-- **Notes in.** A note arriving over USB, Bluetooth or the MIDI jack acts like a key: while stopped it plays and places a note at the cursor with your selected sound and layer, using the incoming velocity. Notes outside C2 to C6 are ignored.
+- **Notes in.** A note arriving over USB, Bluetooth or the MIDI jack acts like a key: on the STAFF page, while stopped, it plays and places a note at the cursor with your selected sound and layer, using the incoming velocity (while playing it lands at the playhead; on other pages it only plays). Notes outside C2 to C6 are ignored. Set K4 on the MIDI page to listen to one channel only; clock and Start/Stop messages are not filtered.
 
 ---
 
@@ -212,12 +219,12 @@ The FM-1 can play other gear while it plays itself.
 
 Two knobs on the GROOVE page make a plain pattern feel alive.
 
-- **Swing** (0 to 75) delays the off-beat eighth notes and sixteenths, so the beat skips.
-- **Human** (0 to 100) nudges every note a little in time and loudness. The same nudges happen on every play, so a song sounds the same each time.
+- **Swing** (0 to 75) delays the off-beat notes of one grid, so the beat skips. K3 picks the grid: 8TH delays the off-beat eighths, 16TH the off-beat sixteenths.
+- **Human** (0 to 100) nudges every note a little in time and loudness. K4 picks what moves: TIME+VEL, TIME only or VEL only. The same nudges happen on every play, so a song sounds the same each time.
 
 Both are saved with the song. At 0 and 0 the song plays exactly as written. Notes you audition while writing are not swung.
 
-**Swing and triplets.** Swing delays the off-beat eighths and sixteenths. Notes on triplet positions are not swung, because triplets already carry the swung feel. Swing 33 moves an off-beat eighth onto the triplet position.
+**Swing and triplets.** Swing delays the off-beats of the chosen grid. Notes on triplet positions are not swung, because triplets already carry the swung feel. Swing 33 moves an off-beat eighth onto the triplet position.
 
 ---
 
@@ -269,7 +276,7 @@ Turn on SEL first if copy, move or transpose should touch only the selected soun
 | Undo steps | 16 |
 | Playing at once | 8 voices in this build |
 
-The main controls for notes and settings are locked while the song plays. Navigation, sound and layer choice, MIX mute and solo, velocity and length for new notes, and octave still work.
+The main controls for notes and settings are locked while the song plays. Navigation, sound and layer choice, sound mute (FX), MIX layer mute and solo, velocity and length for new notes on the STAFF, keys (they play, and place on the staff) and octave still work. On MIX the K2 and K3 level knobs are locked while playing and say STOP FIRST.
 
 ---
 
