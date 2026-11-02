@@ -1,7 +1,7 @@
 """Read RIFF SoundFont metadata without copying audio into the project."""
 import json, pathlib, struct, sys
 
-def inspect(path):
+def inspect(path,pcm=False):
     data=path.read_bytes(); chunks={}
     def walk(start,end):
         while start+8<=end:
@@ -13,7 +13,7 @@ def inspect(path):
     walk(0,len(data));samples=[]
     for pos in range(0,len(chunks['shdr'])-46,46):
         name,start,end,lo,hi,rate,key,cents,link,kind=struct.unpack_from('<20sIIIIIBbHH',chunks['shdr'],pos)
-        samples.append(dict(name=name.rstrip(b'\0').decode('latin1'),frames=end-start,pcm_bytes=(end-start)*2,rate=rate,seconds=(end-start)/rate,root=key,cents=cents,loop_start=lo-start,loop_end=hi-start,link=link,type=kind))
+        samples.append(dict(name=name.rstrip(b'\0').decode('latin1'),start=start,frames=end-start,pcm_bytes=(end-start)*2,rate=rate,seconds=(end-start)/rate,root=key,cents=cents,loop_start=lo-start,loop_end=hi-start,link=link,type=kind))
     presets=[]
     for pos in range(0,len(chunks['phdr'])-38,38):
         name,program,bank,bag,*_=struct.unpack_from('<20sHHHIII',chunks['phdr'],pos)
@@ -39,5 +39,6 @@ def inspect(path):
                             if ig['operator']==53:ids.add(ig['amount'])
         preset['sample_ids']=sorted(ids)
         preset['unique_pcm_bytes']=sum(samples[x]['pcm_bytes'] for x in ids)
-    return dict(instruments=instruments,file_bytes=len(data),pcm_pool_bytes=len(chunks['smpl']),bit_depth=16,samples=samples,presets=presets,note='Sample headers only; zone generators can override root/loop/envelope. No redistribution permission inferred.')
+    extra=dict(smpl=chunks['smpl']) if pcm else {}
+    return dict(**extra,instruments=instruments,file_bytes=len(data),pcm_pool_bytes=len(chunks['smpl']),bit_depth=16,samples=samples,presets=presets,note='Sample headers only; zone generators can override root/loop/envelope. No redistribution permission inferred.')
 if __name__=='__main__':print(json.dumps(inspect(pathlib.Path(sys.argv[1])),indent=2))
