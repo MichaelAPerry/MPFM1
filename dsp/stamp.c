@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 #include "stamp.h"
-#include <string.h>
+#include "libc_shim.h"
 #include "bank.h"
 const char *const sc_names[15]={"PIANO","KICK","ZIP","BELL","TRUMPET","PULSE","DOG","CAT","PIG","HORN","BABY","GUITAR","BLOCK","ORGAN","BASS"};
 void sc_default(ScSong *s) { memset(s,0,sizeof *s); s->tempo=120; s->end=1536; s->beats=4; memset(s->volume,127,15); memset(s->layers,127,8); }
@@ -53,7 +53,7 @@ void sc_note(ScEngine *e,const ScSong *s,ScNote n){
  for(i=0;i<e->limit;i++){if(!e->voices[i].active){best=i;break;}if(e->age-e->voices[i].age>=oldest){oldest=e->age-e->voices[i].age;best=i;}}
  v=&e->voices[best]; if(v->active)e->steals++;
  v->tail=v->last;v->fade=64;v->pos=0;v->inc=sc_increments[n.pitch-36];v->instrument=n.instrument;v->active=1;v->age=++e->age;
- v->left=(uint32_t)((uint64_t)n.duration*60*44100/(s->tempo*96u));
+ v->left=(uint32_t)n.duration*55125u/(s->tempo*2u); /* =duration*60*44100/(tempo*96), 32-bit exact: no 64-bit multiply (bsp docs/CPU.md) */
  v->gain=(float)n.velocity*s->volume[n.instrument]*s->layers[n.layer]/(127.0f*127.0f*127.0f)*0.055f;e->triggers++;
 }
 void sc_render(ScEngine *e,const ScSong *s,int32_t *lr,unsigned n,unsigned master){
