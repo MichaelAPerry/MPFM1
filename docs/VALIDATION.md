@@ -21,11 +21,20 @@
 
 Representative optimized host stress measurements (4000 blocks × 256 frames, retriggering every voice each block): 8 voices ~0.11%, 12 ~0.17%, 16 ~0.23% of audio duration on this host CPU. This deliberately stresses stealing. **These percentages do not predict PI32 CPU headroom.** Native panel test also renders UI; no target worst-case display/audio claim is made. The app defaults to eight voices provisionally.
 
+## Device build (PI32v2)
+
+- `./build.sh` produced `build/stamp.fwsc` (611,496 B, SHA-256 `e1b0401dfd01cbc07b444515f3a1156333be89cb66f65b4dcb99d0f430b2950b`), dev identity `FM-1_5600`; app image `build/stamp.bin` 220,076 B (`deaaa25f…7cb9246`).
+- Toolchain `jieli-linux-toolchains-20260730.1` (clang 4.0.1, from `pkgman.jieliapp.com/s/linux-toolchain`, archive SHA-256 `a1545cdd…c7647bd`). SDK files `uboot.boot`, `cfg_tool.bin`, `cfg/eq_cfg_hw.bin` from fw-AC79_AIoT_SDK d179b44 (`AC79NN_SDK_V1.2.1_2023-12-13`); all three match build.py's pinned SHA-256.
+- Linked ELF against fm1-base limits: app image 220,076 of 581,564 B slot (0x8DFBC, 37.8%); static RAM .data+.bss 23,224 B + .ram_text 3,132 B, build check reports 23,236 of 98,304 B; pool 106,828 of 344,064 B (31%, history + canvas). No `.map` is emitted; figures are from `objdump -h` and build.py's checks.
+- All build.py device checks passed: register access, no inlined 64-bit multiply beside loads (bsp docs/CPU.md erratum; `sc_note` duration math made 32-bit exact), no soft-double, `.ram_text` call-free.
+- Device-only `dsp/libc_shim.h` (memmove, strcmp, minimal snprintf) matched glibc on 16 app format cases plus truncation under ASan/UBSan.
+- Identity `FM-1_56` chosen after reading all 36 public `fm1.toml` id_prefix values on GitHub: `FM-1_73` is used by gravkode/terykons and haunted-fm1; no published prefix begins with 5. Firmware outside GitHub (e.g. thefirmwarehub.com) was not checked.
+
 ## Not validated
 
-- No PI32 firmware binary was built: the build stopped because `cpu/wl82/tools/uboot.boot` was absent; the JieLi toolchain and AC79 SDK are not configured.
+- The firmware package has not been executed anywhere; boot, display, audio and storage on PI32 are untested. Build reproducibility (byte-identical rebuild) not checked.
 - No device binary was executed in fm1-emu and no physical FM-1 was tested.
-- No final device linker map, total flash/RAM report, audible quality evaluation or sample-fidelity approval.
+- No linker map, measured runtime peak RAM/stack, audible quality evaluation or sample-fidelity approval.
 - Full browser UI interaction/AudioWorklet scheduling remains unverified. The cloud browser could inspect the reference simulator but could not reach this workspace’s local preview server (`ERR_HTTP_RESPONSE_CODE_FAILURE`). Node WASM tests are distinct from a full browser session.
 - The imported example is an authored fixture of the inspected SMP syntax. A real-world SMP/MPC corpus and proprietary sample-bank comparisons remain outstanding.
 

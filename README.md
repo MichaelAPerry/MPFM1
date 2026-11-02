@@ -67,7 +67,7 @@ node tests/web.mjs build/emu/app.wasm build/playground.scf
 python3 -m http.server 8080 --directory build/emu
 ```
 
-For a device build, install the JieLi Linux PI32v2 toolchain and AC79 SDK described by `base/tools/build.py`, set `JIELI_TOOLCHAIN` and `AC79_SDK`, then run `./build.sh`. **No flashable firmware is included.** Package prefix `FM-1_73` needs a collision check before distribution. The browser simulator does not execute a PI32 firmware binary.
+For a device build, install the JieLi Linux PI32v2 toolchain and AC79 SDK described by `base/tools/build.py`, set `JIELI_TOOLCHAIN` and `AC79_SDK`, then run `./build.sh`. **No flashable firmware is included.** Package identity is `FM-1_56` (dev `FM-1_5600`); the firmware is untested on hardware. The browser simulator does not execute a PI32 firmware binary.
 
 ## Bring a song or sound bank
 
