@@ -37,6 +37,13 @@ Representative optimized host stress measurements (4000 blocks × 256 frames, re
 - Browser: fm1-emu's web build with `tools/site_emu.sh` beside the release package `stamp-0.1.fwsc` (`FM-1_56000100`) booted under headless Chromium/Playwright with no console errors; computer-keyboard notes and Space (PLAY) placed three notes and started playback.
 - fm1-emu emulates the CPU and peripherals; it is not hardware. Timing, flash wear, audio output stage and the PI32 erratum are not reproduced faithfully. Emulated runs used the emulator's default 100 MHz clock.
 
+## Feature set 0.2 (docs/FEATURES.md)
+
+- Engine: SCF v2 (v1 still loads), per-sound tune/tone/decay/pan, MIDI out per sound with note-off scheduling, all-notes-off at stop, 24 PPQN clock with Start/Stop. With default settings the render is bit-identical to 0.1 (hash test). Core tests cover v1/v2 decode, every new range check, shaping effects, MIDI timing at 120 BPM, clock count, mode MIDI ONLY and the note-off table overflow.
+- App: SOUND and MIDI pages, MIDI in note entry, EDIT+K2/K3 note editing, backup/restore hooks (flush is a no-op: a backup holds what is saved). `tests/features.txt` covers page cycle, knob clamps, undo, MIDI out present/absent, MIDI in, note editing and restore. [SOUND](screens/sound.png) and [MIDI](screens/midi.png) pages inspected.
+- Device build checks all ok: image 227,220 B of 581,564; RAM 24,500 of 98,304; pool 111,960 of 344,064. fm1-emu smoke on that package still plays with no faults. WASM rebuilt with Emscripten 4.0.20 (`preview/app.wasm`); `tests/web.mjs` passes.
+- Not validated: MIDI out/in and clock against a real DAW or synth; backup/restore through fm1-base's browser page or `fm1_backup.py`; the new pages on hardware.
+
 ## Not validated
 
 - No physical FM-1 was tested: real boot, display timing, audio quality, input feel and flash storage are unverified. Build reproducibility (byte-identical rebuild) not checked.
