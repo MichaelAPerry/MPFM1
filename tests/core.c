@@ -61,11 +61,11 @@ static void bars(void){
   assert(sc_insert_bars(&s,bar,bar*2)==1 && s.end==bar*6 && s.loop_start==bar*4 && s.count==4 && s.notes[0].tick==12 && s.notes[1].tick==bar*3+12 && s.notes[3].tick==bar*5+12 && sc_valid(&s));
   s=t;s.loop_start=0;assert(sc_insert_bars(&s,0,bar)==1 && s.loop_start==bar && s.notes[0].tick==bar+12 && sc_valid(&s));
   s=t;s.end=65536-bar;assert(sc_insert_bars(&s,0,bar)==SC_E_TICK && sc_insert_bars(&s,s.end,bar)==SC_E_ARG && sc_insert_bars(&s,0,0)==SC_E_ARG);s.end=bar*4;assert(SAME);
-  assert(sc_transpose(&s,bar,bar*2,3,-1)==1 && s.notes[0].pitch==40 && s.notes[1].pitch==44 && s.notes[2].pitch==45 && s.notes[3].pitch==43 && sc_valid(&s));
-  s=t;assert(sc_transpose(&s,0,bar*4,-12,-1)==SC_E_PITCH && SAME && sc_transpose(&s,0,bar*4,0,-1)==SC_E_ARG && sc_transpose(&s,0,bar*4,2,5)==SC_E_NONE && SAME);
-  assert(sc_transpose(&s,0,bar*4,2,1)==1 && s.notes[0].pitch==40 && s.notes[1].pitch==43 && s.notes[3].pitch==45);
-  s=t;s.notes[3].pitch=84;assert(sc_transpose(&s,0,bar*4,1,-1)==SC_E_PITCH && sc_transpose(&s,0,bar*3,1,-1)==1 && s.notes[0].pitch==41 && s.notes[3].pitch==84 && sc_valid(&s));
-  s=t;s.notes[0].pitch=36;t=s;assert(sc_transpose(&s,0,bar,-1,-1)==SC_E_PITCH && SAME);
+  assert(sc_transpose(&s,bar,bar*2,3,-1,0)==1 && s.notes[0].pitch==40 && s.notes[1].pitch==44 && s.notes[2].pitch==45 && s.notes[3].pitch==43 && sc_valid(&s));
+  s=t;assert(sc_transpose(&s,0,bar*4,-12,-1,0)==SC_E_PITCH && SAME && sc_transpose(&s,0,bar*4,0,-1,0)==SC_E_ARG && sc_transpose(&s,0,bar*4,2,5,0)==SC_E_NONE && SAME);
+  assert(sc_transpose(&s,0,bar*4,2,1,0)==1 && s.notes[0].pitch==40 && s.notes[1].pitch==43 && s.notes[3].pitch==45);
+  s=t;s.notes[3].pitch=84;assert(sc_transpose(&s,0,bar*4,1,-1,0)==SC_E_PITCH && sc_transpose(&s,0,bar*3,1,-1,0)==1 && s.notes[0].pitch==41 && s.notes[3].pitch==84 && sc_valid(&s));
+  s=t;s.notes[0].pitch=36;t=s;assert(sc_transpose(&s,0,bar,-1,-1,0)==SC_E_PITCH && SAME);
  }
  sc_default(&s);s.end=65535;for(i=0;i<SC_EVENTS-1;i++)sc_add(&s,(ScNote){i,24,36+i%49,i%15,100,0});t=s; /* full: copy refused, move still fits */
  assert(sc_copy(&s,0,384,384,-1)==SC_E_FULL && SAME && sc_valid(&s));
@@ -117,6 +117,23 @@ int main(int argc,char **argv){
  bytes[48]=-13;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[48]=-7;bytes[93]=-65;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[93]=-64;bytes[127]=6|1<<7;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[127]=1|2<<1|17<<3;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[127]=1|2<<1|16<<3;fix(bytes,n);assert(sc_decode(&t,bytes,n)&&t.sgrid==1&&t.hmode==2&&t.midi_in==16); /* byte 127: grid | human mode<<1 | MIDI-in channel<<3 */
  bytes[60]^=1;assert(!sc_decode(&t,bytes,n));bytes[60]^=1;assert(!sc_decode(&t,bytes,n-1));
  s.swing=76;assert(!sc_encode(&s,bytes));s.swing=75;s.human=101;assert(!sc_encode(&s,bytes));s.human=100;s.midi_ch[0]=17;assert(!sc_encode(&s,bytes));s.midi_ch[0]=1;s.pan[0]=64;assert(!sc_encode(&s,bytes));s.pan[0]=0;s.sgrid=2;assert(!sc_encode(&s,bytes));s.sgrid=1;s.hmode=3;assert(!sc_encode(&s,bytes));s.hmode=0;s.midi_in=17;assert(!sc_encode(&s,bytes));
+ /* flats: SC_FLAT (layer bit 7) round-trips, black keys only; a v1 file decodes with it clear; spelling changes no sound and no identity */
+ sc_default(&s);assert(sc_add(&s,(ScNote){0,96,58,0,100,SC_FLAT|3}) && sc_add(&s,(ScNote){96,96,61,2,100,1}) && !sc_add(&s,(ScNote){0,96,60,0,100,SC_FLAT}) && s.count==2 && sc_valid(&s));
+ n=sc_encode(&s,bytes);assert(n==132+16 && bytes[128+7]==(0x80|3) && bytes[136+7]==1);assert(sc_decode(&t,bytes,n) && !memcmp(&s,&t,sizeof s) && t.notes[0].layer==(SC_FLAT|3) && t.notes[1].layer==1);
+ bytes[132]=60;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[132]=58; /* flag on a white key (C4): rejected */
+ bytes[128+7]=0x80|8;fix(bytes,n);assert(!sc_decode(&t,bytes,n)); /* layer 8 */
+ s.notes[1].pitch=62;s.notes[1].layer|=SC_FLAT;assert(!sc_valid(&s) && !sc_encode(&s,bytes));s.notes[1].layer&=127;assert(sc_valid(&s));
+ sc_default(&s);sc_add(&s,(ScNote){0,96,58,0,100,SC_FLAT|3});n=sc_encode(&s,bytes);memmove(bytes+48,bytes+128,12);n=48+8+4;bytes[4]=1;fix(bytes,n);assert(!sc_decode(&t,bytes,n)); /* v1 has no flag: layer 0x83 invalid */
+ bytes[48+7]=3;fix(bytes,n);assert(sc_decode(&t,bytes,n) && t.notes[0].layer==3 && t.notes[0].pitch==58);
+ assert(sc_find(&s,(ScNote){0,1,58,0,1,3})==0 && sc_find(&s,(ScNote){0,1,58,0,1,3|SC_FLAT})==0 && sc_find(&s,(ScNote){0,1,58,0,1,4})<0 && sc_insert(&e,&s,(ScNote){0,24,58,0,100,3})==SC_E_NONE);
+ for(i=36;i<=84;i++){assert(sc_spell(i,0)==0 && sc_spell(i,2)==(sc_black(i)?SC_FLAT:0) && sc_spell(i,1)==(i%12==3||i%12==8||i%12==10?SC_FLAT:0) && sc_black(i)==(i%12==1||i%12==3||i%12==6||i%12==8||i%12==10));}
+ {ScSong a,b;ScEngine ea,eb;static int32_t oa[512],ob[512];sc_default(&a);b=a;sc_add(&a,(ScNote){0,96,58,3,100,0});sc_add(&b,(ScNote){0,96,58,3,100,SC_FLAT});sc_engine_init(&ea,8);eb=ea;sc_start(&ea);sc_start(&eb);for(i=0;i<40;i++){sc_render(&ea,&a,oa,256,4096);sc_render(&eb,&b,ob,256,4096);assert(!memcmp(oa,ob,sizeof oa));}} /* the same sound */
+ /* transpose: a flat stays on a black key, a white landing clears it, a white key turning black takes the mode */
+ sc_default(&s);sc_add(&s,(ScNote){0,24,58,0,100,SC_FLAT});sc_add(&s,(ScNote){10,24,61,0,100,0});sc_add(&s,(ScNote){20,24,60,0,100,0});sc_add(&s,(ScNote){30,24,66,0,100,SC_FLAT});t=s;
+ assert(sc_transpose(&s,0,96,1,-1,2)==1 && s.notes[0].pitch==59 && s.notes[0].layer==0 && s.notes[1].pitch==62 && s.notes[1].layer==0 && s.notes[2].pitch==61 && s.notes[2].layer==SC_FLAT && s.notes[3].pitch==67 && s.notes[3].layer==0 && sc_valid(&s));
+ s=t;assert(sc_transpose(&s,0,96,1,-1,0)==1 && s.notes[2].pitch==61 && s.notes[2].layer==0 && sc_valid(&s));
+ s=t;assert(sc_transpose(&s,0,96,2,-1,2)==1 && s.notes[0].pitch==60 && s.notes[0].layer==0 && s.notes[1].pitch==63 && s.notes[1].layer==0 && s.notes[2].pitch==62 && s.notes[2].layer==0 && s.notes[3].pitch==68 && s.notes[3].layer==SC_FLAT && sc_valid(&s)); /* C#4 keeps its sharp, Gb4 its flat */
+ s=t;assert(sc_transpose(&s,0,96,-12,-1,1)==1 && s.notes[0].layer==SC_FLAT && s.notes[1].layer==0 && s.notes[3].layer==SC_FLAT);
  /* defaults render exactly as before the shaping/MIDI work */
  assert(gold()==0xdf51e7e3u);
 
@@ -209,6 +226,7 @@ int main(int argc,char **argv){
  for(i=0;i<np_;i++)assert(pk[i]!=(0xFu|0xF8u<<8) && pk[i]!=(0xFu|0xFAu<<8));
  sc_stop(&e);sc_start(&e);assert(!e.xl);run(&e,&s,44100);assert(e.tick>=190 && e.tick<=194); /* local PLAY: free-runs at the measured tempo */
  if(argc>1){FILE *fp=fopen(argv[1],"rb");assert(fp);n=fread(bytes,1,sizeof bytes,fp);fclose(fp);assert(sc_decode(&s,bytes,n));assert(s.count==11);assert(s.notes[0].pitch==60);}
+ if(argc>2){FILE *fp=fopen(argv[2],"rb");assert(fp);n=fread(bytes,1,sizeof bytes,fp);fclose(fp);assert(sc_decode(&s,bytes,n) && s.count==4 && s.notes[0].pitch==58 && s.notes[0].layer==SC_FLAT && s.notes[1].layer==0 && s.notes[2].pitch==63 && s.notes[2].layer==SC_FLAT && s.notes[3].layer==0 && sc_valid(&s));} /* importer v2 with flats */
  printf("sizeof song=%zu, note=%zu, engine=%zu, voice=%zu; wire max=%d; history=%zu\n",sizeof s,sizeof(ScNote),sizeof e,sizeof(ScVoice),SC_BYTES,17*sizeof s);
  for(i=8;i<=16;i+=4){clock_t begin;double sec;sc_default(&s);sc_engine_init(&e,i);begin=clock();
   for(j=0;j<4000;j++){unsigned k;for(k=0;k<i;k++)sc_note(&e,&s,(ScNote){0,96,36+k,k%15,100,0});sc_render(&e,&s,lr,256,4096);}

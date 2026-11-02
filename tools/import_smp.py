@@ -33,7 +33,8 @@ def convert(text,acknowledge=False):
             if inst not in ROLES:raise ValueError('Unsupported instrument: '+inst)
             pitch=(int(octave)+1)*12+dict(C=0,D=2,E=4,F=5,G=7,A=9,B=11)[letter]+{'':0,'b':-1,'#':1,'B':-2,'X':2}[acc]
             if not 36<=pitch<=84:raise ValueError('Pitch outside C2..C6')
-            notes.append([tick,0,pitch,ROLES.index(inst),vel,0])
+            flat=acc in 'bB' and pitch%12 in (1,3,6,8,10)  # flat spelling only where the pitch is a black key; Cb, Ebb, #/X keep natural/sharp spelling
+            notes.append([tick,0,pitch,ROLES.index(inst),vel,128 if flat else 0])
     if len(notes)>384:raise ValueError('More than 384 events; nothing written')
     end=((max(0,last)//(beats*96))+1)*beats*96
     if end>65535:raise ValueError('Song exceeds 65535 ticks')
@@ -42,7 +43,9 @@ def convert(text,acknowledge=False):
     for note in notes:
         following=next((n[0] for n in notes if n[0]>note[0] and n[3]==note[3]),end)
         note[1]=following-note[0]
-    head=bytearray(48);struct.pack_into('<4sHHHHHBB',head,0,b'SCF1',1,len(notes),int(tempo),end,0,0,beats);head[16:39]=bytes([127])*23
+    v2=any(n[5] for n in notes)  # the flat flag (layer bit 7) needs SCF v2: sound block 48..127 at defaults (tone 127 open), else v1
+    head=bytearray(128 if v2 else 48);struct.pack_into('<4sHHHHHBB',head,0,b'SCF1',2 if v2 else 1,len(notes),int(tempo),end,0,0,beats);head[16:39]=bytes([127])*23
+    if v2:head[63:78]=bytes([127])*15
     payload=bytes(head)+b''.join(struct.pack('<HHBBBB',*n) for n in notes)
     return payload+struct.pack('<I',zlib.crc32(payload))
 

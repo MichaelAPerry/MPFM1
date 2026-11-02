@@ -7,6 +7,7 @@
 #define SC_MIDIQ 32 /* pending MIDI note-offs */
 #define SC_PEND 32 /* delayed (swing/human) triggers waiting */
 #define SC_BYTES (132+SC_EVENTS*8) /* v2: 48 head + 79 sound block + 1 pad + events + CRC */
+#define SC_FLAT 0x80 /* ScNote.layer bit 7 (also the wire's): spelled as the flat of the next letter (Bb, not A#); black keys only, no effect on sound. The layer is layer&127 */
 typedef struct { uint16_t tick, duration; uint8_t pitch, instrument, velocity, layer; } ScNote;
 typedef struct {
  uint16_t count, tempo, end, loop_start;
@@ -28,7 +29,7 @@ extern const char *const sc_names[15];
 void sc_default(ScSong *s);
 int sc_valid(const ScSong *s);
 int sc_add(ScSong *s, ScNote n);
-int sc_find(const ScSong *s, ScNote n); /* index of the note with the same tick, pitch, sound and layer, or -1 */
+int sc_find(const ScSong *s, ScNote n); /* index of the note with the same tick, pitch, sound and layer, or -1 (spelling ignored) */
 /* While playing (call under the render's lock): add/remove one note and keep the engine's scan index right. insert: 1 added, SC_E_NONE already there, SC_E_FULL, 0 invalid; a note due at or before the playhead is not triggered by the scan (audition it with sc_note). remove: 1 removed. */
 int sc_insert(ScEngine *e, ScSong *s, ScNote n);
 int sc_remove(ScEngine *e, ScSong *s, ScNote n);
@@ -41,7 +42,9 @@ int sc_copy(ScSong *s, unsigned from, unsigned len, unsigned to, int inst);
 int sc_move(ScSong *s, unsigned from, unsigned len, unsigned to, int inst);
 int sc_delete_bars(ScSong *s, unsigned from, unsigned len);
 int sc_insert_bars(ScSong *s, unsigned from, unsigned len);
-int sc_transpose(ScSong *s, unsigned from, unsigned len, int semis, int inst);
+int sc_transpose(ScSong *s, unsigned from, unsigned len, int semis, int inst, unsigned sp); /* spelling: a note keeps SC_FLAT if it lands on a black key (white keys clear it); a white key becoming black takes sc_spell(pitch, sp) */
+int sc_black(unsigned pitch);
+int sc_spell(unsigned pitch, unsigned mode); /* SC_FLAT or 0 for a new note: mode 0 sharp, 1 auto (D#/G#/A# flat, C#/F# sharp), 2 flat; white keys never */
 unsigned sc_encode(const ScSong *s, uint8_t *out);
 int sc_decode(ScSong *s, const uint8_t *in, unsigned len);
 void sc_engine_init(ScEngine *e, unsigned voices);

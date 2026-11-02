@@ -4,7 +4,9 @@
 #include "bank.h"
 const char *const sc_names[15]={"PIANO","KICK","ZIP","BELL","TRUMPET","PULSE","DOG","CAT","PIG","HORN","BABY","GUITAR","BLOCK","ORGAN","BASS"};
 void sc_default(ScSong *s) { memset(s,0,sizeof *s); s->tempo=120; s->end=1536; s->beats=4; memset(s->volume,127,15); memset(s->layers,127,8); memset(s->tone,127,15); }
-static int valid_note(ScNote n, unsigned end) { return n.tick<end && n.duration && n.pitch>=36 && n.pitch<=84 && n.instrument<15 && n.velocity<=127 && n.layer<8; }
+int sc_black(unsigned p) { return 0x54A>>p%12&1; }
+int sc_spell(unsigned p, unsigned m) { return sc_black(p) && (m==2 || (m==1 && 0x508>>p%12&1)) ? SC_FLAT : 0; }
+static int valid_note(ScNote n, unsigned end) { return (!(n.layer&SC_FLAT) || sc_black(n.pitch)) && n.tick<end && n.duration && n.pitch>=36 && n.pitch<=84 && n.instrument<15 && n.velocity<=127 && (n.layer&127)<8; }
 static unsigned hj(const ScSong *s){return s->hmode==2?0:s->human*8u/100;} /* human timing range, ticks */
 int sc_valid(const ScSong *s) {
  unsigned i; if(s->count>SC_EVENTS || s->tempo<30 || s->tempo>300 || !s->end || s->loop_start>=s->end || s->loop>1 || s->beats<1 || s->beats>16) return 0;
@@ -43,7 +45,7 @@ int sc_duplicate(ScSong *s, uint16_t start, uint16_t length) {
 /* Range ops on [from,from+len) ticks; inst < 0: all sounds. Return 1, or SC_E_*: checked first, a refusal leaves the song untouched. */
 static ScNote tmp[SC_EVENTS]; /* scratch for copy/move (not reentrant) */
 static int hit(const ScNote *n,unsigned from,unsigned len,int inst) { return n->tick>=from && n->tick-from<len && (inst<0 || n->instrument==inst); }
-int sc_find(const ScSong *s,ScNote n) { unsigned i; for(i=0;i<s->count;i++) if(s->notes[i].tick==n.tick && s->notes[i].pitch==n.pitch && s->notes[i].instrument==n.instrument && s->notes[i].layer==n.layer) return (int)i; return -1; }
+int sc_find(const ScSong *s,ScNote n) { unsigned i; for(i=0;i<s->count;i++) if(s->notes[i].tick==n.tick && s->notes[i].pitch==n.pitch && s->notes[i].instrument==n.instrument && !((s->notes[i].layer^n.layer)&127)) return (int)i; return -1; }
 #define has(s,n) (sc_find(s,n)>=0)
 /* copy (mv 0) or move (mv 1) the range's notes to `to`, skipping ones already there; end grows to cover the target */
 static int paste(ScSong *s,unsigned from,unsigned len,unsigned to,int inst,int mv) {
@@ -72,11 +74,11 @@ int sc_insert_bars(ScSong *s,unsigned from,unsigned len) {
  for(i=0;i<s->count;i++) if(s->notes[i].tick>=from) s->notes[i].tick+=len;
  if(s->loop_start>=from) s->loop_start+=len; s->end+=len; return 1;
 }
-int sc_transpose(ScSong *s,unsigned from,unsigned len,int semis,int inst) {
+int sc_transpose(ScSong *s,unsigned from,unsigned len,int semis,int inst,unsigned sp) {
  unsigned i,n=0; if(!len || !semis) return SC_E_ARG;
  for(i=0;i<s->count;i++) if(hit(s->notes+i,from,len,inst)) { int p=s->notes[i].pitch+semis; if(p<36 || p>84) return SC_E_PITCH; n++; }
  if(!n) return SC_E_NONE;
- for(i=0;i<s->count;i++) if(hit(s->notes+i,from,len,inst)) s->notes[i].pitch+=semis; return 1;
+ for(i=0;i<s->count;i++) if(hit(s->notes+i,from,len,inst)) { ScNote *p=s->notes+i; int was=sc_black(p->pitch); p->pitch+=semis; p->layer=(p->layer&127)|(sc_black(p->pitch)?was?p->layer&SC_FLAT:sc_spell(p->pitch,sp):0); } return 1;
 }
 static void put16(uint8_t *p,unsigned v) { p[0]=v; p[1]=v>>8; }
 static unsigned get16(const uint8_t *p) { return p[0]|((unsigned)p[1]<<8); }
@@ -96,7 +98,7 @@ int sc_decode(ScSong *s,const uint8_t *in,unsigned len) {
  for(i=0;i<4;i++) c|=(uint32_t)in[len-4+i]<<(8*i); if(c!=crc(in,len-4)) return 0;
  for(i=39;i<48;i++) if(in[i]) return 0;
  sc_default(&t);t.count=n;t.tempo=get16(in+8);t.end=get16(in+10);t.loop_start=get16(in+12);t.loop=in[14];t.beats=in[15];memcpy(t.volume,in+16,15);memcpy(t.layers,in+31,8);
- for(i=0;i<n;i++){const uint8_t *p=in+b+8*i;t.notes[i]=(ScNote){get16(p),get16(p+2),p[4],p[5],p[6],p[7]};}
+ for(i=0;i<n;i++){const uint8_t *p=in+b+8*i;t.notes[i]=(ScNote){get16(p),get16(p+2),p[4],p[5],p[6],p[7]}; if(v==1&&p[7]>7) return 0;}
  if(v==2){t.sgrid=in[127]&1;t.hmode=in[127]>>1&3;t.midi_in=in[127]>>3;memcpy(t.tune,in+48,15);memcpy(t.tone,in+63,15);memcpy(t.decay,in+78,15);memcpy(t.pan,in+93,15);memcpy(t.midi_ch,in+108,15);t.midi_mode=in[123];t.midi_clock=in[124];t.swing=in[125];t.human=in[126];}
  if(!sc_valid(&t)) return 0; *s=t; return 1;
 }
@@ -129,7 +131,7 @@ void sc_start_at(ScEngine *e,const ScSong *s,unsigned tick){
  sc_start(e);if(tick>=s->end)return;e->tick=tick;e->clkc=tick;e->cont=tick>0;while(e->next<s->count && s->notes[e->next].tick<tick)e->next++;}
 void sc_note(ScEngine *e,const ScSong *s,ScNote n){
  unsigned i,best=0,ins=n.instrument;ScVoice *v;uint32_t oldest=0,len;int pi;
- if(!valid_note(n,65535) || !n.velocity || !s->volume[ins] || !s->layers[n.layer] || e->mute>>n.layer&1 || e->smute>>ins&1 || (e->solo && !(e->solo>>n.layer&1)))return;
+ if(!valid_note(n,65535) || !n.velocity || !s->volume[ins] || !s->layers[n.layer&127] || e->mute>>(n.layer&127)&1 || e->smute>>ins&1 || (e->solo && !(e->solo>>(n.layer&127)&1)))return;
  len=(uint32_t)n.duration*55125u/(rate(e,s)/48u); /* =duration*60*44100/(tempo*96), 32-bit exact: no 64-bit multiply (bsp docs/CPU.md) */
  if(s->midi_mode && s->midi_ch[ins] && e->midi){pi=n.pitch+s->tune[ins];mon(e,s->midi_ch[ins]-1,pi<0?0:pi>127?127:pi,n.velocity,len);}
  if(s->midi_mode==2 && s->midi_ch[ins]){e->triggers++;return;}
@@ -140,7 +142,7 @@ void sc_note(ScEngine *e,const ScSong *s,ScNote n){
  v->left=len;v->rel=s->decay[ins]*520u;v->relp=0;v->lp=0; /* release up to ~1.5 s */
  {float t=s->tone[ins]/127.0f;v->k=s->tone[ins]>=127?1.0f:0.01f+0.99f*t*t;}
  v->gl=v->gr=1.0f;if(s->pan[ins]>0)v->gl=(64-s->pan[ins])/64.0f;else if(s->pan[ins]<0)v->gr=(64+s->pan[ins])/64.0f;
- v->gain=(float)n.velocity*s->volume[ins]*s->layers[n.layer]/(127.0f*127.0f*127.0f)*0.055f;e->triggers++;
+ v->gain=(float)n.velocity*s->volume[ins]*s->layers[n.layer&127]/(127.0f*127.0f*127.0f)*0.055f;e->triggers++;
 }
 /* swing: sgrid 0: off-beat 8ths (tick%96==48) late by swing% of 48 ticks; 1: off-beat 16ths (tick%48==24) of 24; human: random +-8 ticks and +-20 velocity at 100 (hmode: both/timing/velocity; the PRNG draws are the same).
  * Only the scan uses it (not auditions). Due now: straight to sc_note; later: pd[] (kept in scan order); never before the playhead or after end-1. */

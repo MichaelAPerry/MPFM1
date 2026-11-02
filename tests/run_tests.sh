@@ -4,9 +4,10 @@ cd "$(dirname "$0")/.."
 mkdir -p build
 python3 tools/make_bank.py
 python3 tools/import_smp.py examples/playground.smp build/playground.scf --placeholder-bank
+python3 tools/import_smp.py tests/flats.smp build/flats.scf --placeholder-bank
 python3 -m unittest discover -s tests -p 'test_*.py'
 cc -std=c99 -O2 -Wall -Wextra -Werror -Wno-misleading-indentation -Idsp tests/core.c dsp/stamp.c -o build/core_test
-build/core_test build/playground.scf
+build/core_test build/playground.scf build/flats.scf
 ./build.sh --host
 build/host/stamp_host tests/panel.txt build/host
 
@@ -19,3 +20,4 @@ build/host/stamp_host tests/bars.txt build/host
 build/host/stamp_host tests/autosave.txt build/host
 build/host/stamp_host tests/live.txt build/host
 build/host/stamp_host tests/controls.txt build/host
+build/host/stamp_host tests/flats.txt build/host
