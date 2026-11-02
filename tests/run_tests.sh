@@ -11,3 +11,4 @@ build/core_test build/playground.scf
 build/host/stamp_host tests/panel.txt build/host
 
 build/host/stamp_host tests/polish.txt build/host
+build/host/stamp_host tests/features.txt build/host

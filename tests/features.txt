@@ -1,0 +1,87 @@
+# Feature set 0.2: SOUND and MIDI pages, MIDI out/in, note editing, backup
+wait 100
+tap EDIT
+tap EDIT
+expect page 3
+turn K1 3
+expect tune 3
+turn K2 -5
+expect tone 122
+turn K3 7
+expect decay 7
+spin K4 -70
+expect pan -64
+spin K4 130
+expect pan 63
+expect dirty 1
+tap ENV
+expect pan -64
+shot sound.png
+tap EDIT
+expect page 4
+turn K1 2
+expect midi_ch 2
+turn K2 1
+expect midi_mode 1
+turn K3 1
+expect midi_clock 1
+turn K3 -1
+turn PRESET 3
+turn K1 1
+shot midi.png
+turn PRESET -3
+tap EDIT
+expect page 0
+tap HOME
+# MIDI out: routed sound 0 on channel 2 sends on playback, OFF sends nothing
+expect midi_out 0
+tapkey 7
+expect notes 1
+wait 3000
+expect midi_out >1
+tap PLAY
+wait 600
+tap PLAY
+expect midi_out >2
+expect_out USB 91 3F 64
+tap EDIT
+tap EDIT
+tap EDIT
+turn K1 -2
+expect midi_ch 0
+tap EDIT
+out
+tap PLAY
+wait 600
+tap PLAY
+expect_no_out USB 91 3F 64
+# MIDI in places a note at the cursor with the message velocity
+midi 90 40 55
+wait 40
+expect notes 2
+midi 90 10 55
+midi 80 41 0
+midi 90 5A 60
+wait 40
+expect notes 2
+# EDIT + K2 / K3 edit the note at the cursor, one undo per gesture
+press EDIT
+turn K2 -10
+turn K2 -10
+turn K3 2
+release EDIT
+wait 40
+expect page 0
+expect note_vel 80
+expect note_len 144
+tap ENV
+expect note_vel 100
+# backup holds the saved songs; restore brings them back
+tap SAVE
+expect dirty 0
+backup out:b.stamp
+tapkey 9
+expect dirty 1
+restore out:b.stamp
+expect restore_rc 0
+expect dirty 0
