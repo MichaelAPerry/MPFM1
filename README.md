@@ -42,7 +42,7 @@ These are captures from the **actual 240 × 240 native application**. The browse
 - **Make room for harmony:** a shared eight-voice development default; engine stress tests cover 8, 12 and 16 voices.
 - **Build a phrase:** C2–C6 chromatic entry, chords, quarter/eighth/sixteenth grids, note length, velocity, tempo, looping and song end.
 - **Keep experimenting:** 16 undo levels, bar duplication, eight layers, per-sound levels and eight independent save slots.
-- **Small songs:** up to 384 events, at most 3,124 bytes in the checked SCF1 format.
+- **Small songs:** up to 384 events, at most 3,202 bytes in the checked SCF1 format.
 
 ## Build it
 

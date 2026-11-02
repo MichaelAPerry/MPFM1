@@ -14,7 +14,7 @@ UI edits lock platform interrupts. Large history copies, duplication and seriali
 | --- | ---: |
 | Event | 8 |
 | Song structure | 3106 |
-| Maximum wire record | 3124 |
+| Maximum wire record | 3202 |
 | 17 history snapshots (pool) | 52802 |
 | Engine with sixteen voice slots | 540 |
 | One voice | 32 |
