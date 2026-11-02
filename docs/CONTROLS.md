@@ -12,23 +12,26 @@ Hardware/API source: pinned `base/include/plat.h` and `base/device/lcd.c`: 240×
 | K2 | New-note velocity; MIX page: selected instrument volume (0 mutes); SOUND: tone 0..127; MIDI: mode OFF / ON / MIDI ONLY. Hold EDIT on the staff: velocity of the selected sound's notes at the cursor |
 | K3 | New-note duration in 24-tick steps (16 on the triplet grids); MIX page: layer volume (0 mutes); SOUND: decay 0..127; MIDI: clock OFF / OUT / IN (follow external clock; below). Hold EDIT on the staff: length (24-tick steps) of the notes at the cursor |
 | K4 | Song end in quarter-note steps; cannot cut off existing event starts; SOUND page: pan L64..R63 |
-| PLAY | Play from beginning / stop |
+| PLAY | Play from beginning / stop. Hold EDIT and press PLAY: play from the start of the cursor's bar (MIDI clock out: Song Position Pointer + Continue instead of Start) |
 | OCT− / OCT+ | Shift keyboard by octave |
 | SEQ | Cycle grid: 1/4 (96 ticks), 1/8 (48), 1/16 (24), 1/8T (32), 1/16T (16 ticks, triplets) |
 | ARP | Toggle whole-song looping |
-| FX | Mute/unmute selected sound (unmute restores level 127) |
+| FX | Mute/unmute selected sound (unmute restores level 127). MIX page: mute/unmute the selected layer (live, also while playing, not saved) |
 | ENV / LFO | Undo / redo |
 | REC | Duplicate cursor's whole bar into next bar, preserving existing notes; capacity checked |
-| EDIT | Tap to cycle STAFF → MIX → SOUND → MIDI → STAFF; hold with a key to erase matching pitch/sound/layer at cursor; hold and turn K2/K3 to edit the notes at the cursor (one undo step per hold) |
-| SEL | Show all sounds / only selected sound |
+| EDIT | Tap to cycle STAFF → MIX → SOUND → MIDI → GROOVE → STAFF; hold with a key to erase matching pitch/sound/layer at cursor; hold and turn K2/K3 to edit the notes at the cursor (one undo step per hold) |
+| SEL | Show all sounds / only selected sound. MIX page: solo/unsolo the selected layer (live, not saved; with any solo set, only soloed layers sound) |
 | GLO | Toggle song-book view |
 | SAVE | Save current song to selected slot; rejected during playback |
 | REC in song-book view | First press arms load; second loads that slot. Load can be undone |
-| HOME | Return to staff, cursor zero; cancel pending load |
+| HOME | Tap: return to staff, cursor zero; cancel pending load (acts on release). Hold 600 ms: help overlay listing this page's controls until released; no action on release |
+| GROOVE page | K1 swing 0–75, K2 human 0–100 (song data: undoable, saved, disabled during playback) |
 | MASTER | Smoothed audio level |
 | MIDI in (USB, Bluetooth, TRS) | Note-on C2–C6 acts as that key: audition and place at the cursor with the selected sound, layer and the message's velocity (erase and playback rules apply); note-off and other messages are ignored |
 
 Clock IN (MIDI page K3): 0xFA Start plays from tick 0, 0xFB Continue from the playhead where playback last stopped (from 0 after the song end), 0xFC Stop stops; Start and Continue begin at the next 0xF8 clock. PLAY still starts and stops locally, at the last measured tempo and unlocked from the clocks. The tempo is the mean of the last 24 clock intervals; the header shows that BPM and EXT. The playhead is held within a few ticks (a quarter note is 96) of 4 ticks per clock, so it cannot drift. If clocks stop for over 500 ms playback continues at the last tempo and relocks when they return. IN sends no clock out. Clocks are read in the main loop (the platform queues MIDI without timestamps), so their stamps carry up to a frame of jitter, which the averaging and the phase lock absorb.
+
+Mute/solo are performance state: silent layers send no MIDI either (auditions on a silenced layer too), they reset at power-up and are not saved. SWING delays off-beat 8ths (tick%96==48) by swing % of 48 ticks and off-beat 16ths (tick%48==24) by swing % of 24 ticks; HUMAN moves every note by a random ±(human × 8 / 100) ticks and its velocity by ±(human × 20 / 100), from a PRNG restarted at each playback start (same result every play); notes never move before the playhead or past the song end. Auditions are not swung.
 
 BEATS is song data (undoable, saved, disabled during playback): bar lines, BAR n, REC bar copy and song-end bars follow it. During playback the selected sound's character hops along the staff at the playhead, landing on each step before a note starts. Screen mirror (fm1.toml `mirror = true`): the screen and panel can be mirrored to a computer over USB; the app repaints every frame, so a dropped part heals itself.
 

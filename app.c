@@ -8,7 +8,7 @@ static unsigned hist_count,hist_pos;
 static uint8_t wire[SC_BYTES];
 static const char *gname(unsigned g){return g==96?"1/4":g==48?"1/8":g==24?"1/16":g==32?"1/8T":g==16?"1/16T":0;}
 #define LSTEP (ui.grid%24?16:24) /* K3 length step follows the grid: 24 ticks, 16 on triplet grids */
-static struct { unsigned cursor,instrument,layer,grid,velocity,length,slot,dirty,page,filter,erase,confirm,edit_used,gest,held; int octave,last; uint32_t keys,buttons,until; char message[32]; } ui;
+static struct { unsigned cursor,instrument,layer,grid,velocity,length,slot,dirty,page,filter,erase,confirm,edit_used,gest,held,help; int octave,last; uint32_t keys,buttons,until,hold; char message[32]; } ui;
 static void checkpoint(void) {
  if(hist_pos<16){history[hist_pos++]=song;}else{memmove(history,history+1,15*sizeof *history);history[15]=song;}
  hist_count=hist_pos;ui.dirty=1;
@@ -47,13 +47,15 @@ static void enter(unsigned pitch,unsigned vel){
  if(song.count>=SC_EVENTS){app_say("SONG FULL","");return;}
  checkpoint();if(sc_add(&song,note))sc_note(&engine,&song,note);
 }
-/* SOUND (page 3) and MIDI (page 4) knobs: k = K1..K4 */
+/* SOUND (page 3), MIDI (4) and GROOVE (5: K1 swing, K2 human) knobs: k = K1..K4 */
 static void shape(int k,int d){
  unsigned u=ui.instrument;int v,lo=0,hi=127;
- if(ui.page==3){v=k==0?song.tune[u]:k==1?song.tone[u]:k==2?song.decay[u]:song.pan[u];if(k==0)lo=-12,hi=12;if(k==3)lo=-64,hi=63;}
+ if(ui.page==5){if(k>1)return;v=k?song.human:song.swing;hi=k?100:75;}
+ else if(ui.page==3){v=k==0?song.tune[u]:k==1?song.tone[u]:k==2?song.decay[u]:song.pan[u];if(k==0)lo=-12,hi=12;if(k==3)lo=-64,hi=63;}
  else{if(k>2)return;v=k==0?song.midi_ch[u]:k==1?song.midi_mode:song.midi_clock;hi=k?2:16;}
  d=clamp(v+d,lo,hi);if(d==v)return;checkpoint();
- if(ui.page==3){if(k==0)song.tune[u]=d;else if(k==1)song.tone[u]=d;else if(k==2)song.decay[u]=d;else song.pan[u]=d;}
+ if(ui.page==5){if(k)song.human=d;else song.swing=d;}
+ else if(ui.page==3){if(k==0)song.tune[u]=d;else if(k==1)song.tone[u]=d;else if(k==2)song.decay[u]=d;else song.pan[u]=d;}
  else if(k==0)song.midi_ch[u]=d;else if(k==1)song.midi_mode=d;else song.midi_clock=d;
 }
 /* EDIT held + K2 (what 0: velocity) / K3 (1: length) on the staff: the selected sound's notes at the cursor, as erase picks them */
@@ -77,19 +79,25 @@ static void input(void){
  {uint32_t pkt;int port;while(plat_midi_in(&pkt,&port)){unsigned rt=pkt>>8&0xFFu,st=rt&0xF0u,p=pkt>>16&0x7Fu,v=pkt>>24&0x7Fu;if(song.midi_clock==2){if(rt==0xF8u)sc_ext_clock(&engine,&song,plat_ms()*1000u);else if(rt==0xFAu||rt==0xFBu)sc_ext_start(&engine,&song,rt&1);else if(rt==0xFCu)sc_stop(&engine);} /* clock in: read here (main loop, under the lock) and stamped on read, in ms (the 24-interval mean averages the quantizing) */
   if(st==0x90u && v && p>=36 && p<=84)enter(p,v);}}
  for(k=0;k<NKEYS;k++)if((keys&~ui.keys)&(1u<<k)){int pitch=53+(int)k+12*ui.octave;if(pitch>=36 && pitch<=84)enter(pitch,ui.velocity);else app_say("C2 TO C6","");}
- if(pressed&(1u<<B_PLAY)){if(engine.playing)sc_stop(&engine);else sc_start(&engine);}
+ if(pressed&(1u<<B_PLAY)){if(engine.playing)sc_stop(&engine);else if(ui.erase){ui.edit_used=1;sc_start_at(&engine,&song,ui.cursor/(song.beats*96u)*(song.beats*96u));}else sc_start(&engine);} /* EDIT+PLAY: from the cursor's bar */
  if(pressed&(1u<<B_OCTDN))ui.octave=clamp(ui.octave-1,-2,2);
  if(pressed&(1u<<B_OCTUP))ui.octave=clamp(ui.octave+1,-2,2);
  if(pressed&(1u<<B_GLO)){ui.page=ui.page==2?0:2;ui.confirm=0;}
- if(pressed&(1u<<B_HOME)){ui.page=0;ui.cursor=0;ui.confirm=0;}
- if(pressed&(1u<<B_SEL))ui.filter^=1;
- if((ui.buttons&(1u<<B_EDIT)) && !(btn&(1u<<B_EDIT)) && !ui.edit_used)ui.page="\1\3\0\4\0"[ui.page];
+ if(pressed&(1u<<B_HOME))ui.hold=plat_ms();
+ if(btn&(1u<<B_HOME))ui.help=plat_ms()-ui.hold>=600; /* held 600 ms: help overlay; a tap acts on release */
+ else if(ui.buttons&(1u<<B_HOME)){if(!ui.help){ui.page=0;ui.cursor=0;ui.confirm=0;}ui.help=0;}
+ if(ui.page==1){ /* MIX: FX mutes, SEL solos the selected layer (live, any time, not saved) */
+  unsigned m=1u<<ui.layer;
+  if(pressed&(1u<<B_FX)){engine.mute^=m;snprintf(ui.message,sizeof ui.message,"LAYER %u %s",ui.layer+1,engine.mute&m?"MUTED":"UNMUTED");ui.until=plat_ms()+1600;}
+  if(pressed&(1u<<B_SEL)){engine.solo^=m;snprintf(ui.message,sizeof ui.message,"LAYER %u %s",ui.layer+1,engine.solo&m?"SOLO":"UNSOLO");ui.until=plat_ms()+1600;}
+ }else if(pressed&(1u<<B_SEL))ui.filter^=1;
+ if((ui.buttons&(1u<<B_EDIT)) && !(btn&(1u<<B_EDIT)) && !ui.edit_used)ui.page="\1\3\0\4\5\0"[ui.page];
  if(!engine.playing){
   if(pressed&(1u<<B_ENV))undo();
   if(pressed&(1u<<B_LFO))redo();
   if(pressed&(1u<<B_SEQ)){ui.grid=ui.grid==96?48:ui.grid==48?24:ui.grid==24?32:ui.grid==32?16:96;ui.cursor=ui.cursor/ui.grid*ui.grid;}
   if(pressed&(1u<<B_ARP)){checkpoint();song.loop^=1;}
-  if(pressed&(1u<<B_FX)){checkpoint();song.volume[ui.instrument]=song.volume[ui.instrument]?0:127;}
+  if(pressed&(1u<<B_FX) && ui.page!=1){checkpoint();song.volume[ui.instrument]=song.volume[ui.instrument]?0:127;}
   if(pressed&(1u<<B_REC)){
    if(ui.page==2){
     if(ui.confirm!=ui.slot+1){ui.confirm=ui.slot+1;app_say("REC AGAIN TO LOAD","");}
@@ -145,10 +153,31 @@ static void tiles_shape(void){
   snprintf(t,sizeof t,"%u",song.tone[u]);tile(63,2,55,"K2 TONE",t);
   snprintf(t,sizeof t,"%u",song.decay[u]);tile(122,2,55,"K3 DECAY",t);
   pan_text(song.pan[u],t,sizeof t);tile(181,2,55,"K4 PAN",t);
+ }else if(ui.page==5){
+  snprintf(t,sizeof t,"%u%%",song.swing);tile(4,2,55,"K1 SWING",t);
+  snprintf(t,sizeof t,"%u%%",song.human);tile(63,2,55,"K2 HUMAN",t);
+  tile(122,2,55,"K3","-");tile(181,2,55,"K4","-");
  }else{
   if(song.midi_ch[u])snprintf(t,sizeof t,"%u",song.midi_ch[u]);else snprintf(t,sizeof t,"OFF");tile(4,2,55,"K1 CH",t);
   tile(63,2,55,"K2 MODE",song.midi_mode==2?"ONLY":song.midi_mode?"ON":"OFF");
   tile(122,2,55,"K3 CLOCK",CKN);tile(181,2,55,"K4","-");
+ }
+}
+static const char *const help[6][12]={
+ {"KEYS  PLACE / AUDITION","SELECT  MOVE CURSOR","PRESET SOUND   ALGO LAYER","K1 TEMPO  K2 VEL  K3 LEN  K4 END","PLAY  START / STOP","EDIT+PLAY  PLAY FROM CURSOR BAR","EDIT+KEY  ERASE","EDIT+K2/K3  VEL / LEN AT CURSOR","SEQ GRID   ARP LOOP   REC COPY BAR","FX MUTE SOUND   SEL SOLO VIEW","ENV UNDO   LFO REDO   OCT-/+","EDIT NEXT PAGE   GLO SONG BOOK"},
+ {"K1 BEATS PER BAR","K2 SOUND LEVEL","K3 LAYER LEVEL","K4 SONG END","ALGO  PICK LAYER","PRESET  PICK SOUND","FX  MUTE LAYER","SEL  SOLO LAYER","MUTE / SOLO ARE LIVE, NOT SAVED","EDIT NEXT PAGE   HOME STAFF"},
+ {"K1 SAVE SLOT","SAVE  WRITE SLOT","REC  ARM LOAD, REC AGAIN LOADS","GLO / HOME  BACK TO STAFF"},
+ {"K1 TUNE","K2 TONE","K3 DECAY","K4 PAN","PRESET  PICK SOUND","EDIT NEXT PAGE   HOME STAFF"},
+ {"K1 CHANNEL OFF / 1-16","K2 MODE OFF / ON / MIDI ONLY","K3 CLOCK OFF / OUT / IN","PRESET  PICK SOUND","EDIT NEXT PAGE   HOME STAFF"},
+ {"K1 SWING 0-75","LATE OFF-BEAT 8THS AND 16THS","K2 HUMAN 0-100","RANDOM TIMING AND VELOCITY","SET WHILE STOPPED, SAVED WITH SONG","EDIT NEXT PAGE   HOME STAFF"}};
+static const char *const hname[6]={"STAFF","MIX","SONG BOOK","SOUND","MIDI","GROOVE"};
+static void draw_help(void){ /* full screen in three 80-row bands; a tap on HOME does not show it */
+ unsigned b,i;
+ for(b=0;b<3;b++){
+  int o=-80*(int)b;cv_begin(240,80,INK);
+  cv_rect(0,o,4,32,ACCENT);cv_text(10,o+4,&FONT_B,hname[ui.page],C_WHITE);cv_text(150,o+8,&FONT_T,"HELP  RELEASE HOME",RGB(162,182,188));
+  for(i=0;i<12 && help[ui.page][i];i++)cv_text(10,o+30+(int)i*17,&FONT_T,help[ui.page][i],C_WHITE);
+  cv_blit(0,80*b);
  }
 }
 static void draw(void){
@@ -175,7 +204,7 @@ static void draw(void){
   stamp(x+6,31,(unsigned)id,1);
  }
  cv_text(164,31,&FONT_B,note,INK);
- snprintf(t,sizeof t,"LAYER %u",ui.layer+1);cv_text(164,49,&FONT_T,t,TEAL);
+ snprintf(t,sizeof t,"LAYER %u%s",ui.layer+1,engine.solo>>ui.layer&1?" SOLO":engine.mute>>ui.layer&1?" M":engine.solo?" OFF":"");cv_text(164,49,&FONT_T,t,engine.mute>>ui.layer&1 || (engine.solo && !(engine.solo>>ui.layer&1))?ACCENT:TEAL);
  snprintf(t,sizeof t,"%s / %s",character_names[selected],sc_names[selected]);
  cv_text(8,56,&FONT_XS,t,INK);
  cv_blit(0,0);
@@ -192,6 +221,17 @@ static void draw(void){
    if(i==0)snprintf(t,sizeof t,"%+d",v);else if(i==3)pan_text(v,t,sizeof t);else snprintf(t,sizeof t,"%d",v);
    cv_text(197,y,&FONT_B,t,INK);
   }
+  cv_blit(0,72);
+ }else if(ui.page==5){
+  cv_begin(240,112,PAPER);
+  cv_text(10,4,&FONT_B,"GROOVE",INK);
+  for(i=0;i<2;i++){
+   int y=30+(int)i*34,v=i?song.human:song.swing,hi=i?100:75;
+   snprintf(t,sizeof t,"K%u  %s",i+1,i?"HUMAN":"SWING");cv_text(10,y+2,&FONT_XS,t,TEAL);
+   cv_rect(86,y+3,104,9,RGB(225,218,197));cv_rect(86,y+3,v*104/hi,9,i?TEAL:ACCENT);
+   snprintf(t,sizeof t,"%d",v);cv_text(197,y,&FONT_B,t,INK);
+  }
+  cv_text(10,98,&FONT_T,"OFF-BEAT LATE / RANDOM TIME + VEL",MUTED);
   cv_blit(0,72);
  }else if(ui.page==4){
   cv_begin(240,112,PAPER);
@@ -226,6 +266,11 @@ static void draw(void){
   cv_text(10,67,&FONT_XS,"K3  LAYER LEVEL",TEAL);
   cv_rect(10,86,180,9,RGB(225,218,197));cv_rect(10,86,song.layers[ui.layer]*180/127,9,TEAL);
   snprintf(t,sizeof t,"%u",song.layers[ui.layer]);cv_text(197,80,&FONT_B,t,INK);
+  for(i=0;i<8;i++){ /* layers: ALGO picks; M muted, S solo (live) */
+   int x=10+(int)i*28,mu=engine.mute>>i&1,so=engine.solo>>i&1;
+   cv_rect(x,98,26,12,i==ui.layer?TEAL:RGB(233,225,202));
+   snprintf(t,sizeof t,"%u%s",i+1,so?"S":mu?"M":"");cv_text(x+3,98,&FONT_T,t,i==ui.layer?C_WHITE:so?ACCENT:mu?MUTED:INK);
+  }
   cv_blit(0,72);
  }else{
   int cursor_x=39+(int)((active-start)*32/step);
@@ -267,8 +312,9 @@ static void draw(void){
  snprintf(t,sizeof t,ui.page==1?"%u":"1/%u",ui.page==1?song.layers[ui.layer]:384/ui.length);if(ui.page!=1 && (ui.length>384 || 384%ui.length!=0))snprintf(t,sizeof t,"%u T",ui.length);if(ui.page!=1 && gname(ui.length))snprintf(t,sizeof t,"%s",gname(ui.length));tile(122,2,55,ui.page==1?"K3 LAYER":"K3 LEN",t);
  snprintf(t,sizeof t,"%u BAR",(song.end+song.beats*96-1)/(song.beats*96));tile(181,2,55,"K4 END",t);}
  if(plat_ms()<ui.until)cv_text(5,44,&FONT_T,ui.message,RGB(250,212,104));
- else{snprintf(t,sizeof t,ui.page==3?"EDIT NEXT / PRESET SOUND":ui.page==4?"EDIT NEXT / K1 CH / HOME STAFF":ui.page==2?"SAVE WRITE / REC LOAD / HOME EXIT":ui.page==1?"EDIT BACK / FX MUTE / HOME STAFF":"%s GRID / %u NOTES / %s",gname(step),song.count,ui.dirty?"UNSAVED":"SAVED");cv_text(5,44,&FONT_T,t,RGB(162,182,188));}
+ else{snprintf(t,sizeof t,ui.page==3?"EDIT NEXT / PRESET SOUND":ui.page==4?"EDIT NEXT / K1 CH / HOME STAFF":ui.page==5?"EDIT NEXT / K1 SWING / K2 HUMAN":ui.page==2?"SAVE WRITE / REC LOAD / HOME EXIT":ui.page==1?"FX MUTE / SEL SOLO / ALGO LAYER":"%s GRID / %u NOTES / %s",gname(step),song.count,ui.dirty?"UNSAVED":"SAVED");cv_text(5,44,&FONT_T,t,RGB(162,182,188));}
  cv_blit(0,184);
+ if(ui.help)draw_help();
 }
 /* APP_REDRAW: draw() repaints all three bands every frame, so a mirror that lost a part is fixed by the next frame: nothing to do */
 void app_redraw(void){}
@@ -277,7 +323,7 @@ void app_frame(void){
  input();draw();
  if(ann_on() && ann_where()){
   char t[160];snprintf(t,sizeof t,"Stamp Composer. %s. %s. %u notes. Tempo %u. Layer %u. %s.",
-   ui.page==4?"MIDI":ui.page==3?"Sound":ui.page==2?"Song book":ui.page==1?"Mixer":"Staff",character_names[ui.instrument],song.count,song.tempo,ui.layer+1,engine.playing?"Playing":"Stopped");
+   ui.page==5?"Groove":ui.page==4?"MIDI":ui.page==3?"Sound":ui.page==2?"Song book":ui.page==1?"Mixer":"Staff",character_names[ui.instrument],song.count,song.tempo,ui.layer+1,engine.playing?"Playing":"Stopped");
   ann_say(t,0,ANN_NOW);
  }
  ann_tick(plat_ms());
@@ -287,6 +333,7 @@ int app_expect(const char *s,int *v){
  else if(!strcmp(s,"tune"))*v=song.tune[ui.instrument];else if(!strcmp(s,"tone"))*v=song.tone[ui.instrument];else if(!strcmp(s,"decay"))*v=song.decay[ui.instrument];else if(!strcmp(s,"pan"))*v=song.pan[ui.instrument];
  else if(!strcmp(s,"midi_ch"))*v=song.midi_ch[ui.instrument];else if(!strcmp(s,"midi_mode"))*v=song.midi_mode;else if(!strcmp(s,"midi_clock"))*v=song.midi_clock;else if(!strcmp(s,"tick8"))*v=engine.tick/8;else if(!strcmp(s,"ext_bpm"))*v=(int)(engine.xinc/96+.5f);
  else if(!strcmp(s,"note_vel")||!strcmp(s,"note_len")){unsigned i;for(i=0;i<song.count;i++)if(song.notes[i].tick==ui.cursor && song.notes[i].instrument==ui.instrument && song.notes[i].layer==ui.layer)break;if(i==song.count)return 0;*v=s[5]=='v'?song.notes[i].velocity:song.notes[i].duration;}
+ else if(!strcmp(s,"swing"))*v=song.swing;else if(!strcmp(s,"human"))*v=song.human;else if(!strcmp(s,"mute"))*v=engine.mute;else if(!strcmp(s,"solo"))*v=engine.solo;else if(!strcmp(s,"layer"))*v=ui.layer;else if(!strcmp(s,"help"))*v=ui.help;
  else return 0;
  return 1;
 }

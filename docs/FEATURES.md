@@ -16,6 +16,10 @@ this branch; **Next** items are designed but not started. Validation lives in VA
 | Edit existing notes | Hold EDIT and turn K2/K3: velocity/length of the selected sound's notes at the cursor. | Song |
 | Triplet grids | SEQ cycles 1/4, 1/8, 1/16, 1/8T (32 ticks), 1/16T (16 ticks); K3 length steps follow the grid (16 ticks on triplets). | — |
 | Time signature | MIX K1 BEATS 2–12 per bar (n/4); bar lines, BAR n, bar copy and song end follow. | Song (`beats`, SCF v2) |
+| Layer mute/solo | MIX page: ALGO picks the layer, FX mutes it, SEL solos it (several layers may be soloed). Works during playback; silences internal audio and MIDI out. Runtime only (engine mask), not saved; the staff ribbon shows `LAYER n M` / `SOLO` / `OFF`. | — |
+| Swing and humanize | New GROOVE page: SWING 0–75 % (late off-beat 8ths and 16ths), HUMAN 0–100 (random timing ±8 ticks, velocity ±20 at 100; deterministic per playback start). 0/0 renders as before. | Song (SCF v2 `swing`, `human`) |
+| Play from cursor | Hold EDIT and press PLAY: starts at the cursor's bar; clock OUT sends Song Position Pointer + Continue. | — |
+| Help overlay | Hold HOME 600 ms: full-screen list of the current page's controls (docs/screens/help.png); release hides it. Playback unaffected. | — |
 | Playback animation | The selected character hops along the staff at the playhead, landing before each step with a note start (docs/screens/playback-hop.png). | — |
 | Screen mirror | `mirror = true`; `app_redraw` is a no-op because every frame repaints the whole screen. | — |
 | Backup and restore | fm1-base backup over USB (browser page or `fm1_backup.py`): all eight song slots, all or nothing. | — |
@@ -24,13 +28,14 @@ Defaults keep 0.1 songs sounding the same: tune 0, tone 127, decay 0, pan 0, MID
 
 ## Pages
 
-EDIT tap cycles STAFF → MIX → SOUND → MIDI → STAFF; GLO toggles the song book; HOME returns to the staff.
+EDIT tap cycles STAFF → MIX → SOUND → MIDI → GROOVE → STAFF; GLO toggles the song book; HOME returns to the staff.
 
 | Page | K1 | K2 | K3 | K4 |
 | --- | --- | --- | --- | --- |
-| MIX | beats per bar | sound volume | layer volume | song end |
+| MIX | beats per bar | sound volume | layer volume | song end (FX mute, SEL solo the layer) |
 | SOUND | tune | tone | decay | pan |
 | MIDI | sound's channel | MIDI mode | clock OFF/OUT/IN | — |
+| GROOVE | swing | human | — | — |
 
 ## Next
 
