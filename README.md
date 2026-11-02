@@ -79,12 +79,12 @@ For a device build, install the JieLi Linux PI32v2 toolchain and AC79 SDK descri
 Convert the supported Super Mario Paint text subset:
 
 ```sh
-python3 tools/import_smp.py examples/playground.smp build/playground.scf --placeholder-bank
+python3 tools/import_smp.py examples/playground.smp build/playground.scf
 ```
 
-Import the resulting `.scf` through the simulator, then press **SAVE**. Import is refused during playback and can be undone. The converter preserves supported notes, chromatic pitches, line velocity, timing and retrigger cutoffs. It rejects legacy MPC, arrangements, extensions, mute commands, extra instruments, noninteger tempos and capacity overruns. See [the format](docs/FORMAT.md) and [source inspection](docs/RESEARCH.md).
+Import the resulting `.scf` through the simulator, then press **SAVE**. Import is refused during playback and can be undone. The converter preserves supported notes, chromatic pitches, line velocity, timing and retrigger cutoffs. It accepts all 31 SMP instruments and rejects legacy MPC, arrangements, extensions, mute commands, noninteger tempos and capacity overruns. Sounds are approximate: one sample per instrument and simplified envelopes. See [the format](docs/FORMAT.md) and [source inspection](docs/RESEARCH.md).
 
-To use your own audio, supply all fifteen role-named WAVs listed in `tools/make_bank.py`: mono PCM16, 22,050 Hz, root C4, at most 4,096 frames each.
+The default sound pack is `assets/sounds/smp_bank.bin` (Mario Paint sounds, see `assets/sounds/NOTICE.md`); rebuild it from `soundset3.sf2` with `tools/make_smp_bank.py`. `STAMP_BANK=placeholder ./build.sh` builds with original generated tones instead. To use your own audio, supply WAVs named as in `tools/make_bank.py` (31 names, any subset; the rest stay placeholder): mono PCM16, 22,050 Hz, root C4, 2 to 65,535 frames each.
 
 ```sh
 STAMP_WAV_DIR=/absolute/path/to/wavs ./build.sh --host

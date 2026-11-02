@@ -48,8 +48,8 @@ Per-page controls are tabulated in CONTROLS.md; keys place notes on the staff on
 
 1. **Sections and chains**: name up to 8 bar ranges and chain them into a song (needs SCF v3 with explicit
    migration; FORMAT.md forbids reusing reserved bytes).
-2. **Sample banks**: replace the placeholder PCM with a permission-cleared expressive bank (tools/make_bank.py
-   `--wav-dir`); loops and longer tails.
+2. **Sample banks**: more zones per instrument (tuned ranges) and permission-cleared replacements (tools/make_bank.py
+   `--wav-dir`, tools/make_smp_bank.py).
 3. **Hardware voice limit**: measure 8/12/16 voices on a physical FM-1 and set the supported count.
 4. **Live record** with count-in, metronome and quantize.
 5. **Loop selected bars** instead of the whole song.

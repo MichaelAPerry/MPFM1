@@ -29,7 +29,7 @@ Verified source paths in SMP:
 - `src/gui/SMPInstrument.java`: enum order, 31 IDs, and coin/piranha index swap for soundfont compatibility.
 - `src/backend/saving/mpc/MPCDecoder.java`, `MPCInstrumentIndex.java`: legacy format and letter IDs differ. Legacy MPC and arrangements are rejected by the initial converter, not guessed.
 
-C2–C6 is this app's chosen target. The converter enforces it regardless of the desktop's broader values. Extensions, mute commands, noninteger tempo and extra instruments are rejected; changing timbres requires explicit `--placeholder-bank` acknowledgement. No untested full-compatibility claim is made.
+C2–C6 is this app's chosen target. The converter enforces it regardless of the desktop's broader values. Extensions, mute commands and noninteger tempo are rejected; all 31 instruments import (the old `--placeholder-bank` flag is accepted and ignored). No untested full-compatibility claim is made.
 
 ## Actual asset inventory
 
@@ -55,7 +55,7 @@ Measured `src/resources/soundfonts/soundset3.sf2`: **7,204,552 file bytes**, **7
 
 `smp-soundfont-inventory.json` records every sample's rate, frames, duration, root, cents, loop offsets and sample type/link; preset-to-instrument-to-sample references and raw generators preserve zone/envelope/tuning evidence. Zone settings can override sample headers. Names like “E4” in sample labels must not be assumed to use the same MIDI octave convention as this application. No soundfont audio is copied into this repository; MIT software licensing alone is not proof of the provenance of every audio/image asset.
 
-Current implementation selects flash/constant-backed short PCM with linear interpolation. It costs 122880 bytes plus 196 for pitch increments and tiny per-voice state. Caching the entire bank in RAM would add 120 KiB for little benefit at this stage. Longer uncompressed originals do not fit this app slot as-is. Root-zone reduction, explicit resampling and sustain loops need listening/tuning tests before deciding the final bank. ADPCM could reduce storage but requires measured per-voice decoding/cache costs. Procedural generation is used only to create clearly labeled original placeholders offline, not to silently substitute generic FM presets for the original palette.
+Current implementation: one zone per instrument (the one covering key 60), resampled to 22,050 Hz, level-matched, stored as IMA ADPCM (4 bit, 256-sample blocks with a state header) in flash and decoded per voice with linear interpolation. The pack is 204,468 bytes of ADPCM for all 31 instruments (full length; Boo's 2.8 s is the longest). The sample-header loops of Coin, Piranha, Shy Guy and Boo are not used: the SF2 sets no sampleModes and the loops jump by thousands of units at the wrap. Zone root, fineTune/coarseTune, initialAttenuation and scaleTuning (Mushroom and Boat use 120 cents per key) are applied; the other zones, envelopes and filters are not.
 
 
 ## Presentation pass — 2026-11-02
