@@ -44,6 +44,13 @@ Representative optimized host stress measurements (4000 blocks × 256 frames, re
 - Device build checks all ok: image 227,220 B of 581,564; RAM 24,500 of 98,304; pool 111,960 of 344,064. fm1-emu smoke on that package still plays with no faults. WASM rebuilt with Emscripten 4.0.20 (`preview/app.wasm`); `tests/web.mjs` passes.
 - Not validated: MIDI out/in and clock against a real DAW or synth; backup/restore through fm1-base's browser page or `fm1_backup.py`; the new pages on hardware.
 
+## Pre-beta features (triplets to autosave)
+
+- Built and checked on the host, the device build (all checks ok; image 238,424 B, RAM 33,548 B, pool 125,004 B) and the WASM preview: triplet grids, BEATS 2–12, playback hop, screen mirror, external clock IN (core test: worst drift 0.27 ticks over 64 bars at 120 BPM with ±1 ms jitter), layer mute/solo, swing/humanize (GROOVE page), play from cursor with SPP, HOME-hold help, BARS range ops, autosave with restore at power-on. Host scripts: triplet, clock, groove, bars, autosave.
+- fm1-emu on the device package: help overlay, BARS page, clock IN (EXT header from injected F8s) and autosave restore after a flash dump/restore reboot (2 unsaved notes back) were each seen on the emulated firmware.
+- Site: release `stamp-0.2.fwsc` (`FM-1_56000200`) assembled with `make_site.py` + `tools/site_emu.sh`; front page, install, manual, emu, backup, mirror and fm1-emu pages load in headless Chromium without errors (with fm1-reader present), and the release boots in fm1-emu's page.
+- Not validated: any of the above on a physical FM-1; MIDI with a real DAW/synth; backup/restore and mirror with fm1-base's pages against a device; flash wear of autosave.
+
 ## Not validated
 
 - No physical FM-1 was tested: real boot, display timing, audio quality, input feel and flash storage are unverified. Build reproducibility (byte-identical rebuild) not checked.
