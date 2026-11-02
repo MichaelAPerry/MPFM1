@@ -22,13 +22,14 @@ this branch; **Next** items are designed but not started. Validation lives in VA
 | Help overlay | Hold HOME 600 ms: full-screen list of the current page's controls (docs/screens/help.png); release hides it. Playback unaffected. | — |
 | Playback animation | The selected character hops along the staff at the playhead, landing before each step with a note start (docs/screens/playback-hop.png). | — |
 | Screen mirror | `mirror = true`; `app_redraw` is a no-op because every frame repaints the whole screen. | — |
+| Bar ranges | New BARS page: pick bars FROM..TO (inclusive) and a TARGET bar, then COPY (merge: notes already there kept, same tick/pitch/sound/layer skipped), MOVE, DELETE bars (later notes, song end and loop start shift left), INSERT empty bars (shift right) or TRANSPOSE ±12 semitones. Copy/move/transpose follow the SEL sound filter; delete/insert take every sound. Each op is checked first (capacity, 65535 ticks, C2–C6), refused whole with a message, and is one undo step (docs/screens/bars.png). | Song |
 | Backup and restore | fm1-base backup over USB (browser page or `fm1_backup.py`): all eight song slots, all or nothing. | — |
 
 Defaults keep 0.1 songs sounding the same: tune 0, tone 127, decay 0, pan 0, MIDI OFF. SCF v1 files still load.
 
 ## Pages
 
-EDIT tap cycles STAFF → MIX → SOUND → MIDI → GROOVE → STAFF; GLO toggles the song book; HOME returns to the staff.
+EDIT tap cycles STAFF → MIX → SOUND → MIDI → GROOVE → BARS → STAFF; GLO toggles the song book; HOME returns to the staff.
 
 | Page | K1 | K2 | K3 | K4 |
 | --- | --- | --- | --- | --- |
@@ -36,6 +37,7 @@ EDIT tap cycles STAFF → MIX → SOUND → MIDI → GROOVE → STAFF; GLO toggl
 | SOUND | tune | tone | decay | pan |
 | MIDI | sound's channel | MIDI mode | clock OFF/OUT/IN | — |
 | GROOVE | swing | human | — | — |
+| BARS | from bar | to bar | target bar | transpose −12..+12 (REC copy, FX move, SEQ delete, ARP insert, OCT+ transpose) |
 
 ## Next
 

@@ -19,13 +19,14 @@ Hardware/API source: pinned `base/include/plat.h` and `base/device/lcd.c`: 240×
 | FX | Mute/unmute selected sound (unmute restores level 127). MIX page: mute/unmute the selected layer (live, also while playing, not saved) |
 | ENV / LFO | Undo / redo |
 | REC | Duplicate cursor's whole bar into next bar, preserving existing notes; capacity checked |
-| EDIT | Tap to cycle STAFF → MIX → SOUND → MIDI → GROOVE → STAFF; hold with a key to erase matching pitch/sound/layer at cursor; hold and turn K2/K3 to edit the notes at the cursor (one undo step per hold) |
+| EDIT | Tap to cycle STAFF → MIX → SOUND → MIDI → GROOVE → BARS → STAFF; hold with a key to erase matching pitch/sound/layer at cursor; hold and turn K2/K3 to edit the notes at the cursor (one undo step per hold) |
 | SEL | Show all sounds / only selected sound. MIX page: solo/unsolo the selected layer (live, not saved; with any solo set, only soloed layers sound) |
 | GLO | Toggle song-book view |
 | SAVE | Save current song to selected slot; rejected during playback |
 | REC in song-book view | First press arms load; second loads that slot. Load can be undone |
 | HOME | Tap: return to staff, cursor zero; cancel pending load (acts on release). Hold 600 ms: help overlay listing this page's controls until released; no action on release |
 | GROOVE page | K1 swing 0–75, K2 human 0–100 (song data: undoable, saved, disabled during playback) |
+| BARS page | K1 FROM bar, K2 TO bar (inclusive, TO ≥ FROM, up to the song end's last bar), K3 TARGET bar, K4 transpose −12..+12. REC copies the range to TARGET (existing notes kept, duplicates skipped; end grows if needed), FX moves it, SEQ deletes the bars (later notes, song end and loop start shift left; a loop start inside the cut goes to its first bar), ARP inserts as many empty bars at FROM (shifting right; a loop start at or after FROM shifts), OCT+ transposes by K4. With SEL solo view on, copy/move/transpose touch only the selected sound; delete/insert always take all sounds. An op that would exceed 384 notes, 65535 ticks, leave C2–C6 or change nothing is refused whole with a message; each is one undo step, disabled during playback |
 | MASTER | Smoothed audio level |
 | MIDI in (USB, Bluetooth, TRS) | Note-on C2–C6 acts as that key: audition and place at the cursor with the selected sound, layer and the message's velocity (erase and playback rules apply); note-off and other messages are ignored |
 

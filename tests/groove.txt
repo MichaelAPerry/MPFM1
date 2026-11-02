@@ -54,6 +54,8 @@ shot groove.png
 tap ENV
 expect human 0
 tap EDIT
+expect page 6
+tap EDIT
 expect page 0
 # play from the cursor's bar: EDIT held + PLAY
 turn SELECT 5

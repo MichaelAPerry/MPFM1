@@ -17,6 +17,8 @@ expect page 4
 tap EDIT
 expect page 5
 tap EDIT
+expect page 6
+tap EDIT
 expect page 0
 demo
 expect notes 32

@@ -33,6 +33,8 @@ turn PRESET -3
 tap EDIT
 expect page 5
 tap EDIT
+expect page 6
+tap EDIT
 expect page 0
 tap HOME
 # MIDI out: routed sound 0 on channel 2 sends on playback, OFF sends nothing
@@ -51,6 +53,7 @@ tap EDIT
 tap EDIT
 turn K1 -2
 expect midi_ch 0
+tap EDIT
 tap EDIT
 tap EDIT
 out

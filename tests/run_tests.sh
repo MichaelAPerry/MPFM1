@@ -15,3 +15,4 @@ build/host/stamp_host tests/features.txt build/host
 build/host/stamp_host tests/triplet.txt build/host
 build/host/stamp_host tests/clock.txt build/host
 build/host/stamp_host tests/groove.txt build/host
+build/host/stamp_host tests/bars.txt build/host
