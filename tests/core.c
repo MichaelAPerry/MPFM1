@@ -111,27 +111,39 @@ int main(int argc,char **argv){
  bars();live_t();
  /* v1 / v2 wire */
  sc_default(&s);sc_add(&s,(ScNote){0,96,60,0,100,0});n=sc_encode(&s,bytes);memmove(bytes+48,bytes+128,12);n=48+8+4;bytes[4]=1;fix(bytes,n);assert(sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));assert(t.tone[14]==127 && !t.tune[3] && !t.midi_mode);
- sc_default(&s);for(i=0;i<15;i++){s.tune[i]=i-7;s.tone[i]=i*9;s.decay[i]=127-i;s.pan[i]=i*9-64;s.midi_ch[i]=i+1;}s.midi_mode=2;s.midi_clock=1;s.swing=75;s.human=100;sc_add(&s,(ScNote){5,9,40,2,90,3});
+ sc_default(&s);for(i=0;i<15;i++){s.tune[i]=i-7;s.tone[i]=i*9;s.decay[i]=127-i;s.pan[i]=i*9-64;s.midi_ch[i]=i+1;}s.midi_mode=2;s.midi_clock=1;s.swing=75;s.human=100;s.sgrid=1;s.hmode=2;s.midi_in=16;sc_add(&s,(ScNote){5,9,40,2,90,3});
  n=sc_encode(&s,bytes);assert(n==132+8 && bytes[4]==2);assert(sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));
  for(i=0;i<9;i++){unsigned off[9]={48+0,63,78,93,108,123,124,125,126},bad[9]={13,128,128,64,17,3,3,76,101};uint8_t k=bytes[off[i]];bytes[off[i]]=bad[i];fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[off[i]]=k;} /* tune,tone,decay,pan,ch,mode,clock,swing,human */
- bytes[48]=-13;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[48]=-7;bytes[93]=-65;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[93]=-64;bytes[127]=1;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[127]=0;fix(bytes,n);assert(sc_decode(&t,bytes,n));
+ bytes[48]=-13;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[48]=-7;bytes[93]=-65;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[93]=-64;bytes[127]=6|1<<7;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[127]=1|2<<1|17<<3;fix(bytes,n);assert(!sc_decode(&t,bytes,n));bytes[127]=1|2<<1|16<<3;fix(bytes,n);assert(sc_decode(&t,bytes,n)&&t.sgrid==1&&t.hmode==2&&t.midi_in==16); /* byte 127: grid | human mode<<1 | MIDI-in channel<<3 */
  bytes[60]^=1;assert(!sc_decode(&t,bytes,n));bytes[60]^=1;assert(!sc_decode(&t,bytes,n-1));
- s.swing=76;assert(!sc_encode(&s,bytes));s.swing=75;s.human=101;assert(!sc_encode(&s,bytes));s.human=100;s.midi_ch[0]=17;assert(!sc_encode(&s,bytes));s.midi_ch[0]=1;s.pan[0]=64;assert(!sc_encode(&s,bytes));
+ s.swing=76;assert(!sc_encode(&s,bytes));s.swing=75;s.human=101;assert(!sc_encode(&s,bytes));s.human=100;s.midi_ch[0]=17;assert(!sc_encode(&s,bytes));s.midi_ch[0]=1;s.pan[0]=64;assert(!sc_encode(&s,bytes));s.pan[0]=0;s.sgrid=2;assert(!sc_encode(&s,bytes));s.sgrid=1;s.hmode=3;assert(!sc_encode(&s,bytes));s.hmode=0;s.midi_in=17;assert(!sc_encode(&s,bytes));
  /* defaults render exactly as before the shaping/MIDI work */
  assert(gold()==0xdf51e7e3u);
 
- /* swing/human: defaults identical (gold above); swing 50 delays off-beat 8th (tick 48) by 24 ticks = 5512 frames, off-beat 16th (24) by 12, on-beat none */
+ /* swing/human: defaults identical (gold above); swing 50, 8TH grid: delays the off-beat 8th (tick 48) by 24 ticks = 5512 frames, nothing else; 16TH grid: the off-beat 16ths (24, 72) by 12, nothing else */
  sc_default(&s);s.midi_mode=1;s.midi_ch[0]=1;s.end=384;s.swing=50;sc_add(&s,(ScNote){0,6,60,0,100,0});sc_add(&s,(ScNote){24,6,61,0,100,0});sc_add(&s,(ScNote){48,6,62,0,100,0});sc_add(&s,(ScNote){96,6,63,0,100,0});
  sc_engine_init(&e,8);e.midi=cap;np_=fr_=0;sc_start(&e);run(&e,&s,44100);
  {unsigned on[4],c=0;for(i=0;i<np_;i++)if((pk[i]&0xF0FF)==0x9009)on[c++]=pf[i];assert(c==4 && on[0]==1);
-  assert(on[1]-on[0]>=8268 && on[1]-on[0]<=8271 && on[2]-on[0]>=16536 && on[2]-on[0]<=16539 && on[3]-on[0]>=22049 && on[3]-on[0]<=22052);} /* order kept: 60,61,62,63 */
+  assert(on[1]-on[0]>=5510 && on[1]-on[0]<=5514 && on[2]-on[0]>=16536 && on[2]-on[0]<=16539 && on[3]-on[0]>=22049 && on[3]-on[0]<=22052);} /* order kept: 60,61,62,63 */
  {unsigned c=0,last=0;for(i=0;i<np_;i++)if((pk[i]&0xF0FF)==0x9009){assert((pk[i]>>16&255)==60+c++ && pf[i]>=last);last=pf[i];}assert(c==4);}
+ s.sgrid=1;sc_engine_init(&e,8);e.midi=cap;np_=fr_=0;sc_start(&e);run(&e,&s,44100);
+ {unsigned on[4],c=0;for(i=0;i<np_;i++)if((pk[i]&0xF0FF)==0x9009)on[c++]=pf[i];assert(c==4 && on[1]-on[0]>=8267 && on[1]-on[0]<=8271 && on[2]-on[0]>=11023 && on[2]-on[0]<=11027 && on[3]-on[0]>=22049 && on[3]-on[0]<=22052);}
  /* delayed trigger never crosses the song end; mute/solo; human deterministic, bounded */
  sc_default(&s);s.end=50;s.swing=75;sc_add(&s,(ScNote){48,6,60,0,100,0});sc_engine_init(&e,8);sc_start(&e);render(&e,&s,10300);assert(e.playing && e.triggers==0);render(&e,&s,1500);assert(e.triggers==1 && !e.playing); /* tick 48+36 clamps to 49 */
  {unsigned a[2][18],r,tk;for(r=0;r<2;r++){sc_default(&s);s.human=100;s.midi_mode=1;s.midi_ch[0]=1;s.end=480;for(i=0;i<8;i++)sc_add(&s,(ScNote){i*3,6,60+i,0,100,0});sc_add(&s,(ScNote){96,6,70,0,100,0});
    sc_engine_init(&e,8);e.midi=cap;np_=fr_=0;sc_start(&e);run(&e,&s,44100);tk=0;for(i=0;i<np_;i++)if((pk[i]&0xF0FF)==0x9009){a[r][tk++]=pf[i];a[r][9+tk-1]=pk[i]>>24;}assert(tk==9);}
   assert(!memcmp(a[0],a[1],sizeof a[0]));for(i=0;i<9;i++){assert(a[0][i]<=105*230);assert(a[0][9+i]>=80 && a[0][9+i]<=120);}assert(a[0][9]!=100 || a[0][10]!=100 || a[0][11]!=100 || a[0][12]!=100);
   sc_default(&s);s.human=100;sc_add(&s,(ScNote){0,6,60,0,100,0});sc_engine_init(&e,8);sc_start(&e);render(&e,&s,2000);assert(e.triggers==1);} /* tick 0 note never before 0 */
+ /* human modes: TIME+VEL (0), TIME (1) and VEL (2) are deterministic; 1 moves like 0 with velocity exact, 2 has velocity like 0 with exact timing */
+ {unsigned a[3][18],r,tk;for(r=0;r<3;r++){sc_default(&s);s.human=100;s.hmode=r;s.midi_mode=1;s.midi_ch[0]=1;s.end=480;for(i=0;i<8;i++)sc_add(&s,(ScNote){i*3,6,60+i,0,100,0});sc_add(&s,(ScNote){96,6,70,0,100,0});
+   sc_engine_init(&e,8);e.midi=cap;np_=fr_=0;sc_start(&e);run(&e,&s,44100);tk=0;for(i=0;i<np_;i++)if((pk[i]&0xF0FF)==0x9009){a[r][tk++]=pf[i];a[r][9+tk-1]=pk[i]>>24;}assert(tk==9);}
+  for(i=0;i<9;i++)assert(a[0][i]==a[1][i] && a[1][9+i]==100);
+  assert(memcmp(a[0],a[2],9*sizeof a[0][0]));for(i=0,tk=0;i<9;i++)tk|=a[2][9+i]!=100;assert(tk);
+  for(i=0;i<8;i++)assert(a[2][i]>=(i*3*2297+5)/10 && a[2][i]<=i*3*2297/10+3);} /* VEL only: frame ~ tick*229.7, no jitter */
+ /* sound mute: no audio, no MIDI, nothing triggered; unmuting restores it; the volume is untouched */
+ sc_default(&s);s.midi_mode=1;s.midi_ch[2]=1;sc_engine_init(&e,8);e.midi=cap;np_=0;e.smute=1u<<2;sc_note(&e,&s,(ScNote){0,48,60,2,100,0});assert(e.triggers==0 && np_==0 && !e.voices[0].active);
+ sc_note(&e,&s,(ScNote){0,48,60,3,100,0});assert(e.triggers==1);e.smute=1u<<3;run(&e,&s,2000);{unsigned z=0;int32_t o[512];sc_render(&e,&s,o,256,4096);for(i=0;i<512;i++)z|=o[i]!=0;assert(!z);} /* a sounding voice is silenced too */
+ e.smute=0;sc_note(&e,&s,(ScNote){0,48,60,2,100,0});assert(e.triggers==2 && np_==1 && s.volume[2]==127);
  sc_default(&s);sc_add(&s,(ScNote){0,48,60,0,100,2});sc_add(&s,(ScNote){0,48,64,0,100,5});sc_engine_init(&e,8);e.midi=cap;s.midi_mode=1;s.midi_ch[0]=1;
  e.mute=1u<<2;np_=0;sc_start(&e);run(&e,&s,100);assert(e.triggers==1 && np_==1 && (pk[0]>>16&255)==64 && e.voices[0].active && !e.voices[1].active);
  e.mute=0;e.solo=1u<<2;sc_stop(&e);np_=0;e.triggers=0;sc_start(&e);run(&e,&s,100);assert(e.triggers==1 && (pk[0]>>16&255)==60);

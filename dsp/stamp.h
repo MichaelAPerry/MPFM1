@@ -10,14 +10,14 @@
 typedef struct { uint16_t tick, duration; uint8_t pitch, instrument, velocity, layer; } ScNote;
 typedef struct {
  uint16_t count, tempo, end, loop_start;
- uint8_t loop, beats, volume[15], layers[8], swing, human; /* swing 0..75: % of the half-beat (8th: 48 ticks, off-beat 16th: 24) the off-beat is late; human 0..100: timing +-8 ticks, velocity +-20 at 100 */
- int8_t tune[15], pan[15]; uint8_t tone[15], decay[15], midi_ch[15], midi_mode, midi_clock; /* tune -12..12, tone 127 open, decay 0 = short, pan -64..63, ch 0 off/1..16, mode 0 off/1 +internal/2 MIDI only, clock 0 off/1 out/2 in */
+ uint8_t loop, beats, volume[15], layers[8], swing, human; /* swing 0..75: % of the half-beat the off-beat is late (sgrid 0: off-beat 8ths, tick%96==48, of 48 ticks; 1: off-beat 16ths, tick%48==24, of 24); human 0..100: timing +-8 ticks, velocity +-20 at 100 (hmode 0 both, 1 timing only, 2 velocity only) */
+ int8_t tune[15], pan[15]; uint8_t tone[15], decay[15], midi_ch[15], midi_mode, midi_clock, sgrid, hmode, midi_in; /* midi_in: MIDI-in channel filter, 0 omni/1..16; tune -12..12, tone 127 open, decay 0 = short, pan -64..63, ch 0 off/1..16, mode 0 off/1 +internal/2 MIDI only, clock 0 off/1 out/2 in */
  ScNote notes[SC_EVENTS];
 } ScSong;
 typedef struct { uint32_t pos, inc, left, rel, age; float gain, last, tail, lp, k, gl, gr; uint8_t instrument, pitch, active, fade, relp; } ScVoice;
 typedef struct {
  ScVoice voices[SC_VOICES]; uint32_t phase, tick, age, triggers, steals;
- uint16_t next; uint8_t playing, limit, mute, solo, cont, npd; float master; /* mute/solo: layer bit masks (performance, not in the song); cont: next clock Start is SPP+Continue */
+ uint16_t next; uint8_t playing, limit, mute, solo, cont, npd; uint16_t smute; float master; /* mute/solo: layer bit masks, smute: sound bit mask (performance, not in the song; a muted sound makes no audio and no MIDI); cont: next clock Start is SPP+Continue */
  uint32_t rng; struct { uint16_t at; ScNote n; } pd[SC_PEND]; /* humanize PRNG (seeded per start); triggers due at tick `at` */
  void (*midi)(uint32_t pkt); /* NULL = no MIDI; set after sc_engine_init. USB-MIDI packet: cin | status<<8 | d1<<16 | d2<<24; called from sc_note/sc_render/sc_stop */
  uint32_t frames, due, clkc; uint16_t chused, np; uint8_t clk; /* frame clock, next note-off due, tick count, channels used, pending count, clock running */
