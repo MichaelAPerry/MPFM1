@@ -42,7 +42,10 @@ jobs:
           version=${TAG#v}
           mkdir -p build/release
           gh release download "$TAG" --pattern "stamp-$version.fwsc" --dir build/release
-          ./build.sh --web
+          # the screen reader's voice (fm1-reader: eSpeak NG, GPL, a separate program the page loads), pinned
+          git clone -q https://github.com/charlesvestal/fm1-reader build/fm1-reader
+          git -C build/fm1-reader -c advice.detachedHead=false checkout -q 10280f4
+          FM1_READER="$PWD/build/fm1-reader/web" ./build.sh --web
           python3 base/tools/make_site.py . "build/release/stamp-$version.fwsc" "$version" build/site
           tools/site_emu.sh build/site "$version"
       - uses: actions/upload-pages-artifact@v3
