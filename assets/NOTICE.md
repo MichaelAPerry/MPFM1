@@ -1,6 +1,6 @@
 # Character stamp provenance
 
-The PNGs in `stamps/` are the first fifteen instrument icons and treble clef from [Super Mario Paint](https://github.com/DC37/Super-Mario-Paint), revision `969e4f55743b3383b450c2a4f9b3a3c4a5e25828`, paths `src/resources/instruments/normal/*.png` and `src/resources/ui/staff/TREBLE_CLEF.png`.
+The PNGs in `stamps/` are the 31 instrument icons (the first fifteen and sixteen more: Piranha Plant, Coin, Shy Guy, Boo, Luigi, Peach, Feather, Bullet Bill, Goomba, Bob-omb, Spiny, Fruit, 1-Up, Moon, Egg, Gnome) and the treble clef from [Super Mario Paint](https://github.com/DC37/Super-Mario-Paint), revision `969e4f55743b3383b450c2a4f9b3a3c4a5e25828`, paths `src/resources/instruments/normal/*.png` and `src/resources/ui/staff/TREBLE_CLEF.png`.
 
 They depict the recognizable Mario Paint character/instrument palette requested for this fan project. Nintendo characters and original artwork remain the property of Nintendo and their respective rights holders. These assets are **not covered by MPFM1's MIT code license**. Upstream's software license is retained in `SMP-LICENSE.txt`; it does not establish a separate Nintendo artwork license. This project is not affiliated with or endorsed by Nintendo or M-VAVE.
 

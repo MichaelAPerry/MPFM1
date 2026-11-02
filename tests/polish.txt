@@ -21,17 +21,17 @@ expect page 6
 tap EDIT
 expect page 0
 demo
-expect notes 32
+expect notes 66
 expect dirty 1
 tap PLAY
 demo
-expect notes 32
+expect notes 66
 expect playing 1
 tap PLAY
 tap ENV
 expect notes 0
 tap LFO
-expect notes 32
+expect notes 66
 tap GLO
 expect page 2
 tap HOME
