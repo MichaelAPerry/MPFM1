@@ -4,7 +4,7 @@ Hardware/API source: pinned `base/include/plat.h` and `base/device/lcd.c`: 240×
 
 | Control | Action |
 | --- | --- |
-| Note keys | Insert/audition at cursor (stopped only; while playing the message is STOP TO EDIT and nothing sounds); multiple presses form a chord; cursor stays until moved |
+| Note keys | Stopped: insert/audition at the cursor; multiple presses form a chord; cursor stays until moved. Playing: audition at once and place the note at the playhead snapped to the nearest step of the grid (live placement, below). FREE PLAY: only sound, never edit |
 | SELECT encoder | Move time cursor one selected grid step (1/4, 1/8, 1/16, 1/8T, 1/16T) |
 | PRESET | Choose one of fifteen sounds |
 | ALGO | Choose layer 1–8 |
@@ -13,13 +13,13 @@ Hardware/API source: pinned `base/include/plat.h` and `base/device/lcd.c`: 240×
 | K3 | New-note duration in 24-tick steps (16 on the triplet grids); MIX page: layer volume (0 mutes); SOUND: decay 0..127; MIDI: clock OFF / OUT / IN (follow external clock; below). Hold EDIT on the staff: length (24-tick steps) of the notes at the cursor |
 | K4 | Song end in quarter-note steps; cannot cut off existing event starts; SOUND page: pan L64..R63 |
 | PLAY | Play from beginning / stop. Hold EDIT and press PLAY: play from the start of the cursor's bar (MIDI clock out: Song Position Pointer + Continue instead of Start) |
-| OCT− / OCT+ | Shift keyboard by octave |
+| OCT− / OCT+ | Shift keyboard by octave. Both together toggle FREE PLAY (second press within 150 ms of the first; the first press's shift is undone) |
 | SEQ | (stopped only) Cycle grid: 1/4 (96 ticks), 1/8 (48), 1/16 (24), 1/8T (32), 1/16T (16 ticks, triplets) |
 | ARP | Toggle whole-song looping (an undoable song edit, stopped only) |
 | FX | Mute/unmute selected sound (unmute restores level 127; stopped only). MIX page: mute/unmute the selected layer (live, also while playing, not saved) |
 | ENV / LFO | Undo / redo (stopped only; during playback the message is STOP FIRST) |
 | REC | Duplicate cursor's whole bar into next bar, preserving existing notes; capacity checked |
-| EDIT | Tap to cycle STAFF → MIX → SOUND → MIDI → GROOVE → BARS → STAFF; hold with a key to erase matching pitch/sound/layer at cursor; hold and turn K2/K3 to edit the notes at the cursor (one undo step per hold) |
+| EDIT | Tap to cycle STAFF → MIX → SOUND → MIDI → GROOVE → BARS → STAFF; hold with a key to erase matching pitch/sound/layer at cursor (while playing: at the snapped playhead step); hold and turn K2/K3 to edit the notes at the cursor (one undo step per hold) |
 | SEL | Show all sounds / only selected sound. MIX page: solo/unsolo the selected layer (live, not saved; with any solo set, only soloed layers sound) |
 | GLO | Toggle song-book view |
 | SAVE | Save current song to selected slot; rejected during playback |
@@ -28,9 +28,13 @@ Hardware/API source: pinned `base/include/plat.h` and `base/device/lcd.c`: 240×
 | GROOVE page | K1 swing 0–75, K2 human 0–100 (song data: undoable, saved, disabled during playback) |
 | BARS page | K1 FROM bar, K2 TO bar (inclusive, TO ≥ FROM, up to the song end's last bar), K3 TARGET bar, K4 transpose −12..+12. REC copies the range to TARGET (existing notes kept, duplicates skipped; end grows if needed), FX moves it, SEQ deletes the bars (later notes, song end and loop start shift left; a loop start inside the cut goes to its first bar), ARP inserts as many empty bars at FROM (shifting right; a loop start at or after FROM shifts), OCT+ transposes by K4. With SEL solo view on, copy/move/transpose touch only the selected sound; delete/insert always take all sounds. An op that would exceed 384 notes, 65535 ticks, leave C2–C6 or change nothing is refused whole with a message; each is one undo step, disabled during playback |
 | MASTER | Smoothed audio level |
-| MIDI in (USB, Bluetooth, TRS) | Note-on C2–C6 acts as that key: audition and place at the cursor with the selected sound, layer and the message's velocity (erase and playback rules apply); note-off and other messages are ignored |
+| MIDI in (USB, Bluetooth, TRS) | Note-on C2–C6 acts as that key: audition and place (cursor when stopped, snapped playhead when playing) with the selected sound, layer and the message's velocity; in FREE PLAY note-off releases the note; other messages are ignored |
 
 Clock IN (MIDI page K3): 0xFA Start plays from tick 0, 0xFB Continue from the playhead where playback last stopped (from 0 after the song end), 0xFC Stop stops; Start and Continue begin at the next 0xF8 clock. PLAY still starts and stops locally, at the last measured tempo and unlocked from the clocks. The tempo is the mean of the last 24 clock intervals; the header shows that BPM and EXT. The playhead is held within a few ticks (a quarter note is 96) of 4 ticks per clock, so it cannot drift. If clocks stop for over 500 ms playback continues at the last tempo and relocks when they return. IN sends no clock out. Clocks are read in the main loop (the platform queues MIDI without timestamps), so their stamps carry up to a frame of jitter, which the averaging and the phase lock absorb.
+
+Live placement (playing, staff rules above): the note is auditioned (sound and MIDI out) and inserted with the selected sound, layer, velocity and new-note length at the playhead tick rounded to the nearest grid step (triplet grids too). At or past the song end it goes to the loop start when looping, else to the last step before the end. A note already there (same tick, pitch, sound, layer) is not added again; a full song says SONG FULL (the audition still sounds). All placements and erases of one playback run are one undo step (the first one checkpoints; ENV after stopping removes them all). A note snapped ahead of the playhead sounds again when the playhead reaches it. Knobs that change song settings, BARS operations, undo/redo and saving stay stopped-only.
+
+FREE PLAY (OCT− + OCT+, runtime only, not saved): the header badge reads FREE (red) and the staff says FREE PLAY. Keys and MIDI-in notes only play the selected sound (polyphonic, with velocity, tune, tone, decay, pan and MIDI out on its channel), stopped or over the playing song, and never place or erase. The note is gated by the key: it is released (decay tail, MIDI note-off) when the key or MIDI note is released.
 
 Mute/solo are performance state: silent layers send no MIDI either (auditions on a silenced layer too), they reset at power-up and are not saved. SWING delays off-beat 8ths (tick%96==48) by swing % of 48 ticks and off-beat 16ths (tick%48==24) by swing % of 24 ticks; HUMAN moves every note by a random ±(human × 8 / 100) ticks and its velocity by ±(human × 20 / 100), from a PRNG restarted at each playback start (same result every play); notes never move before the playhead or past the song end. Auditions are not swung.
 

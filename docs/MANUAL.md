@@ -61,7 +61,7 @@ Notes can only be placed while the song is stopped.
 
 | Control | What it does |
 | --- | --- |
-| Note keys | Play a note and place it at the cursor. Several keys make a chord. The keyboard covers F3 to G5; notes must land between C2 and C6 |
+| Note keys | Play a note and place it at the cursor (while playing: at the playhead, see section 4). Several keys make a chord. The keyboard covers F3 to G5; notes must land between C2 and C6 |
 | SELECT | Move the cursor by one grid step |
 | PRESET | Choose one of the 15 sounds |
 | ALGO | Choose layer 1 to 8 |
@@ -165,7 +165,11 @@ On SOUND, MIDI, GROOVE and BARS the knobs only turn while the song is stopped. A
 
 **Play from the cursor.** Hold **EDIT** and press **PLAY**. The song starts at the beginning of the cursor's bar. With MIDI clock out, it sends a position message and Continue rather than Start.
 
-**Stopped only.** Placing notes, erasing and most settings work only while the song is stopped. During playback a key press says STOP TO EDIT.
+**Live placement.** While the song plays, a key (or a MIDI note) sounds at once and also lands in the song at the playhead, rounded to the nearest step of the grid (triplet grids too). Past the end of the song it lands at the loop start if looping, otherwise on the last step. A note already there is not added twice, and a full song says SONG FULL. Hold **EDIT** and press a key to erase that note at the playhead. Everything you place or erase in one playback run is one undo step. A note placed a little ahead of the playhead sounds again when the playhead reaches it.
+
+**Free play.** Press **OCT-** and **OCT+** together (the second within a tenth of a second of the first) to switch FREE PLAY on or off. The header badge says FREE. Keys then only play the selected sound, stopped or over the song, and never place or erase notes; a note lasts as long as you hold the key. A single OCT press still shifts the octave. Free play is not saved.
+
+**Stopped only.** Settings knobs, bars operations, undo, redo and saving work only while the song is stopped.
 
 ---
 
@@ -212,6 +216,8 @@ Two knobs on the GROOVE page make a plain pattern feel alive.
 - **Human** (0 to 100) nudges every note a little in time and loudness. The same nudges happen on every play, so a song sounds the same each time.
 
 Both are saved with the song. At 0 and 0 the song plays exactly as written. Notes you audition while writing are not swung.
+
+**Swing and triplets.** Swing delays the off-beat eighths and sixteenths. Notes on triplet positions are not swung, because triplets already carry the swung feel. Swing 33 moves an off-beat eighth onto the triplet position.
 
 ---
 
