@@ -15,3 +15,4 @@ credits = "Original app and placeholder sounds; platform by fm1-base and felucca
 backup = true
 backup_ext = "stamp"
 backup_holds = "the eight song slots"
+mirror = true

@@ -22,6 +22,8 @@ void app_panic(void);
 void app_ui_init(void);
 void app_frame(void);
 void app_input_only(void);
+#define APP_REDRAW
+void app_redraw(void);
 void app_say(const char *,const char *);
 #define APP_HOST_EXPECT
 int app_expect(const char *,int *);

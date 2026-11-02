@@ -6,6 +6,8 @@ static ScEngine engine;
 static PLAT_POOL ScSong history[17];
 static unsigned hist_count,hist_pos;
 static uint8_t wire[SC_BYTES];
+static const char *gname(unsigned g){return g==96?"1/4":g==48?"1/8":g==24?"1/16":g==32?"1/8T":g==16?"1/16T":0;}
+#define LSTEP (ui.grid%24?16:24) /* K3 length step follows the grid: 24 ticks, 16 on triplet grids */
 static struct { unsigned cursor,instrument,layer,grid,velocity,length,slot,dirty,page,filter,erase,confirm,edit_used,gest,held; int octave,last; uint32_t keys,buttons,until; char message[32]; } ui;
 static void checkpoint(void) {
  if(hist_pos<16){history[hist_pos++]=song;}else{memmove(history,history+1,15*sizeof *history);history[15]=song;}
@@ -59,7 +61,7 @@ static int note_edit(int what,int d){
  if(!ui.erase || ui.page || engine.playing)return 0;
  ui.edit_used=1;
  for(i=0;i<song.count;i++)if(song.notes[i].tick==ui.cursor && song.notes[i].instrument==ui.instrument && song.notes[i].layer==ui.layer){
-  ScNote *p=song.notes+i;int v=what?clamp(p->duration+d*24,24,1536):clamp(p->velocity+d,1,127);
+  ScNote *p=song.notes+i;int v=what?clamp(p->duration+d*(int)LSTEP,(int)LSTEP,1536)/(int)LSTEP*(int)LSTEP:clamp(p->velocity+d,1,127);
   if(!n++ && !ui.gest){checkpoint();ui.gest=1;}
   if(what)p->duration=v;else p->velocity=v;
   snprintf(ui.message,sizeof ui.message,what?"NOTE LEN %d T":"NOTE VEL %d",v);ui.until=plat_ms()+1600;
@@ -83,7 +85,7 @@ static void input(void){
  if(!engine.playing){
   if(pressed&(1u<<B_ENV))undo();
   if(pressed&(1u<<B_LFO))redo();
-  if(pressed&(1u<<B_SEQ)){ui.grid=ui.grid==96?48:ui.grid==48?24:96;ui.cursor=ui.cursor/ui.grid*ui.grid;}
+  if(pressed&(1u<<B_SEQ)){ui.grid=ui.grid==96?48:ui.grid==48?24:ui.grid==24?32:ui.grid==32?16:96;ui.cursor=ui.cursor/ui.grid*ui.grid;}
   if(pressed&(1u<<B_ARP)){checkpoint();song.loop^=1;}
   if(pressed&(1u<<B_FX)){checkpoint();song.volume[ui.instrument]=song.volume[ui.instrument]?0:127;}
   if(pressed&(1u<<B_REC)){
@@ -99,9 +101,9 @@ static void input(void){
  if((d=plat_enc(EN_PRESET)))ui.instrument=clamp((int)ui.instrument+d,0,14);
  if((d=plat_enc(EN_ALGO)))ui.layer=clamp((int)ui.layer+d,0,7);
  if(ui.page>2){int i;for(i=0;i<4;i++)if((d=plat_enc(EN_K1+i)) && !engine.playing)shape(i,d);}else{
- if((d=plat_enc(EN_K1))){if(ui.page==2){ui.slot=clamp((int)ui.slot+d,0,7);ui.confirm=0;}else if(!engine.playing){checkpoint();song.tempo=clamp(song.tempo+d,30,300);}}
+ if((d=plat_enc(EN_K1))){if(ui.page==2){ui.slot=clamp((int)ui.slot+d,0,7);ui.confirm=0;}else if(!engine.playing){if(ui.page==1){int b=clamp(song.beats+d,2,12);if(b!=song.beats){checkpoint();song.beats=b;}}else{checkpoint();song.tempo=clamp(song.tempo+d,30,300);}}}
  if((d=plat_enc(EN_K2))){if(note_edit(0,d)){}else if(ui.page==1 && !engine.playing){checkpoint();song.volume[ui.instrument]=clamp(song.volume[ui.instrument]+d,0,127);}else ui.velocity=clamp((int)ui.velocity+d,1,127);}
- if((d=plat_enc(EN_K3))){if(note_edit(1,d)){}else if(ui.page==1 && !engine.playing){checkpoint();song.layers[ui.layer]=clamp(song.layers[ui.layer]+d,0,127);}else ui.length=clamp((int)ui.length+d*24,24,1536);}
+ if((d=plat_enc(EN_K3))){if(note_edit(1,d)){}else if(ui.page==1 && !engine.playing){checkpoint();song.layers[ui.layer]=clamp(song.layers[ui.layer]+d,0,127);}else ui.length=clamp((int)ui.length+d*(int)LSTEP,(int)LSTEP,1536)/LSTEP*LSTEP;}
  if((d=plat_enc(EN_K4)) && !engine.playing){unsigned minend=song.count?song.notes[song.count-1].tick+1:1;checkpoint();song.end=clamp(song.end+d*96,minend>song.loop_start?minend:(unsigned)song.loop_start+1,65535);if(ui.cursor>=song.end)ui.cursor=(song.end-1)/ui.grid*ui.grid;}}
  if(ui.cursor>=song.end)ui.cursor=(song.end-1)/ui.grid*ui.grid;
  ui.keys=keys;ui.buttons=btn;plat_unlock(f);plat_glow(1);plat_leds((engine.playing?1u<<B_PLAY:0)|(ui.dirty?1u<<B_SAVE:0),keys);
@@ -215,6 +217,7 @@ static void draw(void){
  }else if(ui.page==1){
   cv_begin(240,112,PAPER);
   cv_text(10,4,&FONT_B,"MIX & SHAPE",INK);
+  snprintf(t,sizeof t,"K1  BEATS %u/4",song.beats);cv_text(140,7,&FONT_XS,t,TEAL);
   cv_text(10,29,&FONT_XS,"K2  SOUND LEVEL",TEAL);
   cv_rect(10,48,180,9,RGB(225,218,197));cv_rect(10,48,song.volume[selected]*180/127,9,ACCENT);
   snprintf(t,sizeof t,"%u",song.volume[selected]);cv_text(197,42,&FONT_B,t,INK);
@@ -247,7 +250,9 @@ static void draw(void){
    if(n.pitch%12==1 || n.pitch%12==3 || n.pitch%12==6 || n.pitch%12==8 || n.pitch%12==10)cv_text(x-7,y-8,&FONT_T,"#",INK);
   }
   cv_rect(cursor_x-3,28,2,66,ACCENT);
-  if(engine.playing)stamp(cursor_x,12-(int)(plat_ms()/120%2)*3,0,1);
+  if(engine.playing){ /* hop: one arc per grid step, tall when a note starts at the next step (landing), else a small bounce */
+   unsigned p=active%step,h=2;for(i=0;i<song.count;i++)if(song.notes[i].tick/step==active/step+1){h=8;break;}
+   stamp(cursor_x,11-(int)(h*4*p*(step-p)/(step*step)),selected,1);}
   else cv_rect(cursor_x+4,19,5,4,ACCENT);
   if(!song.count)cv_text(40,85,&FONT_XS,"PLAY A KEY TO PLACE A NOTE",TEAL);
   cv_blit(0,72);
@@ -255,14 +260,16 @@ static void draw(void){
  /* Four encoder cards, then one concise contextual hint. */
  cv_begin(240,56,INK);
  if(ui.page>2)tiles_shape();else{
- snprintf(t,sizeof t,ui.page==2?"%02u":"%u",ui.page==2?ui.slot+1:song.tempo);tile(4,2,55,ui.page==2?"K1 SLOT":"K1 TEMPO",t);
+ snprintf(t,sizeof t,ui.page==1?"%u/4":ui.page==2?"%02u":"%u",ui.page==1?song.beats:ui.page==2?ui.slot+1:song.tempo);tile(4,2,55,ui.page==2?"K1 SLOT":ui.page==1?"K1 BEATS":"K1 TEMPO",t);
  snprintf(t,sizeof t,"%u",ui.page==1?song.volume[selected]:ui.velocity);tile(63,2,55,ui.page==1?"K2 SOUND":"K2 VEL",t);
- snprintf(t,sizeof t,ui.page==1?"%u":"1/%u",ui.page==1?song.layers[ui.layer]:384/ui.length);if(ui.page!=1 && (ui.length>384 || 384%ui.length!=0))snprintf(t,sizeof t,"%u T",ui.length);tile(122,2,55,ui.page==1?"K3 LAYER":"K3 LEN",t);
+ snprintf(t,sizeof t,ui.page==1?"%u":"1/%u",ui.page==1?song.layers[ui.layer]:384/ui.length);if(ui.page!=1 && (ui.length>384 || 384%ui.length!=0))snprintf(t,sizeof t,"%u T",ui.length);if(ui.page!=1 && gname(ui.length))snprintf(t,sizeof t,"%s",gname(ui.length));tile(122,2,55,ui.page==1?"K3 LAYER":"K3 LEN",t);
  snprintf(t,sizeof t,"%u BAR",(song.end+song.beats*96-1)/(song.beats*96));tile(181,2,55,"K4 END",t);}
  if(plat_ms()<ui.until)cv_text(5,44,&FONT_T,ui.message,RGB(250,212,104));
- else{snprintf(t,sizeof t,ui.page==3?"EDIT NEXT / PRESET SOUND":ui.page==4?"EDIT NEXT / K1 CH / HOME STAFF":ui.page==2?"SAVE WRITE / REC LOAD / HOME EXIT":ui.page==1?"EDIT BACK / FX MUTE / HOME STAFF":"1/%u GRID / %u NOTES / %s",384/step,song.count,ui.dirty?"UNSAVED":"SAVED");cv_text(5,44,&FONT_T,t,RGB(162,182,188));}
+ else{snprintf(t,sizeof t,ui.page==3?"EDIT NEXT / PRESET SOUND":ui.page==4?"EDIT NEXT / K1 CH / HOME STAFF":ui.page==2?"SAVE WRITE / REC LOAD / HOME EXIT":ui.page==1?"EDIT BACK / FX MUTE / HOME STAFF":"%s GRID / %u NOTES / %s",gname(step),song.count,ui.dirty?"UNSAVED":"SAVED");cv_text(5,44,&FONT_T,t,RGB(162,182,188));}
  cv_blit(0,184);
 }
+/* APP_REDRAW: draw() repaints all three bands every frame, so a mirror that lost a part is fixed by the next frame: nothing to do */
+void app_redraw(void){}
 void app_ui_init(void){draw();}
 void app_frame(void){
  input();draw();
@@ -274,7 +281,7 @@ void app_frame(void){
  ann_tick(plat_ms());
 }
 int app_expect(const char *s,int *v){
- if(!strcmp(s,"page"))*v=ui.page;else if(!strcmp(s,"notes"))*v=song.count;else if(!strcmp(s,"playing"))*v=engine.playing;else if(!strcmp(s,"dirty"))*v=ui.dirty;else if(!strcmp(s,"instrument"))*v=ui.instrument;else if(!strcmp(s,"tick"))*v=engine.tick;else if(!strcmp(s,"triggers"))*v=engine.triggers;else if(!strcmp(s,"tempo"))*v=song.tempo;else if(!strcmp(s,"cursor"))*v=ui.cursor;
+ if(!strcmp(s,"page"))*v=ui.page;else if(!strcmp(s,"notes"))*v=song.count;else if(!strcmp(s,"playing"))*v=engine.playing;else if(!strcmp(s,"dirty"))*v=ui.dirty;else if(!strcmp(s,"instrument"))*v=ui.instrument;else if(!strcmp(s,"tick"))*v=engine.tick;else if(!strcmp(s,"triggers"))*v=engine.triggers;else if(!strcmp(s,"tempo"))*v=song.tempo;else if(!strcmp(s,"cursor"))*v=ui.cursor;else if(!strcmp(s,"grid"))*v=ui.grid;else if(!strcmp(s,"beats"))*v=song.beats;else if(!strcmp(s,"length"))*v=ui.length;
  else if(!strcmp(s,"tune"))*v=song.tune[ui.instrument];else if(!strcmp(s,"tone"))*v=song.tone[ui.instrument];else if(!strcmp(s,"decay"))*v=song.decay[ui.instrument];else if(!strcmp(s,"pan"))*v=song.pan[ui.instrument];
  else if(!strcmp(s,"midi_ch"))*v=song.midi_ch[ui.instrument];else if(!strcmp(s,"midi_mode"))*v=song.midi_mode;else if(!strcmp(s,"midi_clock"))*v=song.midi_clock;
  else if(!strcmp(s,"note_vel")||!strcmp(s,"note_len")){unsigned i;for(i=0;i<song.count;i++)if(song.notes[i].tick==ui.cursor && song.notes[i].instrument==ui.instrument && song.notes[i].layer==ui.layer)break;if(i==song.count)return 0;*v=s[5]=='v'?song.notes[i].velocity:song.notes[i].duration;}

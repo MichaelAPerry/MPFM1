@@ -5,16 +5,16 @@ Hardware/API source: pinned `base/include/plat.h` and `base/device/lcd.c`: 240×
 | Control | Action |
 | --- | --- |
 | Note keys | Insert/audition at cursor; multiple presses form a chord; cursor stays until moved |
-| SELECT encoder | Move time cursor one selected grid step |
+| SELECT encoder | Move time cursor one selected grid step (1/4, 1/8, 1/16, 1/8T, 1/16T) |
 | PRESET | Choose one of fifteen sounds |
 | ALGO | Choose layer 1–8 |
-| K1 | Tempo 30–300 BPM; song book: save slot; SOUND page: tune −12..+12; MIDI page: the sound's channel (OFF, 1–16) |
+| K1 | Tempo 30–300 BPM; MIX page: BEATS per bar 2–12 (time signature n/4, default 4); song book: save slot; SOUND page: tune −12..+12; MIDI page: the sound's channel (OFF, 1–16) |
 | K2 | New-note velocity; MIX page: selected instrument volume (0 mutes); SOUND: tone 0..127; MIDI: mode OFF / ON / MIDI ONLY. Hold EDIT on the staff: velocity of the selected sound's notes at the cursor |
-| K3 | New-note duration in 24-tick steps; MIX page: layer volume (0 mutes); SOUND: decay 0..127; MIDI: clock out OFF/ON. Hold EDIT on the staff: length (24-tick steps) of the notes at the cursor |
+| K3 | New-note duration in 24-tick steps (16 on the triplet grids); MIX page: layer volume (0 mutes); SOUND: decay 0..127; MIDI: clock out OFF/ON. Hold EDIT on the staff: length (24-tick steps) of the notes at the cursor |
 | K4 | Song end in quarter-note steps; cannot cut off existing event starts; SOUND page: pan L64..R63 |
 | PLAY | Play from beginning / stop |
 | OCT− / OCT+ | Shift keyboard by octave |
-| SEQ | Cycle quarter/eighth/sixteenth grid |
+| SEQ | Cycle grid: 1/4 (96 ticks), 1/8 (48), 1/16 (24), 1/8T (32), 1/16T (16 ticks, triplets) |
 | ARP | Toggle whole-song looping |
 | FX | Mute/unmute selected sound (unmute restores level 127) |
 | ENV / LFO | Undo / redo |
@@ -27,6 +27,8 @@ Hardware/API source: pinned `base/include/plat.h` and `base/device/lcd.c`: 240×
 | HOME | Return to staff, cursor zero; cancel pending load |
 | MASTER | Smoothed audio level |
 | MIDI in (USB) | Note-on C2–C6 acts as that key: audition and place at the cursor with the selected sound, layer and the message's velocity (erase and playback rules apply); note-off and other messages are ignored |
+
+BEATS is song data (undoable, saved, disabled during playback): bar lines, BAR n, REC bar copy and song-end bars follow it. During playback the selected sound's character hops along the staff at the playhead, landing on each step before a note starts. Screen mirror (fm1.toml `mirror = true`): the screen and panel can be mirrored to a computer over USB; the app repaints every frame, so a dropped part heals itself.
 
 SOUND and MIDI settings are song data: undoable, saved with the song, and disabled during playback like the mixer. MIDI out goes to USB: note-on at each note with its velocity (tune applies), note-off after its length, all-notes-off on stop. Backup over USB holds the eight saved slots only; unsaved edits are not written for you. Editing notes and song settings is disabled during playback; navigation and sound selection remain available. Stop before saving because the platform pauses audio while writing flash. No one-press clear-song control exists. Boot loads slot 1; select other slots in song-book view. A load confirmation remains armed until slot/view changes or HOME; it is not timed.
 
