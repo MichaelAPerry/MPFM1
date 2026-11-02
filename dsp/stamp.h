@@ -29,6 +29,15 @@ void sc_default(ScSong *s);
 int sc_valid(const ScSong *s);
 int sc_add(ScSong *s, ScNote n);
 int sc_duplicate(ScSong *s, uint16_t start, uint16_t length);
+/* Range ops on ticks [from,from+len), inst < 0: all sounds. 1 = done, else SC_E_* with the song unchanged.
+ * copy/move paste at `to` keeping notes already there (same tick, pitch, sound, layer = skipped) and extend end to cover it; move removes the source first.
+ * delete removes the range (end and later notes shift left; loop_start after it shifts, inside it goes to `from`); insert opens empty space (end, later notes and loop_start shift right); both take all sounds. */
+enum { SC_E_ARG=-1, SC_E_FULL=-2, SC_E_TICK=-3, SC_E_PITCH=-4, SC_E_NONE=-5 }; /* bad range, capacity, >65535 ticks, outside C2-C6, nothing to do (no notes in range, or all pasted notes already there) */
+int sc_copy(ScSong *s, unsigned from, unsigned len, unsigned to, int inst);
+int sc_move(ScSong *s, unsigned from, unsigned len, unsigned to, int inst);
+int sc_delete_bars(ScSong *s, unsigned from, unsigned len);
+int sc_insert_bars(ScSong *s, unsigned from, unsigned len);
+int sc_transpose(ScSong *s, unsigned from, unsigned len, int semis, int inst);
 unsigned sc_encode(const ScSong *s, uint8_t *out);
 int sc_decode(ScSong *s, const uint8_t *in, unsigned len);
 void sc_engine_init(ScEngine *e, unsigned voices);

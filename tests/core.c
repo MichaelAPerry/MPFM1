@@ -36,6 +36,42 @@ static void feed(ScEngine *e,ScSong *s,double bpm,unsigned n,int chk){ /* n cloc
   if(chk&&e->playing&&!e->xw){double d=pos(e)-4.0*ck_;if(d<0)d=-d;if(d>worst_)worst_=d;assert(d<=2.0);}
   ck_++;}}
 static void ext(ScSong *s,ScEngine *e,unsigned song_bpm){sc_default(s);s->tempo=song_bpm;s->end=65535;s->midi_clock=2;sc_engine_init(e,8);nt_=1e6;worst_=0;ck_=0;}
+/* range ops (bar = beats*96): merge/overlap rules, shifts, loop_start, atomic refusals; beats 4 and 3 */
+#define SAME (!memcmp(&s,&t,sizeof s))
+static void bars(void){
+ ScSong s,t;unsigned b,i,bar;
+ for(b=4;b>=3;b--){
+  bar=b*96;sc_default(&s);s.beats=b;s.end=bar*4;s.loop_start=bar*2;for(i=0;i<4;i++)sc_add(&s,(ScNote){i*bar+12,24,40+i,i%2,100,0});t=s; /* one note per bar: pitch 40+bar, sound = bar%2 */
+  assert(sc_copy(&s,0,bar,bar*2,-1)==1 && s.count==5 && s.notes[2].pitch==42 && s.notes[3].pitch==40 && s.notes[3].tick==bar*2+12 && sc_valid(&s)); /* existing note at the target kept */
+  assert(sc_copy(&s,0,bar,bar*2,-1)==SC_E_NONE && s.count==5 && sc_valid(&s)); /* all duplicates: nothing to do */
+  s=t;assert(sc_copy(&s,0,bar*2,bar,-1)==1 && s.count==6 && s.end==bar*4 && s.notes[1].pitch==41 && s.notes[2].pitch==40 && s.notes[2].tick==bar+12 && s.notes[3].pitch==42 && s.notes[4].pitch==41 && s.notes[4].tick==bar*2+12 && sc_valid(&s)); /* overlapping target: bars 1-2 onto 2-3 from a snapshot */
+  s=t;assert(sc_copy(&s,bar*3,bar,bar*5,-1)==1 && s.end==bar*6 && s.count==5 && s.notes[4].tick==bar*5+12 && s.loop_start==bar*2 && sc_valid(&s)); /* past the end: end grows */
+  s=t;assert(sc_copy(&s,0,bar,bar*2,1)==SC_E_NONE && SAME && sc_copy(&s,bar,bar,bar*2,1)==1 && s.count==5 && s.notes[3].pitch==41 && sc_valid(&s)); /* sound filter */
+  s=t;assert(sc_move(&s,0,bar,bar*3,-1)==1 && s.count==4 && s.notes[0].pitch==41 && s.notes[3].pitch==40 && s.notes[3].tick==bar*3+12 && sc_valid(&s));
+  s=t;assert(sc_move(&s,0,bar*2,bar,-1)==1 && s.count==4 && s.notes[0].pitch==40 && s.notes[0].tick==bar+12 && s.notes[1].pitch==42 && s.notes[2].pitch==41 && s.notes[2].tick==bar*2+12 && s.notes[3].tick==bar*3+12 && sc_valid(&s)); /* overlap: source bar 2 is emptied, bar 1 lands in it */
+  s=t;s.notes[1].pitch=40;s.notes[1].instrument=0;assert(sc_move(&s,0,bar,bar,-1)==1 && s.count==3 && s.notes[0].tick==bar+12 && sc_valid(&s)); /* same note already at the target: kept, moved one dropped */
+  s=t;assert(sc_move(&s,0,bar,bar*5,-1)==1 && s.end==bar*6 && s.count==4 && sc_valid(&s));
+  s=t;assert(sc_move(&s,0,bar,0,-1)==SC_E_ARG && sc_copy(&s,0,0,bar,-1)==SC_E_ARG && sc_copy(&s,0,bar,65535,-1)==SC_E_TICK && sc_move(&s,bar*3,bar,bar,0)==SC_E_NONE && SAME);
+  assert(sc_delete_bars(&s,bar,bar)==1 && s.count==3 && s.end==bar*3 && s.loop_start==bar && s.notes[1].tick==bar+12 && s.notes[1].pitch==42 && sc_valid(&s)); /* later loop_start shifts */
+  s=t;assert(sc_delete_bars(&s,bar,bar*2)==1 && s.end==bar*2 && s.loop_start==bar && s.count==2 && s.notes[1].tick==bar+12 && s.notes[1].pitch==43 && sc_valid(&s)); /* loop_start inside the cut goes to its start */
+  s=t;assert(sc_delete_bars(&s,bar*3,bar)==1 && s.end==bar*3 && s.loop_start==bar*2 && s.count==3 && sc_valid(&s));
+  s=t;s.loop_start=0;assert(sc_delete_bars(&s,0,bar*3)==1 && s.end==bar && s.loop_start==0 && s.count==1 && s.notes[0].tick==12 && sc_valid(&s));
+  s=t;s.end=bar*3+50;assert(sc_delete_bars(&s,bar*3,bar)==1 && s.end==bar*3 && s.count==3 && sc_valid(&s)); /* partial last bar clamps */
+  s=t;assert(sc_delete_bars(&s,0,bar*4)==SC_E_ARG && sc_delete_bars(&s,bar*4,bar)==SC_E_ARG && sc_delete_bars(&s,0,0)==SC_E_ARG && SAME);
+  assert(sc_insert_bars(&s,bar,bar*2)==1 && s.end==bar*6 && s.loop_start==bar*4 && s.count==4 && s.notes[0].tick==12 && s.notes[1].tick==bar*3+12 && s.notes[3].tick==bar*5+12 && sc_valid(&s));
+  s=t;s.loop_start=0;assert(sc_insert_bars(&s,0,bar)==1 && s.loop_start==bar && s.notes[0].tick==bar+12 && sc_valid(&s));
+  s=t;s.end=65536-bar;assert(sc_insert_bars(&s,0,bar)==SC_E_TICK && sc_insert_bars(&s,s.end,bar)==SC_E_ARG && sc_insert_bars(&s,0,0)==SC_E_ARG);s.end=bar*4;assert(SAME);
+  assert(sc_transpose(&s,bar,bar*2,3,-1)==1 && s.notes[0].pitch==40 && s.notes[1].pitch==44 && s.notes[2].pitch==45 && s.notes[3].pitch==43 && sc_valid(&s));
+  s=t;assert(sc_transpose(&s,0,bar*4,-12,-1)==SC_E_PITCH && SAME && sc_transpose(&s,0,bar*4,0,-1)==SC_E_ARG && sc_transpose(&s,0,bar*4,2,5)==SC_E_NONE && SAME);
+  assert(sc_transpose(&s,0,bar*4,2,1)==1 && s.notes[0].pitch==40 && s.notes[1].pitch==43 && s.notes[3].pitch==45);
+  s=t;s.notes[3].pitch=84;assert(sc_transpose(&s,0,bar*4,1,-1)==SC_E_PITCH && sc_transpose(&s,0,bar*3,1,-1)==1 && s.notes[0].pitch==41 && s.notes[3].pitch==84 && sc_valid(&s));
+  s=t;s.notes[0].pitch=36;t=s;assert(sc_transpose(&s,0,bar,-1,-1)==SC_E_PITCH && SAME);
+ }
+ sc_default(&s);s.end=65535;for(i=0;i<SC_EVENTS-1;i++)sc_add(&s,(ScNote){i,24,36+i%49,i%15,100,0});t=s; /* full: copy refused, move still fits */
+ assert(sc_copy(&s,0,384,384,-1)==SC_E_FULL && SAME && sc_valid(&s));
+ sc_add(&s,(ScNote){500,24,60,0,100,0});assert(sc_move(&s,0,384,384,-1)==1 && s.count==SC_EVENTS && sc_valid(&s));
+ sc_default(&s);s.end=65535-384;sc_add(&s,(ScNote){s.end-1,24,60,0,100,0});assert(sc_copy(&s,0,s.end,0,-1)==SC_E_ARG && sc_copy(&s,s.end-384,384,s.end,-1)==1 && s.end==65535 && sc_valid(&s)); /* ends exactly at the limit */
+}
 int main(int argc,char **argv){
  ScSong s,t;ScEngine e;uint8_t bytes[SC_BYTES];unsigned n,i,j;
  sc_default(&s);assert(sc_add(&s,(ScNote){0,96,60,0,100,0}));assert(sc_add(&s,(ScNote){96,96,64,6,100,1}));n=sc_encode(&s,bytes);assert(n==148);assert(sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));bytes[49]^=1;assert(!sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));
@@ -46,6 +82,7 @@ int main(int argc,char **argv){
  sc_engine_init(&e,8);for(i=0;i<20;i++)sc_note(&e,&s,(ScNote){0,96,60,i%15,127,0});assert(e.steals==12);render(&e,&s,44100*4);for(i=0;i<8;i++)assert(!e.voices[i].active && e.voices[i].last==0);
  sc_default(&s);for(i=0;i<384;i++)assert(sc_add(&s,(ScNote){i,24,60,i%15,100,i%8}));t=s;assert(!sc_duplicate(&s,0,384));assert(!memcmp(&s,&t,sizeof s));assert(!sc_add(&s,(ScNote){0,24,60,0,100,0}));
 
+ bars();
  /* v1 / v2 wire */
  sc_default(&s);sc_add(&s,(ScNote){0,96,60,0,100,0});n=sc_encode(&s,bytes);memmove(bytes+48,bytes+128,12);n=48+8+4;bytes[4]=1;fix(bytes,n);assert(sc_decode(&t,bytes,n));assert(!memcmp(&s,&t,sizeof s));assert(t.tone[14]==127 && !t.tune[3] && !t.midi_mode);
  sc_default(&s);for(i=0;i<15;i++){s.tune[i]=i-7;s.tone[i]=i*9;s.decay[i]=127-i;s.pan[i]=i*9-64;s.midi_ch[i]=i+1;}s.midi_mode=2;s.midi_clock=1;s.swing=75;s.human=100;sc_add(&s,(ScNote){5,9,40,2,90,3});

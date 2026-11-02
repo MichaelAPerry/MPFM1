@@ -27,6 +27,43 @@ int sc_duplicate(ScSong *s, uint16_t start, uint16_t length) {
  if(end>s->end) s->end=(uint16_t)end;
  for(i=0;i<n;i++) { copy[i].tick+=length; sc_add(s,copy[i]); } return 1;
 }
+/* Range ops on [from,from+len) ticks; inst < 0: all sounds. Return 1, or SC_E_*: checked first, a refusal leaves the song untouched. */
+static ScNote tmp[SC_EVENTS]; /* scratch for copy/move (not reentrant) */
+static int hit(const ScNote *n,unsigned from,unsigned len,int inst) { return n->tick>=from && n->tick-from<len && (inst<0 || n->instrument==inst); }
+static int has(const ScSong *s,ScNote n) { unsigned i; for(i=0;i<s->count;i++) if(s->notes[i].tick==n.tick && s->notes[i].pitch==n.pitch && s->notes[i].instrument==n.instrument && s->notes[i].layer==n.layer) return 1; return 0; }
+/* copy (mv 0) or move (mv 1) the range's notes to `to`, skipping ones already there; end grows to cover the target */
+static int paste(ScSong *s,unsigned from,unsigned len,unsigned to,int inst,int mv) {
+ unsigned i,n=0,nd=0;
+ if(!len || to==from) return SC_E_ARG; if(to+len>65535) return SC_E_TICK;
+ for(i=0;i<s->count;i++) if(hit(s->notes+i,from,len,inst)) tmp[n++]=s->notes[i];
+ if(!n) return SC_E_NONE;
+ for(i=0;i<n;i++) tmp[i].tick=tmp[i].tick-from+to;
+ if(mv) { for(i=0;i<s->count;i++) if(!hit(s->notes+i,from,len,inst)) s->notes[nd++]=s->notes[i]; s->count=nd; nd=0; } /* cannot fail from here: never more notes than before */
+ else { for(i=0;i<n;i++) if(!has(s,tmp[i])) nd++; if(!nd) return SC_E_NONE; if(s->count+nd>SC_EVENTS) return SC_E_FULL; }
+ if(to+len>s->end) s->end=to+len;
+ for(i=0;i<n;i++) if(!has(s,tmp[i])) sc_add(s,tmp[i]);
+ return 1;
+}
+int sc_copy(ScSong *s,unsigned from,unsigned len,unsigned to,int inst) { return paste(s,from,len,to,inst,0); }
+int sc_move(ScSong *s,unsigned from,unsigned len,unsigned to,int inst) { return paste(s,from,len,to,inst,1); }
+int sc_delete_bars(ScSong *s,unsigned from,unsigned len) {
+ unsigned i,j=0,to; if(from>=s->end || !len) return SC_E_ARG;
+ if(len>s->end-from) len=s->end-from; if(len>=s->end) return SC_E_ARG; to=from+len;
+ for(i=0;i<s->count;i++) { ScNote n=s->notes[i]; if(n.tick>=from && n.tick<to) continue; if(n.tick>=to) n.tick-=len; s->notes[j++]=n; }
+ s->count=j; s->end-=len; s->loop_start=s->loop_start>=to?s->loop_start-len:s->loop_start>from?from:s->loop_start;
+ if(s->loop_start>=s->end) s->loop_start=s->end-1; return 1;
+}
+int sc_insert_bars(ScSong *s,unsigned from,unsigned len) {
+ unsigned i; if(from>=s->end || !len) return SC_E_ARG; if(s->end+len>65535) return SC_E_TICK;
+ for(i=0;i<s->count;i++) if(s->notes[i].tick>=from) s->notes[i].tick+=len;
+ if(s->loop_start>=from) s->loop_start+=len; s->end+=len; return 1;
+}
+int sc_transpose(ScSong *s,unsigned from,unsigned len,int semis,int inst) {
+ unsigned i,n=0; if(!len || !semis) return SC_E_ARG;
+ for(i=0;i<s->count;i++) if(hit(s->notes+i,from,len,inst)) { int p=s->notes[i].pitch+semis; if(p<36 || p>84) return SC_E_PITCH; n++; }
+ if(!n) return SC_E_NONE;
+ for(i=0;i<s->count;i++) if(hit(s->notes+i,from,len,inst)) s->notes[i].pitch+=semis; return 1;
+}
 static void put16(uint8_t *p,unsigned v) { p[0]=v; p[1]=v>>8; }
 static unsigned get16(const uint8_t *p) { return p[0]|((unsigned)p[1]<<8); }
 static uint32_t crc(const uint8_t *p,unsigned n) { uint32_t c=~0u; unsigned j; while(n--) { c^=*p++; for(j=0;j<8;j++) c=(c>>1)^((0u-(c&1))&0xedb88320u); } return ~c; }
