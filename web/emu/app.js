@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-const names=['Mario','Mushroom','Yoshi','Star','Flower','Game Boy','Dog','Cat','Pig','Swan','Face','Plane','Boat','Car','Heart'];
-const files=['mario','mushroom','yoshi','star','flower','gameboy','dog','cat','pig','swan','face','plane','boat','car','heart'];
-const roles=['Piano','Kick','Zip','Bell','Trumpet','Pulse','Dog','Cat','Pig','Horn','Baby','Guitar','Block','Organ','Bass'];
+const names=['Mario','Mushroom','Yoshi','Star','Flower','Game Boy','Dog','Cat','Pig','Swan','Face','Plane','Boat','Car','Heart','Piranha','Coin','Shy Guy','Boo','Luigi','Peach','Feather','Bullet Bill','Goomba','Bob-omb','Spiny','Fruit','1-Up','Moon','Egg','Gnome'];
+const files=['mario','mushroom','yoshi','star','flower','gameboy','dog','cat','pig','swan','face','plane','boat','car','heart','piranha','coin','shyguy','boo','luigi','peach','feather','bulletbill','goomba','bobomb','spiny','fruit','oneup','moon','egg','gnome'];
+const roles=['Piano','Kick','Zip','Bell','Trumpet','Pulse','Dog','Cat','Pig','Horn','Baby','Guitar','Block','Organ','Bass','Piranha','Coin','Shy Guy','Boo','Luigi','Peach','Feather','Bullet','Goomba','Bob-omb','Spiny','Fruit','1-Up','Moon','Egg','Gnome'];
 const $=id=>document.getElementById(id);
 let status,port,latest={count:0,dirty:false,playing:false,instrument:0},armedUntil=0;
 // Visible before audio starts, disabled until the native module is ready.
@@ -17,8 +17,8 @@ export function attach({node,status:show}) {
  status=show;port=node.port;
  $('demo').onclick=()=>{
   if(latest.playing){status('Stop playback before loading the demo.');return;}
-  if(latest.count && Date.now()>armedUntil){armedUntil=Date.now()+5000;$('demo').textContent='Replace current song? Click again';setTimeout(()=>{if(Date.now()>=armedUntil)$('demo').textContent='Load Playground demo';},5100);return;}
-  armedUntil=0;port.postMessage({type:'app',action:'demo'});$('demo').textContent='Load Playground demo';
+  if(latest.count && Date.now()>armedUntil){armedUntil=Date.now()+5000;$('demo').textContent='Replace current song? Click again';setTimeout(()=>{if(Date.now()>=armedUntil)$('demo').textContent='Load Twinkle demo';},5100);return;}
+  armedUntil=0;port.postMessage({type:'app',action:'demo'});$('demo').textContent='Load Twinkle demo';
  };
  $('transport').onclick=()=>port.postMessage({type:'app',action:'transport'});
  $('import-song').onchange=async()=>{
@@ -42,7 +42,7 @@ function update(s){
  $('transport').setAttribute('aria-pressed',String(!!s.playing));
 }
 export function message(m){
- if(m.action==='result')status(m.ok?(m.demo?'Playground loaded. Press Play song.':'Imported. Press SAVE to keep your song.'):'Could not load: stop playback and use a valid SCF1 song.');
+ if(m.action==='result')status(m.ok?(m.demo?'Twinkle Twinkle loaded. Press Play song.':'Imported. Press SAVE to keep your song.'):'Could not load: stop playback and use a valid SCF1 song.');
  if(m.action==='export'){
   const url=URL.createObjectURL(new Blob([m.bytes],{type:'application/octet-stream'})),a=document.createElement('a');a.href=url;a.download='stamp-song.scf';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Song exported.');
  }

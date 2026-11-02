@@ -20,9 +20,9 @@ console.log('WASM: key editing, import/export, playback audio, import refusal du
 
 assert.equal(e.stamp_select(30),1);assert.equal(e.stamp_instrument(),30);
 assert.equal(e.stamp_select(31),0);assert.equal(e.stamp_instrument(),30);
-assert.equal(e.stamp_demo(),1);assert.equal(e.stamp_count(),32);assert.equal(e.stamp_dirty(),1);
+assert.equal(e.stamp_demo(),1);assert.equal(e.stamp_count(),66);assert.equal(e.stamp_dirty(),1);
 e.stamp_transport();assert.equal(e.stamp_playing(),1);assert.equal(e.stamp_demo(),0);
 e.stamp_transport();assert.equal(e.stamp_playing(),0);
 tap(2); // ENV: undo demo
 assert.equal(e.stamp_count(),1);
-console.log('WASM: palette bounds, 32-note demo, demo undo, transport and playback protection passed');
+console.log('WASM: palette bounds, 66-note Twinkle demo, demo undo, transport and playback protection passed');
