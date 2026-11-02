@@ -56,3 +56,8 @@ Measured `src/resources/soundfonts/soundset3.sf2`: **7,204,552 file bytes**, **7
 `smp-soundfont-inventory.json` records every sample's rate, frames, duration, root, cents, loop offsets and sample type/link; preset-to-instrument-to-sample references and raw generators preserve zone/envelope/tuning evidence. Zone settings can override sample headers. Names like “E4” in sample labels must not be assumed to use the same MIDI octave convention as this application. No soundfont audio is copied into this repository; MIT software licensing alone is not proof of the provenance of every audio/image asset.
 
 Current implementation selects flash/constant-backed short PCM with linear interpolation. It costs 122880 bytes plus 196 for pitch increments and tiny per-voice state. Caching the entire bank in RAM would add 120 KiB for little benefit at this stage. Longer uncompressed originals do not fit this app slot as-is. Root-zone reduction, explicit resampling and sustain loops need listening/tuning tests before deciding the final bank. ADPCM could reduce storage but requires measured per-voice decoding/cache costs. Procedural generation is used only to create clearly labeled original placeholders offline, not to silently substitute generic FM presets for the original palette.
+
+
+## Presentation pass — 2026-11-02
+
+Inspected the live [Bass Something 2 simulator](https://imijes.github.io/bass-something-2/emu/) and public source revision `44d415fbbc67e37e86ba8ad7b7de91e12e441c52` for presentation quality. Our simulator retains the pinned fm1-base shell, with a custom cream/charcoal/red theme, matching native UI and nearby controls/manual. Character imagery is now included from the pinned SMP revision; see `../assets/NOTICE.md`. Original game audio remains absent.

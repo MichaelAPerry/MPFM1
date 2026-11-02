@@ -1,63 +1,96 @@
 # Stamp Composer FM-1
 
-A native, icon-based composer for the M-VAVE FM-1. Select a sound, place notes with the keys, and play a song. This is an early working application, not a finished firmware release.
+**Little stamps. Big ideas.** A Mario Paint–inspired music playground for the M-VAVE FM-1.
 
-The C application runs in fm1-base's host simulator. Fifteen original **placeholder** PCM sounds represent the original composer roles; no Nintendo samples or sprites are bundled. Recognizable original-audio fidelity remains unfinished.
+![Stamp Composer — native staff, mixer and song book](docs/hero.png)
 
-![Native host editor](docs/screens/chord.png)
+Pick a character, place a note, and build a song. Fifteen familiar stamps share one polyphonic engine, with eight layers for arranging, a scrolling staff, and a song book that keeps your ideas close.
 
-## Try the included preview
+[Quick start](#play-in-your-browser) · [Controls](docs/CONTROLS.md) · [Manual](web/emu/manual.html) · [Build](#build-it) · [Validation](docs/VALIDATION.md)
 
-After downloading this branch, run `python3 -m http.server 8080 --directory preview` from the repository and open http://localhost:8080. The prebuilt WASM preview needs no compiler. It has the virtual FM-1 panel and SCF1 import/export. It is a development preview with placeholder sounds, not an installer.
+> **Development preview:** the native app and browser simulator work in tests. Audio is an original placeholder bank. Hardware firmware still needs the target toolchain and physical validation.
 
-## Build and test
+## Play in your browser
 
-Requires Python 3.11+, Pillow, and a C99 compiler for the host. The `base` submodule pins fm1-base and its BSP rather than tracking a moving branch.
+Download this branch, then serve its included `preview/` folder. No compiler needed:
+
+```sh
+python3 -m http.server 8080 --directory preview
+```
+
+Open **http://localhost:8080**, choose **Start composing**, then **Load Playground demo → Play song**. The demo is an original 32-note sketch; loading it can be undone. The simulator includes a clickable character palette, the virtual FM-1 panel, a manual, and song import/export.
+
+To make your own tune:
+
+1. Choose a stamp and press a few piano keys to place a chord.
+2. Turn **SELECT** to move through time; **SEQ** changes the grid.
+3. Press **PLAY** to listen. **ENV / LFO** undo and redo.
+4. Press **SAVE** to keep the song in this browser, or **Export song** for a portable `.scf` file.
+
+Drag knobs vertically, or focus one and use the arrow keys. Hold **EDIT** while pressing a note to erase it. Tap **EDIT** for the mixer; **GLO** opens the eight-slot song book. Browser storage belongs to that browser and origin; export your keepers before clearing site data.
+
+## On the little screen
+
+| Compose | Mix & shape | Song book |
+| :---: | :---: | :---: |
+| ![Native staff](docs/screens/compose.png) | ![Native mixer](docs/screens/mixer.png) | ![Native song book](docs/screens/songbook.png) |
+| Character ribbon, ledger lines, sharps and playback marker | Instrument and layer levels | Eight save slots with confirmed loading |
+
+These are captures from the **actual 240 × 240 native application**. The browser runs that same C application as WebAssembly, with simulated controls and storage.
+
+- **15 sound roles:** Mario/piano through Heart/bass, selected per note.
+- **Make room for harmony:** a shared eight-voice development default; engine stress tests cover 8, 12 and 16 voices.
+- **Build a phrase:** C2–C6 chromatic entry, chords, quarter/eighth/sixteenth grids, note length, velocity, tempo, looping and song end.
+- **Keep experimenting:** 16 undo levels, bar duplication, eight layers, per-sound levels and eight independent save slots.
+- **Small songs:** up to 384 events, at most 3,124 bytes in the checked SCF1 format.
+
+## Build it
+
+Host requirements: Python 3.11+, Pillow and a C99 compiler. The platform and BSP are pinned submodules.
 
 ```sh
 git clone --recursive --branch stamp-composer-core https://github.com/MichaelAPerry/MPFM1.git
 cd MPFM1
 python3 -m pip install Pillow
 ./tests/run_tests.sh
+./build.sh --host
+build/host/stamp_host tests/screens.txt build/host
 ```
 
-The script generates the original sample bank, tests the importer and audio core, builds the native host, and executes panel/edit/save tests. Screenshots and a WAV recording appear in `build/host/`.
+The tests cover timing, polyphony, import validation, editing, undo/redo and simulated save/reboot failures. Native screenshots and a WAV recording go into `build/host/`.
+
+For a fresh browser build, put Emscripten on your PATH (tested with 4.0.20):
 
 ```sh
-./build.sh --host
-build/host/stamp_host tests/panel.txt build/host
-./build.sh --web                 # requires emcc (Emscripten)
+./build.sh --web
+node tests/web.mjs build/emu/app.wasm build/playground.scf
 python3 -m http.server 8080 --directory build/emu
 ```
 
-Open http://localhost:8080, start audio, and use the virtual FM-1 controls. This is the native C app compiled to WebAssembly with simulated peripherals, **not execution of a PI32 firmware binary**.
+For a device build, install the JieLi Linux PI32v2 toolchain and AC79 SDK described by `base/tools/build.py`, set `JIELI_TOOLCHAIN` and `AC79_SDK`, then run `./build.sh`. **No flashable firmware is included.** Package prefix `FM-1_73` needs a collision check before distribution. The browser simulator does not execute a PI32 firmware binary.
 
-For a device build, install the JieLi Linux PI32v2 toolchain and AC79 SDK described by `base/tools/build.py`; set `JIELI_TOOLCHAIN` and `AC79_SDK`, then run `./build.sh`. No flashable firmware is included or hardware validation claimed. The provisional package prefix `FM-1_73` needs a collision check before distribution.
+## Bring a song or sound bank
 
-## Current core
-
-- Fifteen event-selected sound roles, eight optional layers, shared 8-voice development default; engine tests at 8/12/16 voices.
-- C2–C6 chromatic entry, chords, audition, quarter/eighth/sixteenth grids, tempo, stop/play, loop and adjustable end.
-- Scrolling focused staff, original geometric stamps, sound filter, octave navigation.
-- 384 events per song, eight independent save slots, 16 undo levels, bar duplication, per-instrument and per-layer levels.
-- Strict SMP text import subset with explicit rejection of unsupported input and acknowledgement of sound substitution.
-
-See [controls](docs/CONTROLS.md), [architecture and remaining work](docs/ARCHITECTURE.md), [source inspection and assets](docs/RESEARCH.md), [format](docs/FORMAT.md), and [validation](docs/VALIDATION.md).
-
-## Import and custom audio
+Convert the supported Super Mario Paint text subset:
 
 ```sh
 python3 tools/import_smp.py examples/playground.smp build/playground.scf --placeholder-bank
 ```
 
-The converter preserves supported notes, chromatic pitches, line velocity, timing, and retrigger cutoff durations. It rejects legacy MPC, arrangements, extensions, mute commands, extra instruments, noninteger tempos, capacity overruns and unsupported signatures. It does not convert a SoundFont. The example is an original test tune using upstream file syntax, not a Nintendo composition.
+Import the resulting `.scf` through the simulator, then press **SAVE**. Import is refused during playback and can be undone. The converter preserves supported notes, chromatic pitches, line velocity, timing and retrigger cutoffs. It rejects legacy MPC, arrangements, extensions, mute commands, extra instruments, noninteger tempos and capacity overruns. See [the format](docs/FORMAT.md) and [source inspection](docs/RESEARCH.md).
 
-To build with your own audio, supply all fifteen WAV files named after the roles in `tools/make_bank.py`, mono PCM16 at 22050 Hz, root C4, at most 4096 frames each:
+To use your own audio, supply all fifteen role-named WAVs listed in `tools/make_bank.py`: mono PCM16, 22,050 Hz, root C4, at most 4,096 frames each.
 
 ```sh
 STAMP_WAV_DIR=/absolute/path/to/wavs ./build.sh --host
 ```
 
-The tool refuses long or differently formatted inputs rather than silently truncating/resampling. Bank sustain loops, multisample zoning and SoundFont envelope conversion are not implemented. Compiled samples are read from constant data; no full bank RAM copy is required. After starting the browser preview, use its Import SCF1 / Export current song controls. Import is refused during playback and can be undone; press SAVE to persist it. Device transfer support is pending.
+Long or differently formatted inputs are rejected. SoundFont conversion, multisample zones and sustain loops remain unfinished. The included audio is deliberately labeled as development audio; it does not reproduce the original game's sound bank.
 
-Application code, original sounds and geometric stamps: MIT, retaining the repository's original license. fm1-base/BSP and bundled build dependencies retain their own licenses; see [THIRD_PARTY.md](THIRD_PARTY.md).
+## Project notes & credits
+
+The simulator presentation takes inspiration from [Bass Something 2](https://imijes.github.io/bass-something-2/emu/): a clear instrument panel, useful onboarding and documentation close at hand. The implementation uses our pinned [fm1-base](https://github.com/charlesvestal/fm1-base) platform and [felucca-bsp](https://github.com/hugelton/felucca-bsp).
+
+Character PNGs come from [Super Mario Paint](https://github.com/DC37/Super-Mario-Paint), with exact provenance in [assets/NOTICE.md](assets/NOTICE.md). Nintendo character artwork is separate from the MIT application-code license. This is an unaffiliated fan project.
+
+Read [architecture and remaining work](docs/ARCHITECTURE.md), [validation and limitations](docs/VALIDATION.md), and [third-party notices](THIRD_PARTY.md) before building for hardware.

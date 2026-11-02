@@ -1,0 +1,15 @@
+wait 100
+shot welcome.png
+demo
+wait 100
+shot compose.png
+tap PLAY
+wait 450
+shot playback.png
+tap PLAY
+tap EDIT
+wait 60
+shot mixer.png
+tap GLO
+wait 60
+shot songbook.png

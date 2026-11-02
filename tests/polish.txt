@@ -1,0 +1,30 @@
+wait 100
+tapkey 7
+expect notes 1
+press EDIT
+wait 40
+tapkey 7
+release EDIT
+wait 40
+expect notes 0
+expect page 0
+tap EDIT
+expect page 1
+tap EDIT
+expect page 0
+demo
+expect notes 32
+expect dirty 1
+tap PLAY
+demo
+expect notes 32
+expect playing 1
+tap PLAY
+tap ENV
+expect notes 0
+tap LFO
+expect notes 32
+tap GLO
+expect page 2
+tap HOME
+expect page 0

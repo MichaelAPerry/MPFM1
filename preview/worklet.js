@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MPL-2.0
 // Copyright (C) 2026 Charles Vestal
+// Modified for Stamp Composer: expose native status with each frame.
 // An fm1-base app in an AudioWorklet: app.wasm is the whole FM-1 app (web/emu/emu_web.c). Each render
 // quantum asks it for 128 frames, which runs the device's clock forward; between quanta the page's
 // input goes in and, about 30 times a second, the screen, the lights, any saved objects and what the
@@ -79,6 +80,7 @@ class Fm1 extends AudioWorkletProcessor {
       msg.load = Math.round(100 * this.busy / (this.frames / 44.1));
       this.busy = this.frames = 0;
     }
+    msg.stamp={count:ex.stamp_count(),instrument:ex.stamp_instrument(),playing:ex.stamp_playing(),dirty:ex.stamp_dirty()};
     const transfer = [];
     const said = ex.web_said_len();
     if (said) {                                       // whole F0..F7 frames

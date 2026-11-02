@@ -16,3 +16,13 @@ tap(10);tap(7); // STOP then SAVE
 assert(e.web_store_writes()>0);e.web_boot();assert.equal(e.stamp_count(),11);
 new Uint8Array(e.memory.buffer,e.stamp_buffer(),saved.length).set(saved);assert.equal(e.stamp_import(saved.length),1);assert.equal(e.stamp_count(),1);
 console.log('WASM: key editing, import/export, playback audio, import refusal during playback, persistence/reboot passed; peak',peak);
+
+
+assert.equal(e.stamp_select(14),1);assert.equal(e.stamp_instrument(),14);
+assert.equal(e.stamp_select(15),0);assert.equal(e.stamp_instrument(),14);
+assert.equal(e.stamp_demo(),1);assert.equal(e.stamp_count(),32);assert.equal(e.stamp_dirty(),1);
+e.stamp_transport();assert.equal(e.stamp_playing(),1);assert.equal(e.stamp_demo(),0);
+e.stamp_transport();assert.equal(e.stamp_playing(),0);
+tap(2); // ENV: undo demo
+assert.equal(e.stamp_count(),1);
+console.log('WASM: palette bounds, 32-note demo, demo undo, transport and playback protection passed');

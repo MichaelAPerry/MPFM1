@@ -9,3 +9,5 @@ cc -std=c99 -O2 -Wall -Wextra -Werror -Wno-misleading-indentation -Idsp tests/co
 build/core_test build/playground.scf
 ./build.sh --host
 build/host/stamp_host tests/panel.txt build/host
+
+build/host/stamp_host tests/polish.txt build/host

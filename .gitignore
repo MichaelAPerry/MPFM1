@@ -3,3 +3,5 @@
 /web/words/
 __pycache__/
 *.pyc
+
+/assets/stamps.h

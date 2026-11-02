@@ -6,11 +6,12 @@ Ran 4 tests in 0.002s
 
 OK
 sizeof song=3106, note=8, engine=540, voice=32; wire max=3124; history=52802
-HOST voices=8 audio=23.220s wallCPU=0.0264s load=0.114% steals=31992 (not device benchmark)
-HOST voices=12 audio=23.220s wallCPU=0.0399s load=0.172% steals=47988 (not device benchmark)
-HOST voices=16 audio=23.220s wallCPU=0.0518s load=0.223% steals=63984 (not device benchmark)
+HOST voices=8 audio=23.220s wallCPU=0.0432s load=0.186% steals=31992 (not device benchmark)
+HOST voices=12 audio=23.220s wallCPU=0.0432s load=0.186% steals=47988 (not device benchmark)
+HOST voices=16 audio=23.220s wallCPU=0.0596s load=0.257% steals=63984 (not device benchmark)
 core behavior checks passed
 PCM: 122880 bytes; pitch table: 196 bytes; 15 x 4096 mono PCM16 @ 22050 Hz, root C4; no loops
+Stamp ROM: 9216 bytes; 15 character stamps and treble clef.
 font T: BarlowSemiCondensed-SemiBold.ttf 10px h 12, digit adv 5, 3600 B
 font XS: BarlowSemiCondensed-SemiBold.ttf 12px h 15, digit adv 6, 7005 B
 font S: BarlowSemiCondensed-Medium.ttf 15px h 16, digit adv 7, 8576 B
@@ -41,4 +42,20 @@ host     /workspace/scratch/8f32f5faec74/MPFM1/build/host/stamp_host
   ok notes == 9
   ok dirty == 1
   ok notes == 8
-host: 3770 ms simulated, 717 blits, render 0.0% of real time (host CPU)
+host: 3770 ms simulated, 717 blits, render 0.1% of real time (host CPU)
+  ok notes == 1
+  ok notes == 0
+  ok page == 0
+  ok page == 1
+  ok page == 0
+  ok notes == 32
+  ok dirty == 1
+  ok notes == 32
+  ok playing == 1
+  ok notes == 0
+  ok notes == 32
+  ok page == 2
+  ok page == 0
+host: 1004 ms simulated, 192 blits, render 0.0% of real time (host CPU)
+WASM: key editing, import/export, playback audio, import refusal during playback, persistence/reboot passed; peak 0.02508687973022461
+WASM: palette bounds, 32-note demo, demo undo, transport and playback protection passed

@@ -20,7 +20,8 @@ UI edits lock platform interrupts. Large history copies, duplication and seriali
 | One voice | 32 |
 | PCM bank (constant/flash target) | 122880 |
 | Pitch-increment table | 196 |
-| Canvas requested from platform (240×80×2, pool) | 38400 |
+| Character stamp ROM (constant) | 9216 |
+| Canvas requested from platform (240×112×2, pool) | 53760 |
 
 These are component measurements, not a linked firmware memory report. Runtime platform state, fonts, stacks, USB/audio buffers and alignment are additional. The linked device image, actual free RAM/pool and storage wear are not measured yet. The upstream linker assigns 96 KiB static RAM, 336 KiB pool, and a packed application slot of 0x8DFBC bytes; its larger temporary XIP allowance is not extra installable flash. Eight song slot pairs consume 65536 flash bytes independent of the app slot.
 
@@ -31,7 +32,8 @@ These are component measurements, not a linked firmware memory report. Runtime p
 - Replace placeholders with a permission-cleared expressive bank; implement tuned zoning, loops, longer tails and explicit SoundFont conversion if needed. Current WAV importer is deliberately strict.
 - Device import/export transport, backup, reusable sections and arrangement chains; currently standalone editing and eight slots work in host tests.
 - PC corpus testing and optional legacy MPC support; the implemented SMP subset rejects unsupported features.
-- Improve low/high staff band labels, dense chord selection, icons, screen reader announcements and per-existing-note duration/velocity editing. Current duration/velocity knobs affect new entries.
+- Improve dense chord selection, off-band note navigation, comprehensive screen reader change announcements and per-existing-note duration/velocity editing. Current duration/velocity knobs affect new entries.
 - USB MIDI performance I/O, Classic restrictions, extra instruments and browser companion editing are secondary.
 
 Completed features and tests are in README and VALIDATION. This branch is an engineering prototype, not the entire product brief marked complete.
+

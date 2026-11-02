@@ -1,6 +1,12 @@
-# Validation — initial branch
+# Validation — polish pass
 
 ## Passed
+
+- Native staff, mixer and song-book captures visually inspected at 240×240; deterministic character ROM generation uses 16 source PNGs.
+- Polished application rebuilt with Emscripten 4.0.20; WASM size 182,344 bytes.
+- New WASM checks cover valid/invalid palette bounds, the 32-note demo, demo undo, transport and refusal to replace the song during playback.
+- Native regression confirms EDIT+key erases without switching pages, tap toggles mixer, demo undo/redo, playback protection and song-book navigation.
+- Existing core, importer and host panel/save/reboot regression suite rerun successfully.
 
 - Native C99 core compiled with warnings treated as errors (compact conditional formatting warning suppressed).
 - Real fm1-base host application compiled; panel test ran 3770 ms simulated with 717 blits.
@@ -20,7 +26,7 @@ Representative optimized host stress measurements (4000 blocks × 256 frames, re
 - No PI32 firmware binary was built: the build stopped because `cpu/wl82/tools/uboot.boot` was absent; the JieLi toolchain and AC79 SDK are not configured.
 - No device binary was executed in fm1-emu and no physical FM-1 was tested.
 - No final device linker map, total flash/RAM report, audible quality evaluation or sample-fidelity approval.
-- Browser UI interaction/AudioWorklet scheduling not yet automated: Playwright browser installation failed because its download was empty/truncated. WASM execution tests are distinct from a full browser session.
+- Full browser UI interaction/AudioWorklet scheduling remains unverified. The cloud browser could inspect the reference simulator but could not reach this workspace’s local preview server (`ERR_HTTP_RESPONSE_CODE_FAILURE`). Node WASM tests are distinct from a full browser session.
 - The imported example is an authored fixture of the inspected SMP syntax. A real-world SMP/MPC corpus and proprietary sample-bank comparisons remain outstanding.
 
 ## Next physical checks
@@ -31,3 +37,4 @@ Representative optimized host stress measurements (4000 blocks × 256 frames, re
 4. Measure pitch across C2–C6, aliasing at high transposition, clipping, MASTER motion and stealing clicks through headphones/line output.
 5. Test interrupted saves and all eight slots, recovery from malformed records, and storage lifetime assumptions.
 6. Only then set a supported hardware voice limit and distribute an installable package with matching source/notices.
+

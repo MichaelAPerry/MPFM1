@@ -8,7 +8,7 @@ Hardware/API source: pinned `base/include/plat.h` and `base/device/lcd.c`: 240×
 | SELECT encoder | Move time cursor one selected grid step |
 | PRESET | Choose one of fifteen sounds |
 | ALGO | Choose layer 1–8 |
-| K1 | Tempo 30–300 BPM; in FILE view, choose save slot |
+| K1 | Tempo 30–300 BPM; in song-book view, choose save slot |
 | K2 | New-note velocity; in EDIT view, selected instrument volume (0 mutes) |
 | K3 | New-note duration in 24-tick steps; in EDIT view, layer volume (0 mutes) |
 | K4 | Song end in quarter-note steps; cannot cut off existing event starts |
@@ -19,14 +19,17 @@ Hardware/API source: pinned `base/include/plat.h` and `base/device/lcd.c`: 240×
 | FX | Mute/unmute selected sound (unmute restores level 127) |
 | ENV / LFO | Undo / redo |
 | REC | Duplicate cursor's whole bar into next bar, preserving existing notes; capacity checked |
-| EDIT | Toggle secondary edit view; hold with a key to erase matching pitch/sound/layer at cursor |
+| EDIT | Tap to toggle mixer view; hold with a key to erase matching pitch/sound/layer at cursor |
 | SEL | Show all sounds / only selected sound |
-| GLO | Toggle FILE view |
+| GLO | Toggle song-book view |
 | SAVE | Save current song to selected slot; rejected during playback |
-| REC in FILE view | First press arms load; second loads that slot. Load can be undone |
+| REC in song-book view | First press arms load; second loads that slot. Load can be undone |
 | HOME | Return to staff, cursor zero; cancel pending load |
 | MASTER | Smoothed audio level |
 
-Editing notes and song settings is disabled during playback; navigation and sound selection remain available. Stop before saving because the platform pauses audio while writing flash. No one-press clear-song control exists. Boot loads slot 1; select other slots in FILE view. A load confirmation remains armed until slot/view changes or HOME; it is not timed.
+Editing notes and song settings is disabled during playback; navigation and sound selection remain available. Stop before saving because the platform pauses audio while writing flash. No one-press clear-song control exists. Boot loads slot 1; select other slots in song-book view. A load confirmation remains armed until slot/view changes or HOME; it is not timed.
 
-Staff lines use treble-staff pitch spacing. The view changes octave bands for low/high notes; extreme pitches may be outside the visible band. Sharps mark chromatic pitches. Dense chords with the same position can overlap; filtering helps, but per-note selection, richer icons, ledger lines and octave-band labels still need refinement.
+Staff lines use treble-staff pitch spacing. The view changes octave bands for low/high notes; extreme pitches may be outside the visible band. Sharps mark chromatic pitches. Dense chords with the same position can overlap; filtering helps, but individual selection still needs refinement. The display now includes character stamps, ledger lines, octave-band labels and off-band indicators.
+
+
+Browser shortcuts: the side palette selects the native instrument; Load Playground demo creates an undoable 32-note sketch; Play song controls native transport. Both demo replacement and import require stopped playback. A nonempty song requires confirmation before replacement. Screen Reader can request a native page/status summary; full incremental narration is still incomplete.

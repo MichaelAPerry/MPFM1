@@ -5,7 +5,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>STAMP in the browser</title>
+<title>Stamp Composer — play with little sounds</title>
 <meta name="description" content="STAMP for the M-VAVE FM-1, in the browser: the same code the FM-1 runs.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,12 +86,16 @@ a { color: var(--accent); }
 .help ul { padding-left: 1.1rem; }
 kbd { font: 600 .85em ui-monospace, Menlo, monospace; background: var(--card); border: 1px solid var(--rule); border-radius: 4px; padding: 0 .3em; color: var(--ink); }
 </style>
+<link rel="stylesheet" href="theme.css">
 </head>
 <body>
 <header>
-  <h1>STAMP</h1>
+ <a class="brand" href="#"><img src="stamps/mario.png" alt="">STAMP COMPOSER <small>FM-1</small></a>
+ <nav aria-label="Project"><a href="#studio" aria-current="page">Simulator</a><a href="#guide">Quick start</a><a href="manual.html">Manual</a><a href="https://github.com/MichaelAPerry/MPFM1/tree/stamp-composer-core">Source ↗</a></nav>
 </header>
 <main>
+<section class="hero"><div><p class="eyebrow">A pocket music playground</p><h1>Little stamps.<br><span>Big ideas.</span></h1></div><p class="hero-copy">Pick a character. Place a note. Make something yours.<br><b>A Mario Paint–inspired composer for the M-VAVE FM-1.</b></p></section>
+<div class="workspace" id="studio"><div class="instrument-wrap">
 <h2 class="sr">The FM-1</h2>
 <p class="turn">Turn your phone sideways for bigger controls.</p>
 <div class="devicebox">
@@ -99,7 +103,7 @@ kbd { font: 600 .85em ui-monospace, Menlo, monospace; background: var(--card); b
   <svg id="panel" viewBox="0 0 1000 640" aria-hidden="true" focusable="false"></svg>
   <canvas id="screen" width="240" height="240" role="img" aria-label="The FM-1's screen. Its text is read out: see Screen Reader, below the panel"></canvas>
   <div id="controls" role="group" aria-label="The FM-1's panel" aria-describedby="panel-keys" inert></div>
-  <div class="start" id="start"><button type="button" id="go">Switch on</button></div>
+  <div class="start" id="start"><button type="button" id="go">Start composing</button></div>
 </div>
 </div>
 <p id="panel-keys" class="sr">Tab moves through the knobs, the buttons, the black keys and the white keys. Arrow keys turn a knob,
@@ -121,7 +125,7 @@ kbd { font: 600 .85em ui-monospace, Menlo, monospace; background: var(--card); b
   <fieldset>
     <legend>Output</legend>
     <label><input type="radio" name="speak" value="sr" checked> System screen reader</label>
-    <label><input type="radio" name="speak" value="voice"> Built-in voice</label>
+    
     <label><input type="radio" name="speak" value="off"> Off</label>
   </fieldset>
   <p id="said" aria-hidden="true"></p>
@@ -130,12 +134,27 @@ kbd { font: 600 .85em ui-monospace, Menlo, monospace; background: var(--card); b
     <button type="button" id="again" disabled>Repeat last</button>
   </div>
 </details>
+</div>
+<aside class="studio-card" aria-label="Composer shortcuts">
+ <div class="sound-picker"><p class="eyebrow">15 familiar faces</p><h2>Choose your stamp</h2><p>Click a character or turn PRESETS.</p><div id="stamp-palette" class="palette"></div><div id="selected-name" class="selected-name">MARIO / PIANO</div></div>
+ <hr class="studio-divider">
+ <div><h2>Take it for a spin</h2><p>An original little tune to get you started.</p><button id="demo" class="studio-action primary" disabled>Load Playground demo</button><button id="transport" class="studio-action" disabled>Play song</button><div class="studio-state"><span id="song-count">0 notes</span><span id="song-save">Not started</span></div></div>
+ <hr class="studio-divider">
+ <div><h2>Your song book</h2><p>SAVE keeps a song in this browser. Export a file for a portable copy.</p><button id="export-song" class="studio-action" disabled>Export song ↓</button><label class="file-label" for="import-song">Import a .scf song</label><input id="import-song" class="import-input" type="file" accept=".scf" disabled><p class="sound-note">Development sound bank: original placeholder audio. Character stamps are here; original game audio is not.</p></div>
+</aside></div>
+<div class="guide" id="guide">
+<section><span class="step-index">01 / PLACE</span><h2>Make your first chord.</h2><p>Choose Mario. Press a few keys: each places and auditions a note at the cursor. White keys: <kbd>Q</kbd>–<kbd>I</kbd> and <kbd>A</kbd>–<kbd>K</kbd>. Black keys: <kbd>1</kbd>–<kbd>0</kbd>, <kbd>−</kbd>.</p></section>
+<section><span class="step-index">02 / MOVE</span><h2>Give it a little rhythm.</h2><p>Turn <strong>SELECT</strong> to move through time. <strong>SEQ</strong> changes the grid. <strong>PRESETS</strong> picks a sound. Drag knobs vertically, or focus one and use the arrow keys.</p></section>
+<section><span class="step-index">03 / PLAY</span><h2>Listen. Tweak. Repeat.</h2><p><strong>PLAY</strong> starts or stops; <strong>ARP</strong> loops. <strong>ENV / LFO</strong> undo and redo. Hold <strong>EDIT</strong> with a key to erase. <strong>GLO</strong> opens your eight save slots.</p></section>
+</div>
+<div class="fineprint"><p>Fifteen stamps · Eight layers · One shared voice pool<br>Native app preview · Hardware build in development</p><p>A fan project by Michael Perry. Built with fm1-base.<br>Nintendo characters belong to their respective rights holders. Not affiliated with Nintendo or M-VAVE.</p></div>
 <!-- what the screen says, for the computer's screen reader -->
 <div id="live-p" class="sr" aria-live="polite" aria-atomic="true"></div>
 <div id="live-a" class="sr" aria-live="assertive" aria-atomic="true"></div>
 </main>
 
 
+<script type="module" src="app.js"></script>
 <script>
 "use strict";
 const NS = "http://www.w3.org/2000/svg";
@@ -144,7 +163,7 @@ const ENC = { SELECT: 0, ALGORITHM: 1, PRESETS: 2, KNOB1: 3, KNOB2: 4, KNOB3: 5,
 const WHITE_K = [0, 2, 4, 6, 7, 9, 11, 12, 14, 16, 18, 19, 21, 23, 24, 26];
 const BLACK_K = [1, 3, 5, 8, 10, 13, 15, 17, 20, 22, 25];
 const BLACK_AFTER = [0, 1, 2, 4, 5, 7, 8, 9, 11, 12, 14];
-const BODY = "#3a3d42", TRAY = "#26282c", KEY_W = "#d9dadc", KEY_B = "#c9cacd", KNOB = "#1f2124", BTNC = "#2e3135", LABEL = "#e8e8ea";
+const BODY = "#303944", TRAY = "#222933", KEY_W = "#f6f0df", KEY_B = "#747c84", KNOB = "#20262e", BTNC = "#414a55", LABEL = "#f9f2df";
 const STORE_KEY = "stamp-emu-store", PREFS_KEY = "stamp-emu-prefs";
 const $ = (id) => document.getElementById(id);
 const prefs = (() => { try { return JSON.parse(localStorage.getItem(PREFS_KEY) || "{}"); } catch { return {}; } })();
@@ -179,10 +198,14 @@ function knob(x, y, r, label, role, name) {
 }
 knob(105, 100, 24, "MASTER", "master");
 knob(215, 100, 24, "SELECT", ENC.SELECT);
+text(svg,215,145,"TIME",10,"#edb969");
 knob(105, 205, 24, "PRESETS", ENC.PRESETS);
+text(svg,105,250,"STAMP",10,"#edb969");
 knob(215, 205, 24, "ALGORITHM", ENC.ALGORITHM);
+text(svg,215,250,"LAYER",10,"#edb969");
 for (let i = 0; i < 4; i++) knob(610 + i * 104, 100, 22, `KNOB${i + 1}`, ENC[`KNOB${i + 1}`], `KNOB ${i + 1}`);
 
+["TEMPO", "VELOCITY", "LENGTH", "SONG END"].forEach((t,i)=>text(svg,610+i*104,142,t,10,"#edb969"));
 const buttons = {};
 function button(x, y, w, h, label, two) {
   const g = el("g", { class: "ctl" });
@@ -654,14 +677,15 @@ async function switchOn() {
     const ready = new Promise((res) => {
       node.port.onmessage = (e) => {
         const m = e.data;
-        if (m.type === "ready") res();
+        if (m.type === "ready") { if(appPart && appPart.ready) appPart.ready(); res(); }
         else if (m.type === "frame") {
           if (m.fb) drawScreen(m.fb);
           drawLights(m.buttons, m.keys, m.dimButtons, m.dimKeys);
           if (m.said) onSaid(m.said);
           window.emuLast = m;
-          if (m.load !== undefined) cpu.textContent = `STAMP uses ${m.load}% of this computer's time`;
+          if (m.load !== undefined) cpu.textContent = `Host CPU ${m.load}%`;
           if (m.store) saveStore(m.store);
+          if(appPart && appPart.frame) appPart.frame(m);
         } else if (m.type === "app" && appPart && appPart.message) appPart.message(m);
       };
     });
@@ -674,14 +698,14 @@ async function switchOn() {
     await ac.resume();
     $("start").hidden = true;
     controls.inert = false;
-    status.textContent = ac.sampleRate === 44100 ? "On." : `On (the browser runs audio at ${ac.sampleRate} Hz).`;
+    status.textContent = ac.sampleRate === 44100 ? "Ready to compose." : `On (the browser runs audio at ${ac.sampleRate} Hz).`;
     syncButtons(); syncKeys();
     readerOn();
     knobs.MASTER.hit.focus();                  // the switch is gone: on to the panel
   } catch (err) {
     node = null;
     go.disabled = false;
-    go.textContent = "Switch on";
+    go.textContent = "Start composing";
     status.textContent = "Off.";
     showAlert("Could not start: " + (err && err.message || err) + ". Chrome, Edge, Firefox and Safari should all work.");
   }
