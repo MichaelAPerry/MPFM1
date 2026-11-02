@@ -19,6 +19,18 @@ int sc_add(ScSong *s, ScNote n) {
  while(at && s->notes[at-1].tick>n.tick) { s->notes[at]=s->notes[at-1]; at--; }
  s->notes[at]=n; s->count++; return 1;
 }
+/* edits while playing: the render scan index e->next stays on the same note (a note at or before the scan point is never triggered by the scan) */
+int sc_insert(ScEngine *e,ScSong *s,ScNote n) {
+ unsigned at=0; if(sc_find(s,n)>=0) return SC_E_NONE; if(s->count==SC_EVENTS) return SC_E_FULL;
+ while(at<s->count && s->notes[at].tick<=n.tick) at++;
+ if(!sc_add(s,n)) return 0;
+ if(at<e->next || (at==e->next && n.tick<=e->tick+s->human*8u/100)) e->next++;
+ return 1;
+}
+int sc_remove(ScEngine *e,ScSong *s,ScNote n) {
+ int i=sc_find(s,n); if(i<0) return 0;
+ memmove(s->notes+i,s->notes+i+1,(s->count---i-1)*sizeof(ScNote)); if((unsigned)i<e->next) e->next--; return 1;
+}
 int sc_duplicate(ScSong *s, uint16_t start, uint16_t length) {
  ScNote copy[SC_EVENTS]; unsigned n=0,i,end=(unsigned)start+2u*length;
  if(!length || end>65535) return 0;
@@ -30,7 +42,8 @@ int sc_duplicate(ScSong *s, uint16_t start, uint16_t length) {
 /* Range ops on [from,from+len) ticks; inst < 0: all sounds. Return 1, or SC_E_*: checked first, a refusal leaves the song untouched. */
 static ScNote tmp[SC_EVENTS]; /* scratch for copy/move (not reentrant) */
 static int hit(const ScNote *n,unsigned from,unsigned len,int inst) { return n->tick>=from && n->tick-from<len && (inst<0 || n->instrument==inst); }
-static int has(const ScSong *s,ScNote n) { unsigned i; for(i=0;i<s->count;i++) if(s->notes[i].tick==n.tick && s->notes[i].pitch==n.pitch && s->notes[i].instrument==n.instrument && s->notes[i].layer==n.layer) return 1; return 0; }
+int sc_find(const ScSong *s,ScNote n) { unsigned i; for(i=0;i<s->count;i++) if(s->notes[i].tick==n.tick && s->notes[i].pitch==n.pitch && s->notes[i].instrument==n.instrument && s->notes[i].layer==n.layer) return (int)i; return -1; }
+#define has(s,n) (sc_find(s,n)>=0)
 /* copy (mv 0) or move (mv 1) the range's notes to `to`, skipping ones already there; end grows to cover the target */
 static int paste(ScSong *s,unsigned from,unsigned len,unsigned to,int inst,int mv) {
  unsigned i,n=0,nd=0;
@@ -105,6 +118,11 @@ void sc_stop(ScEngine *e){unsigned i;e->playing=0;e->npd=0;for(i=0;i<e->limit;i+
  if(e->midi){while(e->np)moff(e,0);for(i=0;i<16;i++)if(e->chused>>i&1)mp(e,11,0xB0|i,123,0);e->chused=0;if(e->clk)mp(e,15,0xFC,0,0);}
  e->clk=0;e->xl=e->xw=0;
 }
+void sc_release(ScEngine *e,const ScSong *s,unsigned pitch,unsigned ins){ /* gate off: voices fade out (decay tail), MIDI note-off now */
+ unsigned i;int pi=pitch+s->tune[ins];if(ins>=15)return;pi=pi<0?0:pi>127?127:pi;
+ for(i=0;i<e->limit;i++){ScVoice *v=&e->voices[i];if(v->active && v->instrument==ins && v->pitch==pitch && !v->relp)v->left=v->rel?0:v->left>128?128:v->left;}
+ if(e->midi && s->midi_ch[ins])for(i=0;i<e->np;i++)if(e->pend[i].ch==s->midi_ch[ins]-1 && e->pend[i].note==pi){e->pend[i].due=e->frames;mdue(e);break;}
+}
 void sc_start(ScEngine *e){sc_stop(e);e->tick=0;e->phase=0;e->next=0;e->clkc=0;e->cont=0;e->rng=0x2545F491u;e->playing=1;}
 void sc_start_at(ScEngine *e,const ScSong *s,unsigned tick){
  sc_start(e);if(tick>=s->end)return;e->tick=tick;e->clkc=tick;e->cont=tick>0;while(e->next<s->count && s->notes[e->next].tick<tick)e->next++;}
@@ -117,7 +135,7 @@ void sc_note(ScEngine *e,const ScSong *s,ScNote n){
  for(i=0;i<e->limit;i++){if(!e->voices[i].active){best=i;break;}if(e->age-e->voices[i].age>=oldest){oldest=e->age-e->voices[i].age;best=i;}}
  v=&e->voices[best]; if(v->active)e->steals++;
  pi=n.pitch-36+s->tune[ins];pi=pi<0?0:pi>48?48:pi;
- v->tail=v->last;v->fade=64;v->pos=0;v->inc=sc_increments[pi];v->instrument=ins;v->active=1;v->age=++e->age;
+ v->tail=v->last;v->fade=64;v->pos=0;v->inc=sc_increments[pi];v->instrument=ins;v->pitch=n.pitch;v->active=1;v->age=++e->age;
  v->left=len;v->rel=s->decay[ins]*520u;v->relp=0;v->lp=0; /* release up to ~1.5 s */
  {float t=s->tone[ins]/127.0f;v->k=s->tone[ins]>=127?1.0f:0.01f+0.99f*t*t;}
  v->gl=v->gr=1.0f;if(s->pan[ins]>0)v->gl=(64-s->pan[ins])/64.0f;else if(s->pan[ins]<0)v->gr=(64+s->pan[ins])/64.0f;

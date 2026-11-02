@@ -14,7 +14,7 @@ typedef struct {
  int8_t tune[15], pan[15]; uint8_t tone[15], decay[15], midi_ch[15], midi_mode, midi_clock; /* tune -12..12, tone 127 open, decay 0 = short, pan -64..63, ch 0 off/1..16, mode 0 off/1 +internal/2 MIDI only, clock 0 off/1 out/2 in */
  ScNote notes[SC_EVENTS];
 } ScSong;
-typedef struct { uint32_t pos, inc, left, rel, age; float gain, last, tail, lp, k, gl, gr; uint8_t instrument, active, fade, relp; } ScVoice;
+typedef struct { uint32_t pos, inc, left, rel, age; float gain, last, tail, lp, k, gl, gr; uint8_t instrument, pitch, active, fade, relp; } ScVoice;
 typedef struct {
  ScVoice voices[SC_VOICES]; uint32_t phase, tick, age, triggers, steals;
  uint16_t next; uint8_t playing, limit, mute, solo, cont, npd; float master; /* mute/solo: layer bit masks (performance, not in the song); cont: next clock Start is SPP+Continue */
@@ -28,6 +28,10 @@ extern const char *const sc_names[15];
 void sc_default(ScSong *s);
 int sc_valid(const ScSong *s);
 int sc_add(ScSong *s, ScNote n);
+int sc_find(const ScSong *s, ScNote n); /* index of the note with the same tick, pitch, sound and layer, or -1 */
+/* While playing (call under the render's lock): add/remove one note and keep the engine's scan index right. insert: 1 added, SC_E_NONE already there, SC_E_FULL, 0 invalid; a note due at or before the playhead is not triggered by the scan (audition it with sc_note). remove: 1 removed. */
+int sc_insert(ScEngine *e, ScSong *s, ScNote n);
+int sc_remove(ScEngine *e, ScSong *s, ScNote n);
 int sc_duplicate(ScSong *s, uint16_t start, uint16_t length);
 /* Range ops on ticks [from,from+len), inst < 0: all sounds. 1 = done, else SC_E_* with the song unchanged.
  * copy/move paste at `to` keeping notes already there (same tick, pitch, sound, layer = skipped) and extend end to cover it; move removes the source first.
@@ -45,6 +49,7 @@ void sc_start_at(ScEngine *e, const ScSong *s, unsigned tick); /* play from tick
 void sc_start(ScEngine *e); /* MIDI Start (0xFA) goes out with the first sc_render after this, if midi_clock */
 void sc_stop(ScEngine *e); /* pending note-offs, CC123 on used channels, 0xFC if clock ran */
 void sc_note(ScEngine *e, const ScSong *s, ScNote n);
+void sc_release(ScEngine *e, const ScSong *s, unsigned pitch, unsigned instrument); /* gate: end voices of that pitch+sound now (decay applies) and send their MIDI note-off; for sc_note with a long duration */
 void sc_render(ScEngine *e, const ScSong *s, int32_t *lr, unsigned n, unsigned master);
 /* External clock (song midi_clock 2; the caller guards). Call under the render's lock. us: any monotonic microsecond count, stamped as near the arrival as the platform allows.
  * sc_ext_clock: 0xF8. Tempo = mean of the last 24 intervals; once locked (sc_ext_start) the render holds the playhead within a few ticks of 4 per clock. sc_stop is 0xFC. */
