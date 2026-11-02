@@ -23,7 +23,7 @@ UI edits lock platform interrupts. Large history copies, duplication and seriali
 | Character stamp ROM (constant) | 9216 |
 | Canvas requested from platform (240×112×2, pool) | 53760 |
 
-These are component measurements, not a linked firmware memory report. Runtime platform state, fonts, stacks, USB/audio buffers and alignment are additional. The linked device image, actual free RAM/pool and storage wear are not measured yet. The upstream linker assigns 96 KiB static RAM, 336 KiB pool, and a packed application slot of 0x8DFBC bytes; its larger temporary XIP allowance is not extra installable flash. Eight song slot pairs consume 65536 flash bytes independent of the app slot.
+These are component measurements, not a linked firmware memory report. Runtime platform state, fonts, stacks, USB/audio buffers and alignment are additional. The linked device image, actual free RAM/pool and storage wear are not measured yet. The upstream linker assigns 96 KiB static RAM, 336 KiB pool, and a packed application slot of 0x8DFBC bytes; its larger temporary XIP allowance is not extra installable flash. Eight song slot pairs (0x97000..0xA6FFF) consume 65536 flash bytes independent of the app slot; the autosave pair (OBJ_AUTO, 0xA7000..0xA8FFF, 8 byte header + up to 3204 byte SCF record) adds 8192 more. OBJ_PANEL stays at 0xDC000.
 
 ## Remaining work
 
