@@ -7,6 +7,10 @@ this branch; **Next** items are designed but not started. Validation lives in VA
 
 | Feature | What it does | Where it is stored |
 | --- | --- | --- |
+| 31 sounds | One stamp per Super Mario Paint instrument (Mario .. Gnome, SMP order). The ribbon scrolls a window around the selected sound; the MIDI page shows all 31 channels in an 8 x 4 grid of stamps. Stamp ROM: 31 stamps plus the treble clef (id 31). | Song (SCF v2: per-sound arrays of 31) |
+| Real sound pack | `assets/sounds/smp_bank.bin`: Mario Paint samples (ADPCM, 22,050 Hz), levels matched; a swappable asset pack with its own notice (Nintendo's sounds, not MIT). `STAMP_BANK=placeholder` or `STAMP_WAV_DIR` replace it. | Firmware asset |
+| Loudness | Per-voice gain puts a C4 at velocity 100 near -12 dBFS; a soft limiter (linear to -6 dBFS, then an x/(1+x) knee, never full scale) keeps chords and 16-voice passes from clipping. MASTER is unchanged. | — |
+| Twinkle demo | Twinkle Twinkle (public-domain melody from one of Mario Paint's three demo songs; our 66-note arrangement: STAR melody, HEART bass, 12 bars, 100 BPM, loop). Song book DEMO entry after slot 8 (REC twice loads it, undoable; SAVE refused), browser button, host `demo` command. | — |
 | Sound shaping | Per sound: TUNE −12..+12 semitones, TONE (one-pole low-pass, 0 dark .. 127 open), DECAY (release after the note's length, 0 short .. 127 long), PAN (−64 left .. +63 right). New SOUND page. | Song (SCF v2) |
 | MIDI out per sound | Per sound: channel OFF or 1–16. Note-on at trigger with the note's velocity; note-off after its length; all notes off on stop. Auditions while editing go out too. | Song (SCF v2) |
 | MIDI mode | OFF, ON (internal + MIDI) or MIDI ONLY (internal muted, e.g. driving a synth). | Song |
@@ -48,8 +52,7 @@ Per-page controls are tabulated in CONTROLS.md; keys place notes on the staff on
 
 1. **Sections and chains**: name up to 8 bar ranges and chain them into a song (needs SCF v3 with explicit
    migration; FORMAT.md forbids reusing reserved bytes).
-2. **Sample banks**: more zones per instrument (tuned ranges) and permission-cleared replacements (tools/make_bank.py
-   `--wav-dir`, tools/make_smp_bank.py).
+2. **Loops and extra zones**: sustain loops tuned per sound and more sample zones per instrument (tools/make_smp_bank.py).
 3. **Hardware voice limit**: measure 8/12/16 voices on a physical FM-1 and set the supported count.
 4. **Live record** with count-in, metronome and quantize.
 5. **Loop selected bars** instead of the whole song.

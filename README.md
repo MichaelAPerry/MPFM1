@@ -4,11 +4,11 @@
 
 ![Stamp Composer — native staff, mixer and song book](docs/hero.png)
 
-Pick a character, place a note, and build a song. Fifteen familiar stamps share one polyphonic engine, with eight layers for arranging, a scrolling staff, and a song book that keeps your ideas close.
+Pick a character, place a note, and build a song. 31 familiar stamps share one polyphonic engine, with eight layers for arranging, a scrolling staff, and a song book that keeps your ideas close.
 
 [Quick start](#play-in-your-browser) · [Controls](docs/CONTROLS.md) · [Manual](docs/MANUAL.md) · [Build](#build-it) · [Validation](docs/VALIDATION.md)
 
-> **Development preview:** the firmware builds for the FM-1 and runs in the fm1-emu emulator and the browser preview, and the tests pass, but it is **untested on a physical FM-1**. Audio is an original placeholder bank. See the [manual](docs/MANUAL.md) and [install notes](docs/INSTALL.md) before trying a real unit.
+> **Development preview:** the firmware builds for the FM-1 and runs in the fm1-emu emulator and the browser preview, and the tests pass, but it is **untested on a physical FM-1**. Sounds are the Mario Paint sound pack (Nintendo's, a swappable asset pack: see [its notice](assets/sounds/NOTICE.md)). See the [manual](docs/MANUAL.md) and [install notes](docs/INSTALL.md) before trying a real unit.
 
 ## Play in your browser
 
@@ -18,7 +18,7 @@ Download this branch, then serve its included `preview/` folder. No compiler nee
 python3 -m http.server 8080 --directory preview
 ```
 
-Open **http://localhost:8080**, choose **Start composing**, then **Load Playground demo → Play song**. The demo is an original 32-note sketch; loading it can be undone. The simulator includes a clickable character palette, the virtual FM-1 panel, a manual, and song import/export.
+Open **http://localhost:8080**, choose **Start composing**, then **Load Twinkle demo → Play song**. The demo is Twinkle Twinkle, one of the three demo songs of the original Mario Paint (public-domain melody, our 66-note arrangement for STAR and HEART); loading it can be undone, and on the device it is the song book's DEMO entry. The simulator includes a clickable character palette, the virtual FM-1 panel, a manual, and song import/export.
 
 To make your own tune:
 
@@ -34,11 +34,11 @@ Drag knobs vertically, or focus one and use the arrow keys. Hold **EDIT** while 
 | Compose | Mix & shape | Song book |
 | :---: | :---: | :---: |
 | ![Native staff](docs/screens/compose.png) | ![Native mixer](docs/screens/mixer.png) | ![Native song book](docs/screens/songbook.png) |
-| Character ribbon, ledger lines, sharps and playback marker | Instrument and layer levels | Eight save slots with confirmed loading |
+| Character ribbon, ledger lines, sharps and playback marker | Instrument and layer levels | Eight save slots with confirmed loading, then the Twinkle DEMO |
 
 These are captures from the **actual 240 × 240 native application**. The browser runs that same C application as WebAssembly, with simulated controls and storage.
 
-- **15 sound roles:** Mario/piano through Heart/bass, selected per note.
+- **31 sounds:** Mario/piano through Gnome, one stamp per Mario Paint instrument, selected per note. They use the real Mario Paint sound pack, an asset pack you can swap (see its notice; Nintendo's sounds are not MIT).
 - **Make room for harmony:** a shared eight-voice development default; engine stress tests cover 8, 12 and 16 voices.
 - **Build a phrase:** C2–C6 chromatic entry, chords, quarter/eighth/sixteenth and triplet grids, note length, velocity, tempo, time signature (2–12 beats), looping, song end, and editing existing notes in place.
 - **Shape the sound:** per-sound tune, tone, decay and pan on a SOUND page; layer and sound levels, mute and solo on MIX.

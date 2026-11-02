@@ -4,7 +4,7 @@
 
 - Native staff, mixer and song-book captures visually inspected at 240×240; deterministic character ROM generation uses 16 source PNGs.
 - Polished application rebuilt with Emscripten 4.0.20; WASM size 182,344 bytes.
-- New WASM checks cover valid/invalid palette bounds, the 32-note demo, demo undo, transport and refusal to replace the song during playback.
+- New WASM checks cover valid/invalid palette bounds, the 66-note Twinkle demo, demo undo, transport and refusal to replace the song during playback.
 - Native regression confirms EDIT+key erases without switching pages, tap toggles mixer, demo undo/redo, playback protection and song-book navigation.
 - Existing core, importer and host panel/save/reboot regression suite rerun successfully.
 

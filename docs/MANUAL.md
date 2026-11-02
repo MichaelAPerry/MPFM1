@@ -1,6 +1,6 @@
 # STAMP
 
-Stamp Composer FM-1 turns the M-VAVE FM-1 into a little music maker in the spirit of Mario Paint. Pick a character stamp, press a key, and a note lands on the staff. Each of the fifteen stamps is its own sound, so a song is a picture you can hear.
+Stamp Composer FM-1 turns the M-VAVE FM-1 into a little music maker in the spirit of Mario Paint. Pick a character stamp, press a key, and a note lands on the staff. Each of the 31 stamps is its own sound, so a song is a picture you can hear.
 
 ![The staff page: the header, the row of character stamps, the staff with notes, four knob tiles and the status line](img/compose.png "The staff page, where songs are written")
 
@@ -14,7 +14,7 @@ Stamp Composer FM-1 turns the M-VAVE FM-1 into a little music maker in the spiri
 2. Your first song in two minutes
 3. The pages
 4. Writing and editing notes
-5. The fifteen sounds
+5. The 31 sounds
 6. MIDI
 7. Groove
 8. Bars
@@ -63,7 +63,7 @@ Notes are written on the STAFF page. On every other page the keys only play the 
 | --- | --- |
 | Note keys | Play a note and place it at the cursor (while playing: at the playhead, see section 4). Several keys make a chord. The keyboard covers F3 to G5; notes must land between C2 and C6 |
 | SELECT | Move the cursor by one grid step |
-| PRESET | Choose one of the 15 sounds |
+| PRESET | Choose one of the 31 sounds (wraps, like the ribbon) |
 | ALGO | Choose layer 1 to 8 |
 | K1 | Tempo, 30 to 300 BPM (stopped only) |
 | K2 | Velocity (how hard) for new notes |
@@ -106,6 +106,8 @@ Only on MIX do FX and SEL work on the layer. On every other page except BARS, FX
 
 ### MIDI
 
+The page shows all 31 sounds in a grid of 8 by 4 small stamps, each with its channel (-- = off) and the selected one highlighted; PRESET moves the highlight.
+
 | Control | What it does |
 | --- | --- |
 | K1 | This sound's MIDI channel: OFF or 1 to 16 |
@@ -143,15 +145,15 @@ On SOUND, MIDI, GROOVE and BARS the knobs only turn while the song is stopped; r
 
 ### Song book
 
-![The song book: eight slots, with slot 1 chosen](img/songbook.png "The song book")
+![The song book: eight slots and the DEMO entry, which is chosen](img/songbook.png "The song book")
 
 | Control | What it does |
 | --- | --- |
-| K1, SELECT | Choose the slot, 1 to 8 |
+| K1, SELECT | Choose the slot, 1 to 8, then DEMO |
 | K2, K3 | Velocity and length of new notes |
 | FX | Mute or unmute the selected sound |
-| SAVE | Write the song into that slot |
-| REC | First press arms a load, second press loads the slot |
+| SAVE | Write the song into that slot (on DEMO: refused, PICK A SLOT) |
+| REC | First press arms a load, second press loads the slot (on DEMO: loads Twinkle Twinkle, then the staff) |
 | GLO or HOME | Back to the staff |
 
 ---
@@ -184,22 +186,30 @@ On SOUND, MIDI, GROOVE and BARS the knobs only turn while the song is stopped; r
 
 ---
 
-## 5. The fifteen sounds
+## 5. The 31 sounds
 
 Each stamp has its own sound. Turn **PRESET** to choose.
 
 | Stamp | Sound | Stamp | Sound |
 | --- | --- | --- | --- |
-| Mario | Piano | Pig | Pig |
-| Mushroom | Kick | Swan | Horn |
-| Yoshi | Zip | Face | Baby |
-| Star | Bell | Plane | Guitar |
-| Flower | Trumpet | Boat | Block |
-| Game Boy | Pulse | Car | Organ |
-| Dog | Dog | Heart | Bass |
-| Cat | Cat | | |
+| Mario | Piano | Coin | Coin |
+| Mushroom | Kick | Shy Guy | Shy Guy |
+| Yoshi | Zip | Boo | Boo |
+| Star | Bell | Luigi | Luigi |
+| Flower | Trumpet | Peach | Peach |
+| Game Boy | Pulse | Feather | Feather |
+| Dog | Dog | Bullet Bill | Bullet |
+| Cat | Cat | Goomba | Goomba |
+| Pig | Pig | Bob-omb | Bob-omb |
+| Swan | Horn | Spiny | Spiny |
+| Face | Baby | Fruit | Fruit |
+| Plane | Guitar | 1-Up | 1-Up |
+| Boat | Block | Moon | Moon |
+| Car | Organ | Egg | Egg |
+| Heart | Bass | Gnome | Gnome |
+| Piranha Plant | Piranha |  |  |
 
-The audio is a placeholder sound set made for development, not the original game's sounds.
+The sounds are the Mario Paint sound pack (`assets/sounds/`, with its own notice): Nintendo's sounds, so not under this project's MIT license, and a swappable asset pack.
 
 **Shaping.** On the SOUND page each sound gets its own tune, tone, decay and pan. Tone is a gentle filter, decay sets how long a note rings after its length, and pan places it left or right. A fresh song starts neutral: tune 0, tone 127, decay 0, pan centre. These are saved with the song and can be undone.
 
@@ -251,6 +261,8 @@ Turn on SEL first if copy, move or transpose should touch only the selected soun
 ## 9. Saving, autosave and backup
 
 **Eight slots.** In the song book choose a slot with K1 and press **SAVE**. The status line then reads SAVED. To load, press **REC** twice (the first press arms it, the second loads it). Loading can be undone. HOME cancels an armed load. Stop the song before saving, because audio pauses for a moment while the FM-1 writes.
+
+**Demo.** After slot 8 the song book has a DEMO entry: Twinkle Twinkle, one of the three demo songs of the original Mario Paint (a public-domain melody; this is our own arrangement: STAR melody over a HEART bass, 12 bars, 100 BPM, looping). REC twice loads it like a slot, and ENV undoes the load. It is never overwritten: SAVE on DEMO is refused. The browser's Load Twinkle demo button does the same.
 
 **Autosave.** After 3 seconds with no key or button pressed and no change, and the song stopped, the working song is quietly written to the FM-1, at most every 20 seconds. At power-on it comes back exactly as you left it, with the message RESTORED and its slot and UNSAVED mark. If no autosave can be read, slot 1 loads instead.
 

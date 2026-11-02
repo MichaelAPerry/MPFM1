@@ -8,11 +8,11 @@ Every control acts on its own page only; a dash means nothing happens there. Ref
 
 | Control | Action |
 | --- | --- |
-| PRESET | Choose one of fifteen sounds (wraps 15 ↔ 1, like the ribbon) |
+| PRESET | Choose one of 31 sounds (wraps 31 ↔ 1, like the ribbon) |
 | ALGO | Choose layer 1–8 (wraps) |
 | PLAY | Play from beginning / stop. Hold EDIT and press PLAY: play from the start of the cursor's bar (MIDI clock out: Song Position Pointer + Continue instead of Start) |
 | ENV / LFO | Undo / redo (stopped only) |
-| SAVE | Save the song to the selected slot (stopped only) |
+| SAVE | Save the song to the selected slot (stopped only; on the song book's DEMO entry: refused, PICK A SLOT) |
 | GLO | Toggle the song book |
 | HOME | Tap: return to the staff, cursor zero, cancel a pending load (acts on release). Hold 600 ms: help overlay for the page until released; no action on release |
 | EDIT | Tap: cycle STAFF → MIX → SOUND → MIDI → GROOVE → BARS → STAFF (the song book is entered with GLO and left with GLO/HOME). The page changes only on a clean tap: any other button, key, knob or encoder while EDIT is held cancels it (EDIT+key erase, EDIT+K2/K3 note edit and EDIT+PLAY included) |
@@ -25,14 +25,14 @@ Every control acts on its own page only; a dash means nothing happens there. Ref
 | Control | STAFF | MIX | SONG BOOK | SOUND | MIDI | GROOVE | BARS |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Note keys, MIDI-in notes | stopped: place at cursor (chords), audition; playing: audition + place at playhead (live); EDIT+key erases | audition only | audition only | audition only | audition only (MIDI out) | audition only | audition only |
-| SELECT | cursor, one grid step | – | slot | – | – | – | FROM bar (TO follows if needed) |
-| K1 | tempo 30–300 | beats per bar 2–12 | slot | tune −12..12 | sound's channel OFF/1–16 | swing 0–75 | FROM bar |
+| SELECT | cursor, one grid step | – | slot 1–8, then DEMO | – | – | – | FROM bar (TO follows if needed) |
+| K1 | tempo 30–300 | beats per bar 2–12 | slot 1–8, then DEMO | tune −12..12 | sound's channel OFF/1–16 | swing 0–75 | FROM bar |
 | K2 | new-note velocity; EDIT+K2: velocity of notes at cursor | sound level 0–127 | new-note velocity | tone | mode OFF/ON/MIDI ONLY | human 0–100 | TO bar |
 | K3 | new-note length (24-tick steps, 16 on triplets); EDIT+K3: length at cursor | layer level 0–127 | new-note length | decay | clock OFF/OUT/IN | swing grid 8TH/16TH | TARGET bar |
 | K4 | song end in quarter steps (tile: bars and beats, 4B+2 = 4 bars + 2 beats) | song end | – | pan L64..R63 | MIDI-in channel OMNI/1–16 | human mode TIME+VEL/TIME/VEL | transpose amount 1–12 |
 | FX | mute/unmute the selected sound | mute/unmute the selected layer | mute sound | mute sound | mute sound | mute sound | MOVE range to TARGET |
 | SEL | view filter: all sounds / selected sound | solo/unsolo the selected layer | view filter | view filter | view filter | view filter | view filter (copy/move/transpose: selected sound only) |
-| REC | duplicate the cursor's bar into the next | – | arm load; again: load slot | – | – | – | COPY range to TARGET |
+| REC | duplicate the cursor's bar into the next | – | arm load; again: load slot (DEMO: Twinkle Twinkle, then the staff) | – | – | – | COPY range to TARGET |
 | SEQ | cycle grid 1/4, 1/8, 1/16, 1/8T, 1/16T (stopped only) | – | – | – | – | – | DELETE bars |
 | ARP | toggle whole-song loop (stopped only) | – | – | – | – | – | INSERT bars |
 | OCT− / OCT+ | shift keyboard by an octave; with EDIT held: spelling mode toward flat / sharp and respell the notes at the cursor (after the 150 ms chord window) | octave | octave | octave | octave | octave | OCT−: transpose DOWN, OCT+: UP, by K4 semitones (acts after the 150 ms chord window) |
@@ -62,4 +62,4 @@ SOUND and MIDI settings are song data: undoable, saved with the song, and disabl
 Staff lines use treble-staff pitch spacing. The view changes octave bands for low/high notes; extreme pitches may be outside the visible band. Sharps mark chromatic pitches; a flat note sits on the line or space of the next letter up (Bb on the B position) with a flat sign, and the header name reads Bb3, Eb4. Dense chords with the same position can overlap; the SEL view filter shows one sound's notes. The display now includes character stamps, ledger lines, octave-band labels and off-band indicators.
 
 
-Browser shortcuts: the side palette selects the native instrument; Load Playground demo creates an undoable 32-note sketch; Play song controls native transport. Both demo replacement and import require stopped playback. A nonempty song requires confirmation before replacement. Screen Reader can request a native page/status summary; full incremental narration is still incomplete.
+Browser shortcuts: the side palette selects the native instrument; Load Twinkle demo creates the undoable 66-note Twinkle Twinkle arrangement (the song book's DEMO entry after slot 8: REC twice loads it, SAVE refuses it); Play song controls native transport. Both demo replacement and import require stopped playback. A nonempty song requires confirmation before replacement. Screen Reader can request a native page/status summary; full incremental narration is still incomplete.
