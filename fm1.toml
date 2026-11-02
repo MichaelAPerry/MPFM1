@@ -12,3 +12,6 @@ tagline = "Stamp a sound. Make a song."
 repo = "https://github.com/MichaelAPerry/MPFM1"
 licence = "MIT"
 credits = "Original app and placeholder sounds; platform by fm1-base and felucca-bsp contributors."
+backup = true
+backup_ext = "stamp"
+backup_holds = "the eight song slots"

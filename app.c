@@ -6,7 +6,7 @@ static ScEngine engine;
 static PLAT_POOL ScSong history[17];
 static unsigned hist_count,hist_pos;
 static uint8_t wire[SC_BYTES];
-static struct { unsigned cursor,instrument,layer,grid,velocity,length,slot,dirty,page,filter,erase,confirm,edit_used; int octave,last; uint32_t keys,buttons,until; char message[32]; } ui;
+static struct { unsigned cursor,instrument,layer,grid,velocity,length,slot,dirty,page,filter,erase,confirm,edit_used,gest,held; int octave,last; uint32_t keys,buttons,until; char message[32]; } ui;
 static void checkpoint(void) {
  if(hist_pos<16){history[hist_pos++]=song;}else{memmove(history,history+1,15*sizeof *history);history[15]=song;}
  hist_count=hist_pos;ui.dirty=1;
@@ -14,11 +14,12 @@ static void checkpoint(void) {
 static void undo(void){if(hist_pos){if(hist_pos==hist_count)history[hist_pos]=song;song=history[--hist_pos];ui.dirty=1;}}
 static void redo(void){if(hist_pos<hist_count){song=history[++hist_pos];ui.dirty=1;}}
 void app_say(const char *a,const char *b){snprintf(ui.message,sizeof ui.message,"%s %s",a?a:"",b?b:"");ui.until=plat_ms()+1600;ann_say(a,b,ANN_NOW);}
+static void midi_out(uint32_t p){plat_midi_out(p);}
 void app_panic(void){sc_stop(&engine);memset(engine.voices,0,sizeof engine.voices);}
 void app_render(int32_t *lr,uint32_t n,uint32_t master){sc_render(&engine,&song,lr,n,master);}
 void app_init(void){
  int n;memset(&ui,0,sizeof ui);ui.grid=96;ui.length=96;ui.velocity=100;ui.last=60;hist_count=hist_pos=0;
- sc_default(&song);sc_engine_init(&engine,8);
+ sc_default(&song);sc_engine_init(&engine,8);engine.midi=midi_out;
  n=plat_store_load(OBJ_SONG0,wire,sizeof wire);if(n>0)sc_decode(&song,wire,n);
 }
 static int load_demo(void){
@@ -36,25 +37,49 @@ int app_host_cmd(const char *cmd,const char *a,const char *b,const char *c,const
  if(!strcmp(cmd,"demo")){load_demo();return 1;}return 0;
 }
 #endif
-static void enter(unsigned pitch){
- unsigned i;ScNote note={(uint16_t)ui.cursor,(uint16_t)ui.length,pitch,ui.instrument,ui.velocity,ui.layer};ui.last=pitch;
+static void enter(unsigned pitch,unsigned vel){
+ unsigned i;ScNote note={(uint16_t)ui.cursor,(uint16_t)ui.length,pitch,ui.instrument,vel,ui.layer};ui.last=pitch;
  if(engine.playing){app_say("STOP TO EDIT","");return;}
  if(ui.erase){ui.edit_used=1;for(i=0;i<song.count;i++)if(song.notes[i].tick==ui.cursor && song.notes[i].pitch==pitch && song.notes[i].instrument==ui.instrument && song.notes[i].layer==ui.layer){checkpoint();memmove(song.notes+i,song.notes+i+1,(song.count-i-1)*sizeof(ScNote));song.count--;return;}return;}
  if(song.count>=SC_EVENTS){app_say("SONG FULL","");return;}
  checkpoint();if(sc_add(&song,note))sc_note(&engine,&song,note);
 }
+/* SOUND (page 3) and MIDI (page 4) knobs: k = K1..K4 */
+static void shape(int k,int d){
+ unsigned u=ui.instrument;int v,lo=0,hi=127;
+ if(ui.page==3){v=k==0?song.tune[u]:k==1?song.tone[u]:k==2?song.decay[u]:song.pan[u];if(k==0)lo=-12,hi=12;if(k==3)lo=-64,hi=63;}
+ else{if(k>2)return;v=k==0?song.midi_ch[u]:k==1?song.midi_mode:song.midi_clock;hi=k==0?16:k==1?2:1;}
+ d=clamp(v+d,lo,hi);if(d==v)return;checkpoint();
+ if(ui.page==3){if(k==0)song.tune[u]=d;else if(k==1)song.tone[u]=d;else if(k==2)song.decay[u]=d;else song.pan[u]=d;}
+ else if(k==0)song.midi_ch[u]=d;else if(k==1)song.midi_mode=d;else song.midi_clock=d;
+}
+/* EDIT held + K2 (what 0: velocity) / K3 (1: length) on the staff: the selected sound's notes at the cursor, as erase picks them */
+static int note_edit(int what,int d){
+ unsigned i,n=0;
+ if(!ui.erase || ui.page || engine.playing)return 0;
+ ui.edit_used=1;
+ for(i=0;i<song.count;i++)if(song.notes[i].tick==ui.cursor && song.notes[i].instrument==ui.instrument && song.notes[i].layer==ui.layer){
+  ScNote *p=song.notes+i;int v=what?clamp(p->duration+d*24,24,1536):clamp(p->velocity+d,1,127);
+  if(!n++ && !ui.gest){checkpoint();ui.gest=1;}
+  if(what)p->duration=v;else p->velocity=v;
+  snprintf(ui.message,sizeof ui.message,what?"NOTE LEN %d T":"NOTE VEL %d",v);ui.until=plat_ms()+1600;
+ }
+ if(!n)app_say("NO NOTE HERE","");
+ return 1;
+}
 static void input(void){
  uint32_t keys=plat_keys(),btn=plat_buttons(),pressed=btn&~ui.buttons,f=plat_lock();unsigned k;int d;
  ui.erase=(btn>>B_EDIT)&1u;
- if(pressed&(1u<<B_EDIT))ui.edit_used=0;
- for(k=0;k<NKEYS;k++)if((keys&~ui.keys)&(1u<<k)){int pitch=53+(int)k+12*ui.octave;if(pitch>=36 && pitch<=84)enter(pitch);else app_say("C2 TO C6","");}
+ if(pressed&(1u<<B_EDIT))ui.edit_used=ui.gest=0;
+ {uint32_t pkt;int port;while(plat_midi_in(&pkt,&port)){unsigned st=pkt>>8&0xF0u,p=pkt>>16&0x7Fu,v=pkt>>24&0x7Fu;if(st==0x90u && v && p>=36 && p<=84)enter(p,v);}}
+ for(k=0;k<NKEYS;k++)if((keys&~ui.keys)&(1u<<k)){int pitch=53+(int)k+12*ui.octave;if(pitch>=36 && pitch<=84)enter(pitch,ui.velocity);else app_say("C2 TO C6","");}
  if(pressed&(1u<<B_PLAY)){if(engine.playing)sc_stop(&engine);else sc_start(&engine);}
  if(pressed&(1u<<B_OCTDN))ui.octave=clamp(ui.octave-1,-2,2);
  if(pressed&(1u<<B_OCTUP))ui.octave=clamp(ui.octave+1,-2,2);
  if(pressed&(1u<<B_GLO)){ui.page=ui.page==2?0:2;ui.confirm=0;}
  if(pressed&(1u<<B_HOME)){ui.page=0;ui.cursor=0;ui.confirm=0;}
  if(pressed&(1u<<B_SEL))ui.filter^=1;
- if((ui.buttons&(1u<<B_EDIT)) && !(btn&(1u<<B_EDIT)) && !ui.edit_used)ui.page=ui.page==1?0:1;
+ if((ui.buttons&(1u<<B_EDIT)) && !(btn&(1u<<B_EDIT)) && !ui.edit_used)ui.page="\1\3\0\4\0"[ui.page];
  if(!engine.playing){
   if(pressed&(1u<<B_ENV))undo();
   if(pressed&(1u<<B_LFO))redo();
@@ -67,16 +92,17 @@ static void input(void){
     else{int n;plat_unlock(f);n=plat_store_load(ui.slot,wire,sizeof wire);f=plat_lock();checkpoint();if(n>0 && sc_decode(&song,wire,n)){ui.dirty=0;ui.cursor=0;app_say("LOADED","");}else app_say("EMPTY OR BAD SLOT","");ui.confirm=0;}
    }else{unsigned bar=song.beats*96,start=ui.cursor/bar*bar;checkpoint();if(!sc_duplicate(&song,start,bar)){undo();app_say("COPY FAILED","");}else app_say("BAR COPIED","");}
   }
-  if(pressed&(1u<<B_SAVE)){unsigned n=sc_encode(&song,wire);int rc;sc_stop(&engine);plat_unlock(f);rc=n?plat_store_save(ui.slot,wire,n):-1;f=plat_lock();if(!rc){ui.dirty=0;app_say("SAVED","");}else app_say("SAVE FAILED","");}
+  if(pressed&(1u<<B_SAVE)){if(ui.held){app_say("BACKUP BUSY","");}else{unsigned n=sc_encode(&song,wire);int rc;sc_stop(&engine);plat_unlock(f);rc=n?plat_store_save(ui.slot,wire,n):-1;f=plat_lock();if(!rc){ui.dirty=0;app_say("SAVED","");}else app_say("SAVE FAILED","");}}
  }else if(pressed&((1u<<B_SAVE)|(1u<<B_REC)|(1u<<B_ENV)|(1u<<B_LFO)))app_say("STOP FIRST","");
  ui.erase=(btn>>B_EDIT)&1u;
  if((d=plat_enc(EN_SELECT)))ui.cursor=clamp((int)ui.cursor+d*(int)ui.grid,0,(song.end-1)/ui.grid*ui.grid);
  if((d=plat_enc(EN_PRESET)))ui.instrument=clamp((int)ui.instrument+d,0,14);
  if((d=plat_enc(EN_ALGO)))ui.layer=clamp((int)ui.layer+d,0,7);
+ if(ui.page>2){int i;for(i=0;i<4;i++)if((d=plat_enc(EN_K1+i)) && !engine.playing)shape(i,d);}else{
  if((d=plat_enc(EN_K1))){if(ui.page==2){ui.slot=clamp((int)ui.slot+d,0,7);ui.confirm=0;}else if(!engine.playing){checkpoint();song.tempo=clamp(song.tempo+d,30,300);}}
- if((d=plat_enc(EN_K2))){if(ui.page==1 && !engine.playing){checkpoint();song.volume[ui.instrument]=clamp(song.volume[ui.instrument]+d,0,127);}else ui.velocity=clamp((int)ui.velocity+d,1,127);}
- if((d=plat_enc(EN_K3))){if(ui.page==1 && !engine.playing){checkpoint();song.layers[ui.layer]=clamp(song.layers[ui.layer]+d,0,127);}else ui.length=clamp((int)ui.length+d*24,24,1536);}
- if((d=plat_enc(EN_K4)) && !engine.playing){unsigned minend=song.count?song.notes[song.count-1].tick+1:1;checkpoint();song.end=clamp(song.end+d*96,minend>song.loop_start?minend:(unsigned)song.loop_start+1,65535);if(ui.cursor>=song.end)ui.cursor=(song.end-1)/ui.grid*ui.grid;}
+ if((d=plat_enc(EN_K2))){if(note_edit(0,d)){}else if(ui.page==1 && !engine.playing){checkpoint();song.volume[ui.instrument]=clamp(song.volume[ui.instrument]+d,0,127);}else ui.velocity=clamp((int)ui.velocity+d,1,127);}
+ if((d=plat_enc(EN_K3))){if(note_edit(1,d)){}else if(ui.page==1 && !engine.playing){checkpoint();song.layers[ui.layer]=clamp(song.layers[ui.layer]+d,0,127);}else ui.length=clamp((int)ui.length+d*24,24,1536);}
+ if((d=plat_enc(EN_K4)) && !engine.playing){unsigned minend=song.count?song.notes[song.count-1].tick+1:1;checkpoint();song.end=clamp(song.end+d*96,minend>song.loop_start?minend:(unsigned)song.loop_start+1,65535);if(ui.cursor>=song.end)ui.cursor=(song.end-1)/ui.grid*ui.grid;}}
  if(ui.cursor>=song.end)ui.cursor=(song.end-1)/ui.grid*ui.grid;
  ui.keys=keys;ui.buttons=btn;plat_unlock(f);plat_glow(1);plat_leds((engine.playing?1u<<B_PLAY:0)|(ui.dirty?1u<<B_SAVE:0),keys);
 }
@@ -107,6 +133,20 @@ static void tile(int x,int y,int w,const char *label,const char *value){
  cv_text(x+5,y+3,&FONT_T,label,RGB(162,182,188));
  cv_text(x+5,y+17,&FONT_B,value,C_WHITE);
 }
+static void pan_text(int p,char *t,unsigned n){if(p<0)snprintf(t,n,"L%d",-p);else if(p>0)snprintf(t,n,"R%d",p);else snprintf(t,n,"C");}
+static void tiles_shape(void){
+ char t[16];unsigned u=ui.instrument;
+ if(ui.page==3){
+  snprintf(t,sizeof t,"%+d",song.tune[u]);tile(4,2,55,"K1 TUNE",t);
+  snprintf(t,sizeof t,"%u",song.tone[u]);tile(63,2,55,"K2 TONE",t);
+  snprintf(t,sizeof t,"%u",song.decay[u]);tile(122,2,55,"K3 DECAY",t);
+  pan_text(song.pan[u],t,sizeof t);tile(181,2,55,"K4 PAN",t);
+ }else{
+  if(song.midi_ch[u])snprintf(t,sizeof t,"%u",song.midi_ch[u]);else snprintf(t,sizeof t,"OFF");tile(4,2,55,"K1 CH",t);
+  tile(63,2,55,"K2 MODE",song.midi_mode==2?"ONLY":song.midi_mode?"ON":"OFF");
+  tile(122,2,55,"K3 CLOCK",song.midi_clock?"ON":"OFF");tile(181,2,55,"K4","-");
+ }
+}
 static void draw(void){
  char t[64],note[8];unsigned i,step=ui.grid,active=engine.playing?engine.tick:ui.cursor;
  unsigned start=active/(step*6)*step*6,selected=ui.instrument;
@@ -135,7 +175,34 @@ static void draw(void){
  snprintf(t,sizeof t,"%s / %s",character_names[selected],sc_names[selected]);
  cv_text(8,56,&FONT_XS,t,INK);
  cv_blit(0,0);
- if(ui.page==2){
+ if(ui.page==3){
+  static const char *const nm[4]={"TUNE","TONE","DECAY","PAN"};
+  cv_begin(240,112,PAPER);
+  cv_text(10,4,&FONT_B,"SOUND SHAPE",INK);
+  for(i=0;i<4;i++){
+   int y=26+(int)i*21,v=i==0?song.tune[selected]:i==1?song.tone[selected]:i==2?song.decay[selected]:song.pan[selected];
+   int lo=i==0?-12:i==3?-64:0,hi=i==0?12:i==3?63:127;
+   snprintf(t,sizeof t,"K%u  %s",i+1,nm[i]);cv_text(10,y+2,&FONT_XS,t,TEAL);
+   cv_rect(86,y+3,104,9,RGB(225,218,197));cv_rect(86,y+3,(v-lo)*104/(hi-lo),9,i==3?TEAL:ACCENT);
+   if(lo<0)cv_rect(137,y,2,15,INK);
+   if(i==0)snprintf(t,sizeof t,"%+d",v);else if(i==3)pan_text(v,t,sizeof t);else snprintf(t,sizeof t,"%d",v);
+   cv_text(197,y,&FONT_B,t,INK);
+  }
+  cv_blit(0,72);
+ }else if(ui.page==4){
+  cv_begin(240,112,PAPER);
+  cv_text(10,4,&FONT_B,"MIDI OUT",INK);
+  for(i=0;i<15;i++){
+   int x=8+(int)(i%5)*46,y=26+(int)(i/5)*22;
+   cv_rect(x,y,44,20,i==selected?TEAL:RGB(233,225,202));
+   stamp(x+2,y+1,i,1);
+   if(song.midi_ch[i])snprintf(t,sizeof t,"%u",song.midi_ch[i]);else snprintf(t,sizeof t,"--");
+   cv_text(x+24,y+5,&FONT_T,t,i==selected?C_WHITE:INK);
+  }
+  snprintf(t,sizeof t,"MODE %s   CLOCK %s",song.midi_mode==2?"MIDI ONLY":song.midi_mode?"ON":"OFF",song.midi_clock?"ON":"OFF");
+  cv_text(10,96,&FONT_T,t,TEAL);
+  cv_blit(0,72);
+ }else if(ui.page==2){
   cv_begin(240,112,PAPER);
   cv_text(10,4,&FONT_B,"SONG BOOK",INK);
   for(i=0;i<8;i++){
@@ -187,12 +254,13 @@ static void draw(void){
  }
  /* Four encoder cards, then one concise contextual hint. */
  cv_begin(240,56,INK);
+ if(ui.page>2)tiles_shape();else{
  snprintf(t,sizeof t,ui.page==2?"%02u":"%u",ui.page==2?ui.slot+1:song.tempo);tile(4,2,55,ui.page==2?"K1 SLOT":"K1 TEMPO",t);
  snprintf(t,sizeof t,"%u",ui.page==1?song.volume[selected]:ui.velocity);tile(63,2,55,ui.page==1?"K2 SOUND":"K2 VEL",t);
  snprintf(t,sizeof t,ui.page==1?"%u":"1/%u",ui.page==1?song.layers[ui.layer]:384/ui.length);if(ui.page!=1 && (ui.length>384 || 384%ui.length!=0))snprintf(t,sizeof t,"%u T",ui.length);tile(122,2,55,ui.page==1?"K3 LAYER":"K3 LEN",t);
- snprintf(t,sizeof t,"%u BAR",(song.end+song.beats*96-1)/(song.beats*96));tile(181,2,55,"K4 END",t);
+ snprintf(t,sizeof t,"%u BAR",(song.end+song.beats*96-1)/(song.beats*96));tile(181,2,55,"K4 END",t);}
  if(plat_ms()<ui.until)cv_text(5,44,&FONT_T,ui.message,RGB(250,212,104));
- else{snprintf(t,sizeof t,ui.page==2?"SAVE WRITE / REC LOAD / HOME EXIT":ui.page==1?"EDIT BACK / FX MUTE / HOME STAFF":"1/%u GRID / %u NOTES / %s",384/step,song.count,ui.dirty?"UNSAVED":"SAVED");cv_text(5,44,&FONT_T,t,RGB(162,182,188));}
+ else{snprintf(t,sizeof t,ui.page==3?"EDIT NEXT / PRESET SOUND":ui.page==4?"EDIT NEXT / K1 CH / HOME STAFF":ui.page==2?"SAVE WRITE / REC LOAD / HOME EXIT":ui.page==1?"EDIT BACK / FX MUTE / HOME STAFF":"1/%u GRID / %u NOTES / %s",384/step,song.count,ui.dirty?"UNSAVED":"SAVED");cv_text(5,44,&FONT_T,t,RGB(162,182,188));}
  cv_blit(0,184);
 }
 void app_ui_init(void){draw();}
@@ -200,13 +268,26 @@ void app_frame(void){
  input();draw();
  if(ann_on() && ann_where()){
   char t[160];snprintf(t,sizeof t,"Stamp Composer. %s. %s. %u notes. Tempo %u. Layer %u. %s.",
-   ui.page==2?"Song book":ui.page==1?"Mixer":"Staff",character_names[ui.instrument],song.count,song.tempo,ui.layer+1,engine.playing?"Playing":"Stopped");
+   ui.page==4?"MIDI":ui.page==3?"Sound":ui.page==2?"Song book":ui.page==1?"Mixer":"Staff",character_names[ui.instrument],song.count,song.tempo,ui.layer+1,engine.playing?"Playing":"Stopped");
   ann_say(t,0,ANN_NOW);
  }
  ann_tick(plat_ms());
 }
 int app_expect(const char *s,int *v){
- if(!strcmp(s,"page"))*v=ui.page;else if(!strcmp(s,"notes"))*v=song.count;else if(!strcmp(s,"playing"))*v=engine.playing;else if(!strcmp(s,"dirty"))*v=ui.dirty;else if(!strcmp(s,"instrument"))*v=ui.instrument;else if(!strcmp(s,"tick"))*v=engine.tick;else if(!strcmp(s,"triggers"))*v=engine.triggers;else if(!strcmp(s,"tempo"))*v=song.tempo;else if(!strcmp(s,"cursor"))*v=ui.cursor;else return 0;return 1;
+ if(!strcmp(s,"page"))*v=ui.page;else if(!strcmp(s,"notes"))*v=song.count;else if(!strcmp(s,"playing"))*v=engine.playing;else if(!strcmp(s,"dirty"))*v=ui.dirty;else if(!strcmp(s,"instrument"))*v=ui.instrument;else if(!strcmp(s,"tick"))*v=engine.tick;else if(!strcmp(s,"triggers"))*v=engine.triggers;else if(!strcmp(s,"tempo"))*v=song.tempo;else if(!strcmp(s,"cursor"))*v=ui.cursor;
+ else if(!strcmp(s,"tune"))*v=song.tune[ui.instrument];else if(!strcmp(s,"tone"))*v=song.tone[ui.instrument];else if(!strcmp(s,"decay"))*v=song.decay[ui.instrument];else if(!strcmp(s,"pan"))*v=song.pan[ui.instrument];
+ else if(!strcmp(s,"midi_ch"))*v=song.midi_ch[ui.instrument];else if(!strcmp(s,"midi_mode"))*v=song.midi_mode;else if(!strcmp(s,"midi_clock"))*v=song.midi_clock;
+ else if(!strcmp(s,"note_vel")||!strcmp(s,"note_len")){unsigned i;for(i=0;i<song.count;i++)if(song.notes[i].tick==ui.cursor && song.notes[i].instrument==ui.instrument && song.notes[i].layer==ui.layer)break;if(i==song.count)return 0;*v=s[5]=='v'?song.notes[i].velocity:song.notes[i].duration;}
+ else return 0;
+ return 1;
+}
+/* Backup over USB (plat.h). Flush is a no-op by choice: saving stays explicit (SAVE), so a backup holds what is saved and never overwrites a slot with unsaved edits. */
+int app_backup_playing(void){return engine.playing;}
+void app_backup_flush(void){}
+void app_backup_hold(int on){ui.held=on;}
+void app_backup_restored(void){
+ int n;sc_default(&song);n=plat_store_load(ui.slot,wire,sizeof wire);if(n>0)sc_decode(&song,wire,n);
+ hist_count=hist_pos=0;ui.dirty=ui.confirm=0;ui.cursor=0;
 }
 #ifdef PLAT_WEB
 /* Export only for the browser host; device transfer will use a separate transport. */
