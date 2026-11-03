@@ -1,0 +1,249 @@
+# Deleting notes on the staff (docs/CONTROLS.md): key toggle, EDIT+key, EDIT+FX clear, EDIT+SELECT jumps, highlight, live, MIDI in
+listen
+wait 100
+# the same key again removes the note (one undo step, no audition)
+tapkey 7
+expect notes 1
+expect at_cursor 1
+expect triggers 1
+tapkey 7
+expect notes 0
+expect triggers 1
+said ERASED C4 PIANO
+tap ENV
+expect notes 1
+tap LFO
+expect notes 0
+tap ENV
+expect notes 1
+# chord: every key toggles its own note
+key 9 down
+key 11 down
+key 9 up
+key 11 up
+expect notes 3
+tapkey 9
+expect notes 2
+key 7 down
+key 11 down
+key 7 up
+key 11 up
+expect notes 0
+tap ENV
+tap ENV
+tap ENV
+expect notes 3
+# a note on another sound or layer is not toggled by a plain key
+turn PRESET 1
+expect instrument 1
+tapkey 7
+expect notes 4
+tapkey 7
+expect notes 3
+# EDIT+key: the selected sound's note first, else the most recent one, on any sound or layer
+press EDIT
+tap FX
+release EDIT
+expect notes 0
+turn PRESET -1
+tapkey 7
+turn PRESET 1
+turn ALGO 1
+tapkey 7
+turn PRESET 1
+turn ALGO 1
+tapkey 7
+expect notes 3
+turn PRESET 1
+press EDIT
+key 7 down
+key 7 up
+release EDIT
+expect notes 2
+expect page 0
+said ERASED C4 ZIP
+tap SEL
+expect filter 1
+turn PRESET -1
+expect at_cursor 0
+turn PRESET -1
+expect at_cursor 1
+turn PRESET -1
+expect instrument 0
+expect at_cursor 1
+press EDIT
+key 7 down
+key 7 up
+release EDIT
+expect notes 1
+expect at_cursor 0
+turn PRESET 1
+expect at_cursor 1
+tap SEL
+expect filter 0
+# nothing to erase: said, never silent
+press EDIT
+key 9 down
+key 9 up
+release EDIT
+said NOTHING TO ERASE
+expect notes 1
+expect page 0
+# EDIT+FX clears the cursor tick (view filter respected), one undo step
+turn PRESET -1
+turn ALGO -2
+tapkey 9
+tapkey 11
+expect notes 3
+tap SEL
+expect at_cursor 2
+press EDIT
+tap FX
+release EDIT
+expect notes 1
+expect smute 0
+expect page 0
+said CLEARED 2 NOTES
+tap ENV
+expect notes 3
+tap SEL
+expect at_cursor 3
+press EDIT
+tap FX
+release EDIT
+expect notes 0
+expect page 0
+said CLEARED 3 NOTES
+tap ENV
+expect notes 3
+press EDIT
+tap FX
+release EDIT
+tap ENV
+press EDIT
+tap FX
+release EDIT
+tap ENV
+press EDIT
+tap FX
+release EDIT
+expect notes 0
+press EDIT
+tap FX
+release EDIT
+said NOTHING TO ERASE
+tap ENV
+expect notes 3
+# EDIT+SELECT jumps to notes whatever the grid: place on 1/16T, look at 1/4
+tap SEQ
+tap SEQ
+tap SEQ
+tap SEQ
+expect grid 16
+turn SELECT 1
+expect cursor 16
+tapkey 7
+turn SELECT 2
+tapkey 9
+turn SELECT 5
+expect cursor 128
+tapkey 11
+expect notes 6
+tap SEQ
+expect grid 96
+expect cursor 96
+press EDIT
+turn SELECT -1
+release EDIT
+expect cursor 48
+expect at_cursor 1
+expect page 0
+press EDIT
+turn SELECT -1
+release EDIT
+expect cursor 16
+expect page 0
+press EDIT
+turn SELECT -1
+release EDIT
+expect cursor 0
+press EDIT
+turn SELECT -1
+release EDIT
+expect cursor 0
+said NO MORE NOTES
+press EDIT
+turn SELECT 3
+release EDIT
+expect cursor 128
+expect page 0
+# plain SELECT keeps grid stepping, and a note off the grid is erased at its own tick
+press EDIT
+turn SELECT -2
+release EDIT
+expect cursor 16
+tapkey 7
+expect notes 5
+tapkey 7
+expect notes 6
+turn SELECT 1
+expect cursor 112
+# the SEL filter limits the jumps to the selected sound
+tap SEL
+turn PRESET 1
+press EDIT
+turn SELECT -1
+release EDIT
+expect cursor 0
+press EDIT
+turn SELECT 1
+release EDIT
+expect cursor 0
+tap SEL
+# MIDI in follows the key rule (stopped on the staff)
+tap HOME
+press EDIT
+tap FX
+release EDIT
+expect at_cursor 0
+midi 90 3C 64
+wait 40
+expect at_cursor 1
+midi 90 3C 64
+wait 40
+expect at_cursor 0
+said ERASED C4
+# playing: EDIT+key erases that pitch (any sound) at the snapped playhead step; a plain repeat is skipped, not toggled
+tap PLAY
+wait 450
+tapkey 7
+expect notes 4
+tapkey 7
+expect notes 4
+spin PRESET 1
+press EDIT
+key 7 down
+key 7 up
+expect notes 3
+said ERASED C4
+key 9 down
+key 9 up
+said NOTHING TO ERASE
+release EDIT
+expect page 0
+tap PLAY
+tap ENV
+expect notes 3
+# the highlight: a chord on the Twinkle demo, notes at the cursor outlined, hint says EDIT+KEY ERASE
+demo
+turn SELECT 2
+expect cursor 192
+key 7 down
+key 11 down
+key 14 down
+key 7 up
+key 11 up
+key 14 up
+expect at_cursor 5
+wait 1800
+shot erase.png

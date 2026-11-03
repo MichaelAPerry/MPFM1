@@ -25,3 +25,4 @@ build/host/stamp_host tests/autosave.txt build/host
 build/host/stamp_host tests/live.txt build/host
 build/host/stamp_host tests/controls.txt build/host
 build/host/stamp_host tests/flats.txt build/host
+build/host/stamp_host tests/erase.txt build/host
