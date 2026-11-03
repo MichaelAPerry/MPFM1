@@ -71,7 +71,7 @@ expect playing 0
 tap PLAY
 expect tick <40
 tap PLAY
-# help overlay: HOME held 600 ms shows it, release hides it and does not go home; a tap does
+# help overlay: HOME held 600 ms opens it, it stays after release (sticky, no home); the next HOME closes it; a plain tap goes home
 tap EDIT
 expect page 1
 press HOME
@@ -81,7 +81,10 @@ wait 400
 expect help 1
 shot help.png
 release HOME
-wait 60
+wait 300
+expect help 1
+expect page 1
+tap HOME
 expect help 0
 expect page 1
 tap HOME

@@ -1,0 +1,204 @@
+# Sticky help (HOME held 600 ms stays open after release; any other input closes it and is consumed) and a new blank song from an empty slot
+listen
+wait 100
+tapkey 7
+expect notes 1
+# open: held 600 ms; the release does not close it, and the page is not left
+press HOME
+wait 700
+expect help 1
+release HOME
+wait 300
+expect help 1
+expect page 0
+shot help-staff.png
+# staff has more rows than fit: SELECT / K1 scroll (second page), they are consumed and do not close it
+turn SELECT 1
+expect help 2
+expect cursor 0
+shot help-staff2.png
+turn K1 1
+expect help 1
+expect tempo 120
+# a knob closes it, unacted
+turn K2 -1
+expect help 0
+expect velocity 100
+# a key closes it, unacted
+press HOME
+wait 700
+release HOME
+wait 300
+expect help 1
+tapkey 9
+expect help 0
+expect notes 1
+# a bounce right after opening (HOME up and down again within 250 ms) does not close it
+press HOME
+wait 700
+release HOME
+wait 20
+press HOME
+wait 20
+release HOME
+wait 100
+expect help 1
+# a button closes it and is consumed (REC would duplicate the bar, SAVE would write)
+tap REC
+expect help 0
+expect notes 1
+expect dirty 1
+# the next HOME closes it and does not go home
+tap EDIT
+expect page 1
+press HOME
+wait 700
+release HOME
+wait 300
+expect help 1
+tap HOME
+expect help 0
+expect page 1
+# a tap still goes home; EDIT closing it does not flip the page
+press HOME
+wait 300
+release HOME
+wait 60
+expect help 0
+expect page 0
+tap EDIT
+expect page 1
+press HOME
+wait 700
+release HOME
+wait 300
+expect help 1
+press EDIT
+release EDIT
+expect help 0
+expect page 1
+tap HOME
+expect page 0
+# one-page list (SOUND): SELECT closes it
+tap EDIT
+tap EDIT
+expect page 3
+press HOME
+wait 700
+release HOME
+wait 300
+expect help 1
+turn SELECT 1
+expect help 0
+tap HOME
+expect page 0
+# playback keeps going while it is open; transport buttons are consumed
+tap PLAY
+wait 200
+expect playing 1
+press HOME
+wait 700
+release HOME
+wait 300
+expect help 1
+expect playing 1
+expect tick >150
+tap PLAY
+expect playing 1
+expect help 0
+tap PLAY
+expect playing 0
+# song book: an empty slot shows EMPTY; help for the page lists the new-song route
+wait 100
+tap GLO
+expect page 2
+expect used 0
+turn SELECT 2
+expect slot 2
+tap REC
+said REC AGAIN: NEW SONG
+shot songbook-empty.png
+press HOME
+wait 700
+release HOME
+wait 300
+expect help 1
+shot help-songbook.png
+tap SEL
+expect help 0
+expect page 2
+# REC REC on the empty slot: a blank song, bound to the slot, clean; one undo step back
+turn K1 0
+tap REC
+tap REC
+expect notes 0
+expect slot 2
+expect dirty 0
+expect tempo 120
+expect beats 4
+said NEW SONG IN SLOT 3
+tap ENV
+expect notes 1
+expect slot 0
+expect dirty 1
+tap LFO
+expect notes 0
+expect slot 2
+tap ENV
+expect slot 0
+# a saved slot loads normally; empty slots read as empty
+tap SAVE
+expect used 1
+turn SELECT 1
+expect slot 1
+tap REC
+tap REC
+expect notes 0
+expect slot 1
+turn SELECT -1
+tap REC
+said REC AGAIN TO LOAD
+tap REC
+expect notes 1
+expect slot 0
+said LOADED
+tap ENV
+expect slot 1
+# playing: refused
+tap HOME
+tap PLAY
+tap GLO
+turn SELECT 3
+tap REC
+said STOP FIRST
+tap PLAY
+# DEMO unchanged
+turn SELECT 20
+expect slot 8
+tap REC
+said REC AGAIN TO LOAD
+tap REC
+expect notes 66
+expect page 0
+tap ENV
+expect notes 0
+# a new blank song is autosaved like any edit and survives a power cycle
+tap GLO
+turn SELECT 20
+turn SELECT -8
+wait 25000
+wait 25000
+tap HOME
+tap GLO
+turn SELECT 4
+expect slot 4
+tap REC
+tap REC
+expect notes 0
+expect slot 4
+wait 3500
+reboot
+wait 100
+expect notes 0
+expect slot 4
+expect dirty 0

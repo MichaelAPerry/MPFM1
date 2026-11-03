@@ -2,13 +2,17 @@
 
 **Little stamps. Big ideas.** A Mario Paint–inspired music playground for the M-VAVE FM-1.
 
-![Stamp Composer — native staff, mixer and song book](docs/hero.png)
+![Stamp Composer on the FM-1 screen: staff with the Twinkle demo, MIDI grid of 31 sounds, song book](docs/hero.png)
 
 Pick a character, place a note, and build a song. 31 familiar stamps share one polyphonic engine, with eight layers for arranging, a scrolling staff, and a song book that keeps your ideas close.
+
+**[Website](https://michaelaperry.github.io/MPFM1/) · [Try the firmware in your browser](https://michaelaperry.github.io/MPFM1/fm1-emu/) · [Install](https://michaelaperry.github.io/MPFM1/install/) · [Manual](https://michaelaperry.github.io/MPFM1/manual/)**
 
 [Quick start](#play-in-your-browser) · [Controls](docs/CONTROLS.md) · [Manual](docs/MANUAL.md) · [Build](#build-it) · [Validation](docs/VALIDATION.md)
 
 > **Development preview:** the firmware builds for the FM-1 and runs in the fm1-emu emulator and the browser preview, and the tests pass, but it is **untested on a physical FM-1**. Sounds are the Mario Paint sound pack (Nintendo's, a swappable asset pack: see [its notice](assets/sounds/NOTICE.md)). See the [manual](docs/MANUAL.md) and [install notes](docs/INSTALL.md) before trying a real unit.
+
+> **Other firmwares' files:** Stamp Composer does not read other firmwares' projects, songs or samples. It reads its own songs (SCF) and imports Super Mario Paint text songs through the browser preview.
 
 ## Play in your browser
 
@@ -27,7 +31,7 @@ To make your own tune:
 3. Press **PLAY** to listen. **ENV / LFO** undo and redo.
 4. Press **SAVE** to keep the song in this browser, or **Export song** for a portable `.scf` file.
 
-Drag knobs vertically, or focus one and use the arrow keys. Hold **EDIT** while pressing a note to erase it. Tap **EDIT** for the mixer; **GLO** opens the eight-slot song book. Browser storage belongs to that browser and origin; export your keepers before clearing site data.
+Drag knobs vertically, or focus one and use the arrow keys. Press a note again to remove it, or hold **EDIT** and press it to erase it (**EDIT+FX** clears the step, **EDIT+SELECT** jumps between notes). Tap **EDIT** for the mixer; **GLO** opens the eight-slot song book. Browser storage belongs to that browser and origin; export your keepers before clearing site data.
 
 ## On the little screen
 

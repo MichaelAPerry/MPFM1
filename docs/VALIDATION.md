@@ -51,6 +51,11 @@ Representative optimized host stress measurements (4000 blocks × 256 frames, re
 - Site: release `stamp-0.2.fwsc` (`FM-1_56000200`) assembled with `make_site.py` + `tools/site_emu.sh`; front page, install, manual, emu, backup, mirror and fm1-emu pages load in headless Chromium without errors (with fm1-reader present), and the release boots in fm1-emu's page.
 - Not validated: any of the above on a physical FM-1; MIDI with a real DAW/synth; backup/restore and mirror with fm1-base's pages against a device; flash wear of autosave.
 
+## First hardware report (2026-11-03)
+
+- The owner reports the development build from the site (`stamp-0.2-dev.fwsc`, built from `main` at the PR #3 merge) **installs on a physical FM-1 and plays**. Follow-up from the owner: installed over Melodee (another fm1-base firmware) with the site's installer; the Twinkle demo plays and four layered notes sound right; save and load to a slot work. Found on hardware: the HOME-hold help only flashes, and there is no way to start a blank song (loading an empty slot is refused). Not yet tried on hardware: chords, MIDI, autosave, backup, install from stock.
+- Fixed after the report (host/emulator-tested, not yet re-checked on hardware): sticky help, new song from an empty slot.
+
 ## Not validated
 
 - No physical FM-1 was tested: real boot, display timing, audio quality, input feel and flash storage are unverified. Build reproducibility (byte-identical rebuild) not checked.
