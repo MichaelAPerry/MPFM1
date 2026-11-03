@@ -54,6 +54,7 @@ Representative optimized host stress measurements (4000 blocks × 256 frames, re
 ## First hardware report (2026-11-03)
 
 - The owner reports the development build from the site (`stamp-0.2-dev.fwsc`, built from `main` at the PR #3 merge) **installs on a physical FM-1 and plays**. Follow-up from the owner: installed over Melodee (another fm1-base firmware) with the site's installer; the Twinkle demo plays and four layered notes sound right; save and load to a slot work. Found on hardware: the HOME-hold help only flashes, and there is no way to start a blank song (loading an empty slot is refused). Not yet tried on hardware: chords, MIDI, autosave, backup, install from stock.
+- Fixed after the report (host/emulator-tested, not yet re-checked on hardware): sticky help, new song from an empty slot.
 
 ## Not validated
 

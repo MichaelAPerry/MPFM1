@@ -62,8 +62,8 @@ The buttons that do something different when you combine them. Nothing here need
 | EDIT + OCT− or OCT+ | On the staff: spelling toward flats or sharps, and respell the notes at the cursor |
 | OCT− + OCT+ together | FREE PLAY on or off: keys only play, never write. Press the second within 150 ms of the first |
 | OCT− or OCT+ on BARS | Transpose the bars down or up (after a 150 ms wait, so the two together still mean FREE PLAY) |
-| Hold HOME | After about half a second, a list of this page's controls; let go and it goes away |
-| REC twice (song book) | The first press arms a load, the second loads the slot; HOME cancels |
+| Hold HOME | After about half a second, a list of this page's controls that stays open; press anything to close it |
+| REC twice (song book) | The first press arms a load, the second loads the slot (an empty slot starts a new blank song); HOME cancels |
 | FX or SCL on MIX | Mute or solo the layer (everywhere else: mute the sound, filter the view) |
 | Hold OCT− + OCT+ while powering on | **Not a song grip.** Opens the platform's panel calibration (see "If something goes wrong") |
 | Hold REC while powering on | **Not a song grip.** Opens the chip's update mode (see "If something goes wrong") |
@@ -92,6 +92,8 @@ The 240 by 240 screen has four parts, top to bottom.
 7. Turn **ALGORITHM** to pick another layer, change **PRESETS** to another character, and add a second part.
 8. Turn **K1** to change the tempo, and press **ARP** to loop the song.
 9. Press **SAVE** to keep the song in the current slot. Your work is also saved on its own (see section 9).
+
+**Start from a blank page.** Press **GLO**, turn **K1** to a slot that shows EMPTY, and press **REC** twice: a new, empty song starts in that slot (**ENV** brings the old one back). Then press **SAVE** when you like it.
 
 Notes are written on the STAFF page. On every other page the keys only play the selected sound.
 
@@ -193,13 +195,15 @@ On SOUND, MIDI, GROOVE and BARS the knobs only turn while the song is stopped; r
 
 ![The song book: eight slots and the DEMO entry, which is chosen](img/songbook.png "The song book")
 
+![An empty slot chosen: REC twice starts a new song](img/songbook-empty.png "An empty slot")
+
 | Control | What it does |
 | --- | --- |
-| K1, SELECT | Choose the slot, 1 to 8, then DEMO |
+| K1, SELECT | Choose the slot, 1 to 8, then DEMO. Empty slots show a dimmed number, and EMPTY when chosen |
 | K2, K3 | Velocity and length of new notes |
 | FX | Mute or unmute the selected sound |
 | SAVE | Write the song into that slot (on DEMO: refused, PICK A SLOT) |
-| REC | First press arms a load, second press loads the slot (on DEMO: loads Twinkle Twinkle, then the staff) |
+| REC | First press arms a load, second press loads the slot (an empty slot: starts a new blank song; on DEMO: loads Twinkle Twinkle, then the staff) |
 | GLO or HOME | Back to the staff |
 
 ---
@@ -317,6 +321,8 @@ Turn on SCL first if copy, move or transpose should touch only the selected soun
 
 **Eight slots.** In the song book choose a slot with K1 and press **SAVE**. The status line then reads SAVED. To load, press **REC** twice (the first press arms it, the second loads it). Loading can be undone. HOME cancels an armed load. Stop the song before saving, because audio pauses for a moment while the FM-1 writes.
 
+**New song in an empty slot.** A slot nothing was saved in shows a dimmed number in the song book, and EMPTY when you choose it; the status line reads REC REC: NEW SONG. Press **REC** twice and a blank song replaces the one you are working on: no notes, 120 BPM, 4 beats, tied to that slot, with the message NEW SONG IN SLOT n. **ENV** undoes it and brings back the previous song and its slot. Nothing is written to the slot until you press **SAVE** (the blank song is autosaved like any change). It needs the song stopped. The staff has no blank-song shortcut: this is the one way.
+
 **Demo.** After slot 8 the song book has a DEMO entry: Twinkle Twinkle, one of the three demo songs of the original Mario Paint (a public-domain melody; this is our own arrangement: STAR melody over a HEART bass, 12 bars, 100 BPM, looping). REC twice loads it like a slot, and ENV undoes the load. It is never overwritten: SAVE on DEMO is refused. The browser's Load Twinkle demo button does the same.
 
 **Autosave.** After 3 seconds with no key or button pressed and no change, and the song stopped, the working song is quietly written to the FM-1, at most every 20 seconds. At power-on it comes back exactly as you left it, with the message RESTORED and its slot and UNSAVED mark. If no autosave can be read, slot 1 loads instead.
@@ -327,9 +333,9 @@ Turn on SCL first if copy, move or transpose should touch only the selected soun
 
 ## 10. Help, mirror and limits
 
-![The help overlay for the MIX page](img/help.png "Hold HOME for help")
+![The help overlay for the STAFF page, page 1 of 2](img/help.png "Hold HOME for help")
 
-**Help overlay.** Hold **HOME** for about half a second and a full-screen list of this page's controls appears. Let go and it disappears; nothing else happens, and playback keeps going. A quick tap of HOME just returns to the staff.
+**Help overlay.** Hold **HOME** for about half a second and a full-screen list of every control on this page appears, followed by the ones that work everywhere (PLAY, PRESETS, ALGORITHM, ENV, LFO, SAVE, GLO, EDIT, HOME, OCT− + OCT+). It stays open when you let go. Press any button (HOME again included), a key or a knob to close it; that press only closes the help and does nothing else. If the list is longer than the screen it shows 1/2: turn **SELECT** or **K1** to see the other page (those turns do not close it). Playback keeps going underneath, but PLAY and the other buttons only close the help while it is open. A quick tap of HOME just returns to the staff.
 
 **Screen mirror.** With `mirror = true` in the firmware's settings, the screen and panel can be mirrored to a computer over USB. The screen redraws fully every frame, so it recovers on its own.
 
