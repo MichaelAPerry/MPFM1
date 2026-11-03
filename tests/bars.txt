@@ -139,7 +139,11 @@ wait 700
 expect help 1
 shot bars-help.png
 release HOME
-wait 60
+wait 300
+expect help 1
+expect page 6
+tap EDIT
+expect help 0
 expect page 6
 tap EDIT
 expect page 0
