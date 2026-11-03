@@ -12,6 +12,8 @@ Pick a character, place a note, and build a song. 31 familiar stamps share one p
 
 > **Development preview:** the firmware builds for the FM-1 and runs in the fm1-emu emulator and the browser preview, and the tests pass, but it is **untested on a physical FM-1**. Sounds are the Mario Paint sound pack (Nintendo's, a swappable asset pack: see [its notice](assets/sounds/NOTICE.md)). See the [manual](docs/MANUAL.md) and [install notes](docs/INSTALL.md) before trying a real unit.
 
+> **Other firmwares' files:** Stamp Composer does not read other firmwares' projects, songs or samples. It reads its own songs (SCF) and imports Super Mario Paint text songs through the browser preview.
+
 ## Play in your browser
 
 Download this branch, then serve its included `preview/` folder. No compiler needed:
