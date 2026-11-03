@@ -1,0 +1,73 @@
+# Autosave + restore: idle 3 s, 20 s apart, only stopped; boot restores the working song, slot and dirty flag
+wait 100
+expect autosaves 0
+tap GLO
+turn K1 3
+expect slot 3
+tap HOME
+tapkey 7
+tapkey 9
+expect notes 2
+expect dirty 1
+wait 2000
+expect autosaves 0
+wait 1500
+expect autosaves 1
+# rate limit: a second edit right after waits for the 20 s since the last write
+tapkey 11
+expect notes 3
+wait 5000
+expect autosaves 1
+wait 16000
+expect autosaves 2
+# power cycle: the working song comes back with its unsaved edits, dirty flag and slot
+reboot
+wait 100
+expect notes 3
+expect dirty 1
+expect slot 3
+# never while playing: edit, play, still nothing; stopped, written after the idle time
+tapkey 13
+tap ARP
+tap PLAY
+wait 25000
+expect playing 1
+expect autosaves 2
+tap PLAY
+wait 1000
+expect autosaves 2
+wait 3000
+expect autosaves 3
+# explicit SAVE rewrites the working copy at once: slot and clean flag survive a quick power cycle
+tapkey 15
+tap SAVE
+expect dirty 0
+expect autosaves 4
+reboot
+wait 100
+expect notes 5
+expect dirty 0
+expect slot 3
+# a failed write keeps the previous record and the app running; a retry follows after the rate limit
+tapkey 17
+flash_fail 1
+wait 25000
+expect autosaves 4
+expect store_tries >6
+flash_fail 0
+reboot
+wait 100
+expect notes 5
+expect dirty 0
+tapkey 17
+expect notes 6
+wait 25000
+expect autosaves 5
+# damaged record: boot falls back to slot 1 (never saved: the default song), still usable
+autocorrupt
+reboot
+wait 100
+expect notes 0
+expect slot 0
+tapkey 7
+expect notes 1

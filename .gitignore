@@ -1,0 +1,7 @@
+/build/
+/dsp/bank.h
+/web/words/
+__pycache__/
+*.pyc
+
+/assets/stamps.h

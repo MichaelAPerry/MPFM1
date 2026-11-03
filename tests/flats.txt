@@ -1,0 +1,157 @@
+# Flats: spelling mode (default AUTO), header name, respell with EDIT+OCT-/OCT+, undo, BARS transpose, live and MIDI placement
+# label = the header name's first two characters as letter*256+accidental: Bb 16994, C# 17187, Eb 17762, D# 17443, Gb 18274
+wait 100
+expect spell 1
+expect octave 0
+# AUTO: A# is Bb, C# stays a sharp, D# is Eb
+tapkey 5
+expect last_pitch 58
+expect note_flat 1
+expect label 16994
+turn SELECT 1
+tapkey 8
+expect note_flat 0
+expect label 17187
+turn SELECT 1
+tapkey 10
+expect note_flat 1
+expect label 17762
+expect notes 3
+# EDIT+OCT+ steps toward sharp (SHARP) and respells the note at the cursor: one undo step, no page change, no octave shift
+press EDIT
+tap OCT+
+wait 250
+release EDIT
+expect spell 0
+expect note_flat 0
+expect label 17443
+expect page 0
+expect octave 0
+expect valid 1
+tap ENV
+expect note_flat 1
+tap LFO
+expect note_flat 0
+# EDIT+OCT- twice: FLAT; notes at the cursor become flats again (the sound's, the layer's, at the cursor only)
+press EDIT
+tap OCT-
+wait 250
+tap OCT-
+wait 250
+release EDIT
+expect spell 2
+expect note_flat 1
+turn SELECT -1
+expect note_flat 0
+turn SELECT 1
+# FLAT: F# is Gb, a white key never gets the flag
+turn SELECT 1
+tapkey 13
+expect note_flat 1
+expect label 18274
+turn SELECT 1
+tapkey 7
+expect last_pitch 60
+expect note_flat 0
+expect label 17204
+expect notes 5
+expect valid 1
+shot flats-staff.png
+# BARS transpose +1 in FLAT mode: Bb3 -> B3 and C#4 -> D4 clear, C4 -> Db4 takes the mode
+tap EDIT
+tap EDIT
+tap EDIT
+tap EDIT
+tap EDIT
+expect page 6
+turn K4 -11
+expect bx 1
+turn K2 1
+tap OCT+
+wait 250
+tap EDIT
+expect page 0
+turn SELECT -5
+expect cursor 0
+expect first_pitch 59
+expect note_flat 0
+turn SELECT 4
+expect note_flat 1
+tap ENV
+expect note_flat 0
+# +2 (mode FLAT): Bb3 -> C4 white; C#4 -> D#4 keeps its sharp; Gb4 -> Ab4 keeps its flat; C4 -> D4
+tap EDIT
+tap EDIT
+tap EDIT
+tap EDIT
+tap EDIT
+turn K4 1
+expect bx 2
+tap OCT+
+wait 250
+tap EDIT
+turn SELECT -3
+expect note_flat 0
+turn SELECT -1
+expect note_flat 0
+turn SELECT 3
+expect note_flat 1
+expect valid 1
+# live placement (playing) uses the mode: FLAT; then SHARP respells the note at the cursor (two steps from FLAT)
+turn PRESET 1
+tap PLAY
+wait 450
+tapkey 5
+tap PLAY
+expect playing 0
+turn SELECT -2
+expect cursor 96
+expect note_flat 1
+press EDIT
+tap OCT+
+wait 250
+tap OCT+
+wait 250
+release EDIT
+expect spell 0
+expect note_flat 0
+tap PLAY
+wait 950
+tapkey 10
+tap PLAY
+turn SELECT 1
+expect cursor 192
+expect note_flat 0
+# MIDI in uses the mode: AUTO, A#4 -> Bb4
+press EDIT
+tap OCT-
+wait 250
+release EDIT
+expect spell 1
+turn SELECT 1
+midi 90 46 64
+wait 40
+expect note_flat 1
+expect label 16994
+expect valid 1
+shot flats-live.png
+# screenshots: Bb/Eb/F# chord, then a melody mixing flats and sharps (sound 3 only)
+turn PRESET 1
+tap SEL
+turn SELECT -9
+tapkey 5
+tapkey 10
+tapkey 13
+shot flats-chord.png
+turn SELECT 1
+tapkey 7
+turn SELECT 1
+tapkey 8
+turn SELECT 1
+tapkey 10
+turn SELECT 1
+tapkey 13
+turn SELECT 1
+tapkey 5
+turn SELECT -5
+shot flats-melody.png

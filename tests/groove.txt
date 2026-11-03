@@ -1,0 +1,88 @@
+# Layer mute/solo (MIX), swing/human (GROOVE), play from cursor, help overlay
+wait 100
+tapkey 7
+expect notes 1
+tap EDIT
+expect page 1
+tap FX
+expect mute 1
+shot mix.png
+tap PLAY
+wait 700
+expect triggers 1
+tap PLAY
+tap FX
+expect mute 0
+tap SEL
+expect solo 1
+turn ALGO 2
+expect layer 2
+tap FX
+expect mute 4
+tap PLAY
+wait 700
+expect triggers 2
+tap PLAY
+turn ALGO -2
+tap SEL
+expect solo 0
+turn ALGO 2
+tap FX
+expect mute 0
+# staff keeps SEL as the sound filter and FX as the sound mute
+tap HOME
+expect page 0
+tap SEL
+expect solo 0
+tap SEL
+# GROOVE page: K1 swing 0..75, K2 human 0..100, undoable, saved
+tap EDIT
+tap EDIT
+tap EDIT
+tap EDIT
+expect page 5
+turn K1 40
+expect swing 40
+spin K1 100
+expect swing 75
+spin K2 -3
+expect human 0
+spin K2 130
+expect human 100
+wait 60
+shot groove.png
+tap ENV
+expect human 0
+tap EDIT
+expect page 6
+tap EDIT
+expect page 0
+# play from the cursor's bar: EDIT held + PLAY
+turn SELECT 5
+expect cursor 480
+press EDIT
+tap PLAY
+release EDIT
+expect page 0
+expect playing 1
+expect tick >383
+tap PLAY
+expect playing 0
+tap PLAY
+expect tick <40
+tap PLAY
+# help overlay: HOME held 600 ms shows it, release hides it and does not go home; a tap does
+tap EDIT
+expect page 1
+press HOME
+wait 300
+expect help 0
+wait 400
+expect help 1
+shot help.png
+release HOME
+wait 60
+expect help 0
+expect page 1
+tap HOME
+expect page 0

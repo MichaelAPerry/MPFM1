@@ -1,0 +1,96 @@
+# Triplet grids, time signature (BEATS), playback hop
+wait 100
+expect grid 96
+tap SEQ
+expect grid 48
+tap SEQ
+expect grid 24
+tap SEQ
+expect grid 32
+tap SEQ
+expect grid 16
+turn SELECT 3
+expect cursor 48
+tap SEQ
+expect grid 96
+tap SEQ
+tap SEQ
+tap SEQ
+expect grid 32
+expect cursor 0
+turn SELECT 3
+expect cursor 96
+# K3 length steps follow the grid: 16 on triplet grids, snapped (96 -> 112 -> 96 -> 64)
+turn K3 1
+expect length 112
+turn K3 -1
+turn K3 -2
+expect length 64
+tapkey 3
+expect notes 1
+expect note_len 64
+tap SEQ
+expect grid 16
+turn SELECT 1
+expect cursor 112
+tapkey 5
+expect notes 2
+turn SELECT -1
+expect cursor 96
+expect note_len 64
+tap SEQ
+tap SEQ
+expect grid 48
+turn K3 -1
+expect length 24
+# BEATS on MIX K1: 2..12, undoable
+tap EDIT
+expect page 1
+expect beats 4
+turn K1 -1
+expect beats 3
+spin K1 -20
+expect beats 2
+spin K1 30
+expect beats 12
+tap ENV
+expect beats 2
+tap ENV
+expect beats 3
+tap LFO
+expect beats 2
+tap ENV
+tap ENV
+expect beats 4
+spin K1 -1
+wait 60
+shot mix3.png
+tap HOME
+expect page 0
+# duplicate bar with beats=3 copies 288 ticks: notes at 96 and 112 -> 384 and 400
+expect beats 3
+tap SEQ
+tap SEQ
+tap SEQ
+tap SEQ
+expect grid 96
+tap REC
+expect notes 4
+turn SELECT 4
+expect cursor 384
+expect note_len 64
+wait 60
+shot staff3.png
+# playback: the character hops at the playhead
+tap HOME
+tap SEQ
+tap SEQ
+tap SEQ
+expect grid 32
+tap PLAY
+wait 700
+expect playing 1
+wait 40
+shot hop.png
+wait 300
+tap PLAY

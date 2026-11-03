@@ -1,0 +1,145 @@
+# BARS page: range COPY / MOVE / DELETE / INSERT / TRANSPOSE, each one undo step
+wait 100
+tapkey 7
+turn SELECT 4
+tapkey 7
+expect notes 2
+expect end 1536
+tap EDIT
+tap EDIT
+tap EDIT
+tap EDIT
+tap EDIT
+expect page 6
+expect bf 1
+expect bt 1
+expect bg 1
+expect bx 12
+# FROM pushes TO up; TO stays >= FROM; both stop at the last bar (4)
+turn K1 9
+expect bf 4
+expect bt 4
+turn K2 -9
+expect bt 4
+turn K1 -9
+expect bf 1
+turn K2 -9
+expect bt 1
+turn K2 1
+expect bt 2
+turn K2 -1
+turn K3 9
+expect bg 10
+turn K3 -9
+turn K3 -200
+expect bg 1
+# COPY bar 1 -> 3; again changes nothing; one undo step
+turn K3 2
+tap REC
+expect notes 3
+expect last_tick 768
+expect valid 1
+expect dirty 1
+tap REC
+expect notes 3
+expect dirty 1
+tap ENV
+expect notes 2
+tap LFO
+expect notes 3
+# MOVE bar 1 -> 4 (notes now 384, 768, 1152)
+turn K3 1
+tap FX
+expect notes 3
+expect first_tick 384
+expect last_tick 1152
+# DELETE bar 2: end and later notes shift left
+turn K1 1
+expect bt 2
+tap SEQ
+expect notes 2
+expect end 1152
+expect first_tick 384
+expect last_tick 768
+tap ENV
+expect end 1536
+expect last_tick 1152
+tap LFO
+# INSERT one empty bar at 2: later notes and end shift right
+tap ARP
+expect end 1536
+expect first_tick 768
+expect last_tick 1152
+expect valid 1
+# TRANSPOSE bars 2..4 by K4 (1..12): OCT+ up, OCT- down (acts after the 150 ms OCT- + OCT+ window)
+expect first_pitch 60
+tap OCT+
+wait 200
+expect first_pitch 60
+turn K2 2
+tap OCT+
+wait 200
+expect first_pitch 72
+expect octave 0
+turn K4 -30
+expect bx 1
+tap OCT-
+wait 200
+expect first_pitch 71
+tap OCT+
+wait 200
+expect first_pitch 72
+turn K4 30
+expect bx 12
+tap OCT-
+wait 200
+expect first_pitch 60
+tap OCT+
+wait 200
+tap OCT+
+wait 200
+expect first_pitch 84
+tap OCT+
+wait 200
+expect first_pitch 84
+tap ENV
+expect first_pitch 72
+tap ENV
+tap ENV
+tap ENV
+tap ENV
+tap ENV
+expect first_pitch 60
+expect first_tick 768
+# nothing to transpose in an empty range: refused, no undo step used
+turn K1 -1
+turn K2 -9
+expect bt 1
+tap OCT+
+wait 200
+expect first_pitch 60
+# not while playing
+tap PLAY
+tap REC
+tap ARP
+expect notes 2
+expect end 1536
+tap PLAY
+# SEL filter: copy/move/transpose take only the selected sound
+turn K2 3
+turn PRESET 1
+tap SEL
+tap REC
+expect notes 2
+tap SEL
+wait 60
+shot bars.png
+press HOME
+wait 700
+expect help 1
+shot bars-help.png
+release HOME
+wait 60
+expect page 6
+tap EDIT
+expect page 0

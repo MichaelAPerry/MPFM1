@@ -1,0 +1,117 @@
+# 31 sounds: stamp ROM (sound ids = stamp ids, clef after them), PRESET walk, MIDI page, song book DEMO (Twinkle, 66 notes), SAVE on DEMO refused
+listen
+wait 100
+expect stamps 32
+expect clef 31
+expect instrument 0
+turn PRESET 1
+expect instrument 1
+turn PRESET 1
+expect instrument 2
+turn PRESET 1
+expect instrument 3
+turn PRESET 1
+expect instrument 4
+turn PRESET 1
+expect instrument 5
+turn PRESET 1
+expect instrument 6
+turn PRESET 1
+expect instrument 7
+turn PRESET 1
+expect instrument 8
+turn PRESET 1
+expect instrument 9
+turn PRESET 1
+expect instrument 10
+turn PRESET 1
+expect instrument 11
+turn PRESET 1
+expect instrument 12
+turn PRESET 1
+expect instrument 13
+turn PRESET 1
+expect instrument 14
+turn PRESET 1
+expect instrument 15
+turn PRESET 1
+expect instrument 16
+turn PRESET 1
+expect instrument 17
+turn PRESET 1
+expect instrument 18
+turn PRESET 1
+expect instrument 19
+turn PRESET 1
+expect instrument 20
+turn PRESET 1
+expect instrument 21
+turn PRESET 1
+expect instrument 22
+turn PRESET 1
+expect instrument 23
+turn PRESET 1
+expect instrument 24
+turn PRESET 1
+expect instrument 25
+turn PRESET 1
+expect instrument 26
+turn PRESET 1
+expect instrument 27
+turn PRESET 1
+expect instrument 28
+turn PRESET 1
+expect instrument 29
+turn PRESET 1
+expect instrument 30
+turn PRESET 1
+expect instrument 0
+turn PRESET -1
+expect instrument 30
+# MIDI page: channel of sound 30 and 29 (one 8 x 4 page shows all 31)
+tap EDIT
+tap EDIT
+tap EDIT
+expect page 4
+turn K1 5
+expect midi_ch 5
+turn PRESET -1
+expect midi_ch 0
+turn PRESET 1
+expect midi_ch 5
+expect page 4
+tap HOME
+expect page 0
+# song book: 8 slots then DEMO; SAVE refused on DEMO
+tap GLO
+expect page 2
+turn SELECT 20
+expect slot 8
+tap SAVE
+said PICK A SLOT
+expect store_writes 0
+turn SELECT -1
+expect slot 7
+turn SELECT 1
+expect slot 8
+# REC arms, REC loads (undoable): Twinkle
+tap REC
+said REC AGAIN TO LOAD
+expect notes 0
+tap REC
+expect notes 66
+expect page 0
+expect end 4608
+expect loop 1
+expect tempo 100
+expect instrument 3
+expect valid 1
+expect dirty 1
+expect first_tick 0
+expect first_pitch 72
+expect last_tick 4416
+expect last_pitch 48
+tap ENV
+expect notes 0
+tap GLO
+expect slot 7 # DEMO selection ends with the page; the last real slot stays

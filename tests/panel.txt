@@ -1,0 +1,63 @@
+wait 100
+expect notes 0
+key 7 down
+wait 40
+key 7 up
+expect notes 1
+expect dirty 1
+key 11 down
+wait 40
+key 11 up
+expect notes 2
+turn PRESET 6
+wait 10
+expect instrument 6
+key 14 down
+wait 40
+key 14 up
+expect notes 3
+shot chord.png
+tap ENV
+expect notes 2
+tap LFO
+expect notes 3
+turn SELECT 1
+expect cursor 96
+key 9 down
+wait 20
+key 9 up
+expect notes 4
+tap REC
+expect notes 8
+tap SAVE
+expect dirty 0
+expect store_writes 2 # slot + working copy (autosave record)
+reboot
+wait 100
+expect notes 8
+tap PLAY
+expect playing 1
+wav demo.wav
+wait 2000
+shot playing.png
+wavstop
+expect peak_db_min -40
+tap PLAY
+expect playing 0
+tap SEQ
+turn SELECT 1
+expect cursor 48
+shot editor.png
+
+# A failed flash write keeps the last saved song intact.
+key 7 down
+wait 20
+key 7 up
+expect notes 9
+flash_fail 1
+tap SAVE
+expect dirty 1
+flash_fail 0
+reboot
+wait 100
+expect notes 8

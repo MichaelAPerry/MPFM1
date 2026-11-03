@@ -1,0 +1,105 @@
+# Live placement while playing (snapped to the nearest grid step), undo per run, FREE PLAY (OCT- + OCT+)
+wait 100
+expect grid 96
+tap PLAY
+wait 450
+tapkey 7
+expect triggers 1
+expect notes 1
+expect first_tick 96
+expect first_pitch 60
+tapkey 7
+expect triggers 2
+expect notes 1
+tapkey 9
+expect notes 2
+# knobs keep the stopped-only rule
+turn K1 5
+expect tempo 120
+tap PLAY
+expect playing 0
+# one undo step for the whole run
+tap ENV
+expect notes 0
+tap LFO
+expect notes 2
+tap ENV
+# grid 1/8T (32 ticks): nearest step; EDIT-hold + key erases there while playing
+tap SEQ
+tap SEQ
+tap SEQ
+expect grid 32
+tap PLAY
+wait 400
+tapkey 7
+expect notes 1
+expect first_tick 96
+press EDIT
+key 7 down
+key 7 up
+release EDIT
+expect notes 0
+tap PLAY
+tap ENV
+expect notes 0
+tap SEQ
+tap SEQ
+# MIDI in while playing places a note too
+tap PLAY
+wait 450
+midi 90 40 55
+wait 40
+expect notes 1
+expect first_tick 96
+tap PLAY
+tap ENV
+expect notes 0
+# FREE PLAY: both octave buttons together toggle it; a single press still shifts the octave
+expect free 0
+tap OCT+
+expect octave 1
+expect free 0
+tap OCT-
+expect octave 0
+press OCT-
+press OCT+
+release OCT-
+release OCT+
+expect free 1
+expect octave 0
+wait 100
+shot free.png
+tapkey 7
+expect notes 0
+expect triggers >4
+tap OCT+
+expect octave 1
+expect free 1
+tap OCT-
+# chord with the second press a little later: the first press's shift is undone
+press OCT+
+wait 60
+press OCT-
+release OCT+
+release OCT-
+expect free 0
+expect octave 0
+press OCT-
+press OCT+
+release OCT-
+release OCT+
+expect free 1
+tap PLAY
+wait 450
+tapkey 7
+midi 90 40 55
+wait 40
+expect notes 0
+tap PLAY
+press OCT+
+press OCT-
+release OCT+
+release OCT-
+expect free 0
+tapkey 7
+expect notes 1
