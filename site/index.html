@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stamp Composer FM-1</title>
+<meta name="description" content="Little stamps. Big ideas. A Mario Paint-inspired music composer firmware for the M-VAVE FM-1: 31 stamp sounds, 8 layers, a song book and MIDI per sound.">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+:root {
+  --paper: #fbf8f1; --card: #ffffff; --sheet: #efe9dc; --rule: #ddd4c2;
+  --ink: #1e2b5a; --muted: #4f5778; --hot: #e5482e; --hot-ink: #c23a22; --on-hot: #ffffff;
+  --cool: #d9a21b; --cool-t: #f5e4b8; --screen: #14172b; --shadow: 0 1px 0 rgba(30,43,90,.06), 0 8px 24px rgba(30,43,90,.10);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #12152a; --card: #1b2040; --sheet: #191d38; --rule: #343b66;
+    --ink: #f1ecdf; --muted: #aab1d3; --hot: #ff6a4d; --hot-ink: #ff8f78; --on-hot: #14172b;
+    --cool: #f0b64a; --cool-t: #3a3320; --screen: #0b0d1a; --shadow: 0 1px 0 rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #12152a; --card: #1b2040; --sheet: #191d38; --rule: #343b66;
+  --ink: #f1ecdf; --muted: #aab1d3; --hot: #ff6a4d; --hot-ink: #ff8f78; --on-hot: #14172b;
+  --cool: #f0b64a; --cool-t: #3a3320; --screen: #0b0d1a; --shadow: 0 1px 0 rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 17px/1.6 "Barlow", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+a { color: var(--ink); text-decoration-color: var(--hot); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+a:hover { color: var(--hot-ink); }
+:focus-visible { outline: 3px solid var(--hot-ink); outline-offset: 2px; border-radius: 4px; }
+img { max-width: 100%; height: auto; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+.skip { position: absolute; left: 16px; top: -100px; background: var(--ink); color: var(--paper); padding: 8px 14px; border-radius: 0 0 6px 6px; z-index: 20; }
+.skip:focus { top: 0; }
+
+/* top bar */
+.bar { position: sticky; top: 0; z-index: 10; background: var(--paper); border-bottom: 2px solid var(--ink); }
+.bar .wrap { display: flex; align-items: center; gap: 8px 22px; flex-wrap: wrap; padding-top: 10px; padding-bottom: 10px; }
+.brand { font-family: "Barlow Condensed", "Barlow", sans-serif; font-weight: 700; font-size: 1.35rem; letter-spacing: .06em; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+.brand img { width: 24px; height: 27px; image-rendering: pixelated; }
+.brand small { font-weight: 600; color: var(--muted); letter-spacing: .08em; }
+.bar nav { margin-left: auto; display: flex; flex-wrap: wrap; gap: 2px 18px; font-weight: 600; font-size: .95rem; }
+.bar nav a { text-decoration: none; padding: 4px 0; }
+.bar nav a:hover { text-decoration: underline; text-decoration-color: var(--hot); text-decoration-thickness: 2px; }
+
+/* hero */
+.hero { padding: 48px 0 40px; }
+.hero .wrap { display: grid; gap: 36px; grid-template-columns: 1fr; align-items: center; }
+@media (min-width: 880px) { .hero .wrap { grid-template-columns: 1.15fr .85fr; } }
+.eyebrow { font-family: "Barlow Condensed", "Barlow", sans-serif; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; font-size: .9rem; color: var(--hot-ink); margin: 0 0 .5rem; }
+h1 { font-family: "Barlow Condensed", "Barlow", sans-serif; font-weight: 700; font-size: clamp(2.7rem, 9vw, 5rem); line-height: 1; letter-spacing: -.01em; margin: 0 0 1rem; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--hot-ink); }
+.lede { font-size: 1.2rem; max-width: 34em; margin: 0 0 1.4rem; }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 1.4rem; }
+.btn { display: inline-block; padding: 12px 22px; border-radius: 8px; font-weight: 700; text-decoration: none; border: 2px solid var(--ink); color: var(--ink); background: transparent; line-height: 1.2; }
+.btn:hover { background: var(--sheet); color: var(--ink); }
+.btn.primary { background: var(--hot-ink); border-color: var(--hot-ink); color: var(--on-hot); }
+:root[data-theme="dark"] .btn.primary, :root:not([data-theme="light"]) .btn.primary { color: var(--on-hot); }
+.btn.primary:hover { filter: brightness(1.08); color: var(--on-hot); }
+.note { background: var(--cool-t); border-left: 4px solid var(--cool); padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: .95rem; max-width: 40em; margin: 0; }
+.device { justify-self: center; background: var(--screen); padding: 14px; border-radius: 22px; box-shadow: var(--shadow); width: min(100%, 330px); }
+.device img { display: block; width: 100%; image-rendering: pixelated; border-radius: 6px; }
+.device figcaption { color: #c9cde6; font-size: .8rem; text-align: center; margin-top: 8px; }
+
+/* sections */
+section { padding: 56px 0; border-top: 2px solid var(--ink); }
+section.alt { background: var(--sheet); }
+.label { font-family: "Barlow Condensed", "Barlow", sans-serif; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--hot-ink); font-size: .95rem; margin: 0 0 .4rem; }
+h2 { font-family: "Barlow Condensed", "Barlow", sans-serif; font-weight: 700; font-size: clamp(1.9rem, 5vw, 2.8rem); line-height: 1.08; margin: 0 0 1rem; text-wrap: balance; }
+h3 { font-size: 1.1rem; margin: 0 0 .3rem; }
+.intro { max-width: 40em; margin: 0 0 1.6rem; }
+.muted { color: var(--muted); }
+
+.tiles { list-style: none; padding: 0; margin: 0 0 1.5rem; display: grid; gap: 12px; grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 640px) { .tiles { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) { .tiles { grid-template-columns: repeat(6, 1fr); } }
+.tiles li { background: var(--card); border: 2px solid var(--ink); border-radius: 10px; padding: 14px 12px 12px; box-shadow: var(--shadow); }
+.tiles b { display: block; font-family: "Barlow Condensed", "Barlow", sans-serif; font-size: 2.5rem; line-height: 1; color: var(--hot-ink); }
+.tiles span { display: block; font-size: .9rem; font-weight: 600; margin-top: 4px; line-height: 1.3; }
+
+.stamps { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); }
+@media (min-width: 560px) { .stamps { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 760px) { .stamps { grid-template-columns: repeat(6, 1fr); } }
+@media (min-width: 1000px) { .stamps { grid-template-columns: repeat(8, 1fr); } }
+.stamps li { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 12px 6px 10px; text-align: center; }
+.stamps img { width: 64px; height: 72px; image-rendering: pixelated; display: block; margin: 0 auto 6px; }
+.stamps b { display: block; font-size: .82rem; letter-spacing: .04em; text-transform: uppercase; line-height: 1.2; }
+.stamps span { display: block; font-size: .8rem; color: var(--muted); line-height: 1.25; }
+
+.pills { list-style: none; padding: 0; margin: 0 0 1.2rem; display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.pill { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 10px 6px 6px; border: 2px solid var(--ink); border-radius: 999px; background: var(--card); color: var(--ink); font: 600 .9rem/1.2 "Barlow", sans-serif; text-decoration: none; cursor: pointer; text-align: left; }
+.pill img { width: 24px; height: 27px; image-rendering: pixelated; flex: none; }
+.pill i { margin-left: auto; font-style: normal; font-size: .75rem; color: var(--hot-ink); }
+.pill:hover { background: var(--sheet); color: var(--ink); }
+.pill[aria-pressed="true"] { background: var(--hot-ink); border-color: var(--hot-ink); color: var(--on-hot); }
+.pill[aria-pressed="true"] i { color: var(--on-hot); }
+.demo { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; background: var(--card); border: 2px solid var(--ink); border-radius: 12px; padding: 16px; margin: 0 0 1rem; }
+.demo audio { flex: 1 1 260px; min-width: 0; max-width: 100%; }
+.demo p { margin: 0; flex: 1 1 200px; }
+.fine { font-size: .92rem; color: var(--muted); max-width: 46em; margin: 0; }
+
+.shots { list-style: none; padding: 0; margin: 0; display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+.shots figure { margin: 0; }
+.shots img { display: block; width: 100%; max-width: 280px; image-rendering: pixelated; border-radius: 6px; border: 3px solid var(--screen); background: var(--screen); }
+.shots figcaption { margin-top: 8px; font-size: .92rem; line-height: 1.4; max-width: 280px; }
+.shots figcaption b { display: block; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--hot-ink); }
+
+.steps { counter-reset: step; list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; max-width: 46em; }
+.steps li { counter-increment: step; position: relative; padding: 12px 14px 12px 58px; background: var(--card); border: 1px solid var(--rule); border-radius: 10px; }
+.steps li::before { content: counter(step); position: absolute; left: 12px; top: 10px; width: 32px; height: 32px; border-radius: 50%; background: var(--ink); color: var(--paper); font: 700 1rem/32px "Barlow Condensed", "Barlow", sans-serif; text-align: center; }
+kbd { font: 600 .85em/1 "Barlow", sans-serif; background: var(--sheet); border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 5px; padding: 2px 6px; white-space: nowrap; }
+
+.two { display: grid; gap: 28px; grid-template-columns: 1fr; }
+@media (min-width: 820px) { .two { grid-template-columns: 1fr 1fr; } }
+.card { background: var(--card); border: 2px solid var(--ink); border-radius: 12px; padding: 18px 18px 14px; box-shadow: var(--shadow); }
+.card ul, .card ol { margin: .4rem 0 1rem; padding-left: 1.25rem; }
+.card li { margin: .25rem 0; }
+.card p { margin: 0 0 .8rem; }
+table.dl { width: 100%; border-collapse: collapse; font-size: .95rem; }
+table.dl th, table.dl td { text-align: left; padding: .5rem .6rem .5rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.dl th { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid var(--ink); }
+.hash { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .78rem; word-break: break-all; }
+.ok { list-style: none; padding: 0; }
+.ok li { padding-left: 1.5rem; position: relative; }
+.ok li::before { content: "\2713"; position: absolute; left: 0; color: var(--hot-ink); font-weight: 700; }
+.no li::before { content: "\2715"; }
+
+details { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 0 16px; margin: 0 0 10px; max-width: 52em; }
+summary { cursor: pointer; font-weight: 700; padding: 14px 0; }
+details[open] summary { margin-bottom: 2px; }
+details p { margin: 0 0 1rem; }
+
+footer { border-top: 2px solid var(--ink); padding: 32px 0 48px; font-size: .92rem; color: var(--muted); }
+footer .wrap { display: grid; gap: 18px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { footer .wrap { grid-template-columns: 1.4fr 1fr; } }
+footer p { margin: 0 0 .6rem; }
+footer a { color: var(--ink); }
+footer ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 18px; }
+</style>
+</head>
+<body>
+<a class="skip" href="#idea">Skip to content</a>
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="assets/stamps/mario.png" alt="">STAMP <small>COMPOSER FM-1</small></a>
+    <nav aria-label="Site">
+      <a href="#idea">Idea</a>
+      <a href="#hear">Sounds</a>
+      <a href="#pages">Pages</a>
+      <a href="manual/">Manual</a>
+      <a href="install/">Install</a>
+      <a href="#downloads">Downloads</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Firmware for the M-VAVE FM-1 · {{VERSION}}</p>
+      <h1>Little stamps. <em>Big ideas.</em></h1>
+      <p class="lede">A Mario Paint-inspired music composer. Pick a character stamp, press a key, and a note lands on the staff. Each of the 31 stamps is its own sound, so a song is a picture you can hear.</p>
+      <div class="cta">
+        <a class="btn primary" href="install/">Install</a>
+        <a class="btn" href="fm1-emu/?fw=stamp">Try it in your browser</a>
+        <a class="btn" href="#hear">Listen</a>
+      </div>
+      <p class="note"><strong>Development preview.</strong> This firmware runs in emulators and a host simulator, and has not been tested on a physical FM-1 yet.</p>
+    </div>
+    <figure class="device">
+      <img src="assets/shots/compose.png" width="240" height="240" alt="The staff page on the FM-1 screen: a row of character stamps, a staff with Mario and star notes, four knob tiles">
+      <figcaption>The staff page, from the firmware's own screen</figcaption>
+    </figure>
+  </div>
+</div>
+
+<section id="idea">
+  <div class="wrap">
+    <p class="label">01 / The idea</p>
+    <h2>A little composer for a little synth</h2>
+    <p class="intro">Stamp Composer turns the FM-1 into a music maker in the spirit of Mario Paint. The keys place notes, the knobs shape them, and eight layers let you stack parts. It is built on the open fm1-base platform, and the same C code that runs on the unit also runs in your browser.</p>
+    <ul class="tiles" aria-label="At a glance">
+      <li><b>31</b><span>sounds, one per stamp</span></li>
+      <li><b>8</b><span>layers to arrange with</span></li>
+      <li><b>384</b><span>notes per song</span></li>
+      <li><b>8</b><span>song slots, plus autosave</span></li>
+      <li><b>16</b><span>steps of undo and redo</span></li>
+      <li><b>MIDI</b><span>channel for every sound</span></li>
+    </ul>
+    <p class="fine">Also on board: a staff with flats and sharps, triplet grids, swing and humanize, bar copy, move and transpose, MIDI clock in and out, and a Twinkle Twinkle demo to start from.</p>
+  </div>
+</section>
+
+<section id="stamps" class="alt">
+  <div class="wrap">
+    <p class="label">02 / The stamps</p>
+    <h2>31 characters, 31 sounds</h2>
+    <p class="intro">Turn PRESETS to choose a stamp. Its name and its instrument are shown under the ribbon, like MARIO / PIANO.</p>
+    <ul class="stamps">
+{{STAMPS}}
+    </ul>
+  </div>
+</section>
+
+<section id="hear">
+  <div class="wrap">
+    <p class="label">03 / Hear the sounds</p>
+    <h2>Pick a sound to preview</h2>
+    <p class="intro">Each clip is a short C4 - E4 - G4 arpeggio on one sound. Press a button to hear it; press it again to stop.</p>
+    <ul class="pills">
+{{PILLS}}
+    </ul>
+    <div class="demo">
+      <p><strong>Twinkle Twinkle</strong><br><span class="muted">The built-in demo, STAR melody over a HEART bass: the first 20 seconds.</span></p>
+      <audio controls preload="none" src="assets/audio/twinkle.mp3">Your browser cannot play audio here. <a href="assets/audio/twinkle.mp3">Download the clip</a>.</audio>
+    </div>
+    <p class="fine"><strong>Rendered by the host simulator</strong> from the firmware's own engine and sound pack, not recorded from hardware. On a real unit the output stage and the speaker will colour it. The clips are normalised for the web.</p>
+  </div>
+</section>
+
+<section id="pages" class="alt">
+  <div class="wrap">
+    <p class="label">04 / The pages</p>
+    <h2>Every page, from the firmware's own screen</h2>
+    <p class="intro">EDIT steps through the pages, GLO opens the song book, HOME comes back to the staff. K1 to K4 follow the four tiles at the bottom of the screen, left to right.</p>
+    <ul class="shots">
+{{SHOTS}}
+    </ul>
+    <p class="fine" style="margin-top:1.2rem">These are screenshots of the host simulator, which draws the same 240 x 240 screen the firmware does. See the <a href="manual/">manual</a> for every control on every page.</p>
+  </div>
+</section>
+
+<section id="first">
+  <div class="wrap">
+    <p class="label">05 / Your first song</p>
+    <h2>Your first song in 2 minutes</h2>
+    <ol class="steps">
+      <li>Turn <kbd>PRESETS</kbd> to pick a character. Press a few keys: each one plays and places a note at the cursor.</li>
+      <li>Turn <kbd>SELECT</kbd> to move the cursor one step along, and place another note. Press several keys together for a chord.</li>
+      <li>Press <kbd>SEQ</kbd> to change the step size, then add quicker notes.</li>
+      <li>Press <kbd>PLAY</kbd> to hear it. Press it again to stop. Not happy? <kbd>ENV</kbd> undoes, <kbd>LFO</kbd> redoes.</li>
+      <li>Turn <kbd>ALGORITHM</kbd> to pick another layer, pick another stamp with <kbd>PRESETS</kbd>, and add a second part.</li>
+      <li>Turn <kbd>KNOB1</kbd> for the tempo and press <kbd>ARP</kbd> to loop. Press <kbd>SAVE</kbd> to keep it in a slot. It is also saved on its own after a few quiet seconds.</li>
+    </ol>
+    <p class="fine" style="margin-top:1rem">No FM-1 at hand? <a href="fm1-emu/?fw=stamp">Try it in your browser</a>, or open the <a href="emu/">quick preview</a>, which also imports and exports songs as <code>.scf</code> files.</p>
+  </div>
+</section>
+
+<section id="install" class="alt">
+  <div class="wrap">
+    <p class="label">06 / Install</p>
+    <h2>Ready for your FM-1</h2>
+    <div class="two">
+      <div class="card">
+        <h3>Install</h3>
+        <ol>
+          <li>Keep M-VAVE's stock firmware file somewhere safe, so you can always go back.</li>
+          <li>Use Chrome or Edge on a computer, a data USB cable, and leave the FM-1 powered from USB.</li>
+          <li>Open the <a href="install/">installer</a>, allow MIDI access, and pick your FM-1.</li>
+          <li>Leave <strong>"also write m-bootloader" unticked.</strong> That replaces the boot loader, and this project has not tested it.</li>
+          <li>Press install and do not unplug until the page says it is done.</li>
+        </ol>
+        <p><a class="btn primary" href="install/">Open the installer</a></p>
+      </div>
+      <div class="card">
+        <h3>Back up, and go back</h3>
+        <ul>
+          <li><a href="backup/">Backup</a> saves all eight song slots to one file and restores them all together.</li>
+          <li>The installer's <strong>Back to the stock firmware</strong> writes M-VAVE's firmware over the same cable.</li>
+          <li>If a unit will not start, it falls into safe mode, and a rescue tool can write stock firmware back. The <a href="manual/#s11">manual's recovery section</a> and the <a href="{{REPO}}/blob/main/docs/INSTALL.md">install notes</a> explain each step.</li>
+        </ul>
+        <p class="fine">Not tested on a physical FM-1 yet. Read the install notes before you flash.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="open">
+  <div class="wrap">
+    <p class="label">07 / Developed in the open</p>
+    <h2>What has been tested, and what has not</h2>
+    <div class="two">
+      <div>
+        <h3>Tested</h3>
+        <ul class="ok">
+          <li>The core engine and importer, with unit tests (<code>tests/run_tests.sh</code>).</li>
+          <li>The whole app on a host simulator driven by scripts: every page, saving, autosave, MIDI, undo, bars, groove.</li>
+          <li>The real firmware package, booted and played in the fm1-emu emulator in your browser.</li>
+          <li>The same C source compiled to WebAssembly for the quick preview.</li>
+        </ul>
+        <h3>Not tested</h3>
+        <ul class="ok no">
+          <li>Anything on a physical FM-1: real boot, flash, audio output, input feel, MIDI with real gear.</li>
+        </ul>
+        <p class="fine">The details are in the <a href="{{REPO}}/blob/main/docs/VALIDATION.md">validation report</a>.</p>
+      </div>
+      <div class="card" id="downloads">
+        <h3>Downloads</h3>
+        <p class="muted" style="font-size:.92rem">{{BUILDNOTE}}</p>
+        <table class="dl">
+          <thead><tr><th>File</th><th>Details</th></tr></thead>
+          <tbody>
+            <tr><td><a href="firmware/{{PKG}}">{{PKG}}</a></td><td>Firmware package, {{SIZE}} bytes.<br>SHA-256 <span class="hash">{{SHA}}</span></td></tr>
+            <tr><td>{{SUMS}}</td><td>Checksums of every release file.</td></tr>
+            <tr><td><a href="{{ZIP}}">Source ZIP</a></td><td>The code, the tools and the pinned platform.</td></tr>
+            <tr><td><a href="{{REPO}}/blob/main/docs/VALIDATION.md">Validation</a></td><td>What was checked and how.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="alt">
+  <div class="wrap">
+    <p class="label">08 / Questions</p>
+    <h2>Good to know</h2>
+    <details><summary>Where do the sounds and the pictures come from?</summary>
+      <p>The stamps and the sound pack come from Nintendo's Mario Paint, by way of the Super Mario Paint project. They are not covered by this project's MIT licence, and this is an unaffiliated fan project. They live in an asset pack you can swap: build with <code>STAMP_BANK=placeholder</code> for original tones, or point <code>STAMP_WAV_DIR</code> at your own WAV files.</p></details>
+    <details><summary>Will it break my FM-1? How do I go back?</summary>
+      <p>Installing replaces M-VAVE's firmware, so keep the stock file first. The installer can write it back over the same cable, M-VAVE's own updater works too, and if a start fails twice the unit offers a safe mode. The firmware has not been tested on a physical FM-1 yet, so please read the <a href="manual/#s11">recovery notes</a> before you begin.</p></details>
+    <details><summary>Does it do MIDI?</summary>
+      <p>Yes. Every sound can send on its own channel (or all of them can), with velocity, length and tune. There is MIDI clock out, and clock in that makes the FM-1 follow another machine. Notes coming in over USB or the MIDI jack act like keys. The MIDI page has all of it.</p></details>
+    <details><summary>Can I bring songs from Super Mario Paint?</summary>
+      <p>Yes, in two steps. The project's importer (<code>tools/import_smp.py</code>) turns a Super Mario Paint song into a <code>.scf</code> file, and the <a href="emu/">quick preview</a> opens it with <em>Import a .scf song</em>, where you can listen, edit and export it.</p></details>
+    <details><summary>Do the keys have to play the stamp I picked?</summary>
+      <p>Yes: the stamp is the sound. Different stamps on different layers make a band. In FREE PLAY (OCT&minus; and OCT+ together) the keys only play and never write, which is handy for jamming over a song.</p></details>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <p><strong>Stamp Composer FM-1</strong> {{VERSION}}. Original app code by Michael Perry, MIT licence. Platform by the fm1-base and felucca-bsp contributors. Sounds and stamps: Nintendo's Mario Paint, via Super Mario Paint, not under the MIT licence. Unaffiliated with Nintendo and M-VAVE.</p>
+      <p>Screen reader voice (where used): fm1-reader with eSpeak NG (GPL). The browser emulator is fm1-emu (MIT).</p>
+    </div>
+    <ul>
+      <li><a href="manual/">Manual</a></li>
+      <li><a href="install/">Install</a></li>
+      <li><a href="backup/">Backup</a></li>
+      <li><a href="mirror/">Mirror</a></li>
+      <li><a href="fm1-emu/?fw=stamp">fm1-emu</a></li>
+      <li><a href="emu/">Quick preview</a></li>
+      <li><a href="{{REPO}}">Source</a></li>
+    </ul>
+  </div>
+</footer>
+<script>
+(function () {
+  var cur = null, audio = null;
+  function stop() { if (audio) { audio.pause(); audio = null; } if (cur) { cur.setAttribute('aria-pressed', 'false'); cur.lastElementChild.textContent = '▶'; cur = null; } }
+  document.querySelectorAll('a.pill').forEach(function (a) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'pill'; b.setAttribute('aria-pressed', 'false'); b.dataset.src = a.getAttribute('href');
+    b.innerHTML = a.innerHTML;
+    a.replaceWith(b);
+    b.addEventListener('click', function () {
+      var was = cur === b; stop(); if (was) return;
+      cur = b; b.setAttribute('aria-pressed', 'true'); b.lastElementChild.textContent = '■';
+      audio = new Audio(b.dataset.src);
+      audio.addEventListener('ended', stop);
+      audio.play().catch(stop);
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -8,15 +8,15 @@ Every control acts on its own page only; a dash means nothing happens there. Ref
 
 | Control | Action |
 | --- | --- |
-| PRESET | Choose one of 31 sounds (wraps 31 ↔ 1, like the ribbon) |
-| ALGO | Choose layer 1–8 (wraps) |
+| PRESETS | Choose one of 31 sounds (wraps 31 ↔ 1, like the ribbon) |
+| ALGORITHM | Choose layer 1–8 (wraps) |
 | PLAY | Play from beginning / stop. Hold EDIT and press PLAY: play from the start of the cursor's bar (MIDI clock out: Song Position Pointer + Continue instead of Start) |
 | ENV / LFO | Undo / redo (stopped only) |
 | SAVE | Save the song to the selected slot (stopped only; on the song book's DEMO entry: refused, PICK A SLOT) |
 | GLO | Toggle the song book |
 | HOME | Tap: return to the staff, cursor zero, cancel a pending load (acts on release). Hold 600 ms: help overlay for the page until released; no action on release |
 | EDIT | Tap: cycle STAFF → MIX → SOUND → MIDI → GROOVE → BARS → STAFF (the song book is entered with GLO and left with GLO/HOME). The page changes only on a clean tap: any other button, key, knob or encoder while EDIT is held cancels it (EDIT+key erase, EDIT+K2/K3 note edit and EDIT+PLAY included) |
-| OCT− + OCT+ | Together (second within 150 ms of the first; a first press's shift is undone): toggle FREE PLAY, on any page |
+| OCT− + OCT+ | Together (second within 150 ms of the first; a first press's shift is undone): toggle FREE PLAY, on any page. (Held while powering on, the same two buttons open the platform's panel calibration; REC held at power-on opens the chip's update mode. Neither is read while the firmware runs.) |
 | MASTER | Smoothed audio level |
 | MIDI in (USB, Bluetooth, TRS) | Note-on C2–C6 acts as that key (table below: STAFF auditions and places, with the selected sound, layer and the message's velocity; other pages audition only); in FREE PLAY note-off releases the note; other messages are ignored. Only the MIDI-in channel (MIDI page K4) is accepted for notes; clock and transport messages always are |
 
@@ -31,17 +31,17 @@ Every control acts on its own page only; a dash means nothing happens there. Ref
 | K3 | new-note length (24-tick steps, 16 on triplets); EDIT+K3: length at cursor | layer level 0–127 | new-note length | decay | clock OFF/OUT/IN | swing grid 8TH/16TH | TARGET bar |
 | K4 | song end in quarter steps (tile: bars and beats, 4B+2 = 4 bars + 2 beats) | song end | – | pan L64..R63 | MIDI-in channel OMNI/1–16 | human mode TIME+VEL/TIME/VEL | transpose amount 1–12 |
 | FX | mute/unmute the selected sound | mute/unmute the selected layer | mute sound | mute sound | mute sound | mute sound | MOVE range to TARGET |
-| SEL | view filter: all sounds / selected sound | solo/unsolo the selected layer | view filter | view filter | view filter | view filter | view filter (copy/move/transpose: selected sound only) |
+| SCL | view filter: all sounds / selected sound | solo/unsolo the selected layer | view filter | view filter | view filter | view filter | view filter (copy/move/transpose: selected sound only) |
 | REC | duplicate the cursor's bar into the next | – | arm load; again: load slot (DEMO: Twinkle Twinkle, then the staff) | – | – | – | COPY range to TARGET |
 | SEQ | cycle grid 1/4, 1/8, 1/16, 1/8T, 1/16T (stopped only) | – | – | – | – | – | DELETE bars |
 | ARP | toggle whole-song loop (stopped only) | – | – | – | – | – | INSERT bars |
 | OCT− / OCT+ | shift keyboard by an octave; with EDIT held: spelling mode toward flat / sharp and respell the notes at the cursor (after the 150 ms chord window) | octave | octave | octave | octave | octave | OCT−: transpose DOWN, OCT+: UP, by K4 semitones (acts after the 150 ms chord window) |
 
-K1–K4 changing the song are stopped-only; K2/K3 on the STAFF and the song book (new-note velocity and length) work during playback, MIX K2/K3 do not (STOP FIRST). Off the staff, EDIT held plus a knob does nothing. Keys, SELECT, PRESET, ALGO, FX and SEL work during playback.
+K1–K4 changing the song are stopped-only; K2/K3 on the STAFF and the song book (new-note velocity and length) work during playback, MIX K2/K3 do not (STOP FIRST). Off the staff, EDIT held plus a knob does nothing. Keys, SELECT, PRESETS, ALGORITHM, FX and SCL work during playback.
 
-**BARS ops**: FROM and TO are inclusive (TO ≥ FROM, up to the song end's last bar). REC copies the range to TARGET (existing notes kept, duplicates skipped, the end grows if needed); FX moves it; SEQ deletes the bars (later notes, song end and loop start shift left; a loop start inside the cut goes to its first bar); ARP inserts as many empty bars at FROM (shifting right); OCT−/OCT+ transpose down/up by K4. With SEL on, copy/move/transpose touch only the selected sound; delete/insert always take all sounds. An op that would exceed 384 notes, 65535 ticks, leave C2–C6 or change nothing is refused whole with a message; each is one undo step, stopped only. A single OCT press on BARS waits 150 ms for a second one (FREE PLAY) before it transposes.
+**BARS ops**: FROM and TO are inclusive (TO ≥ FROM, up to the song end's last bar). REC copies the range to TARGET (existing notes kept, duplicates skipped, the end grows if needed); FX moves it; SEQ deletes the bars (later notes, song end and loop start shift left; a loop start inside the cut goes to its first bar); ARP inserts as many empty bars at FROM (shifting right); OCT−/OCT+ transpose down/up by K4. With SCL on, copy/move/transpose touch only the selected sound; delete/insert always take all sounds. An op that would exceed 384 notes, 65535 ticks, leave C2–C6 or change nothing is refused whole with a message; each is one undo step, stopped only. A single OCT press on BARS waits 150 ms for a second one (FREE PLAY) before it transposes.
 
-**Sound mute (FX, not on MIX/BARS)** mutes the selected sound only in the engine, like the layer mask: its audio, auditions and MIDI out are silent, the level (volume) is untouched, it is not saved and clears at power-up. Muted sounds show a checkered stamp (ribbon, staff, MIDI page) and an M on the ribbon. FX again unmutes. On MIX, FX and SEL work on the selected layer instead (live, not saved; with any solo set only soloed layers sound); BARS keeps FX for MOVE.
+**Sound mute (FX, not on MIX/BARS)** mutes the selected sound only in the engine, like the layer mask: its audio, auditions and MIDI out are silent, the level (volume) is untouched, it is not saved and clears at power-up. Muted sounds show a checkered stamp (ribbon, staff, MIDI page) and an M on the ribbon. FX again unmutes. On MIX, FX and SCL work on the selected layer instead (live, not saved; with any solo set only soloed layers sound); BARS keeps FX for MOVE.
 
 **Groove and MIDI-in settings** are song data (undoable, saved, stopped-only): swing grid 8TH delays only off-beat 8ths (tick%96==48), 16TH only off-beat 16ths (tick%48==24); human mode TIME+VEL moves timing and velocity, TIME only timing, VEL only velocity (same random sequence each play). MIDI-in channel OMNI accepts every channel; 1–16 accepts that channel's notes only (MIDI note entry and FREE PLAY releases); realtime messages (clock, Start, Continue, Stop) are never filtered.
 
@@ -59,7 +59,7 @@ SOUND and MIDI settings are song data: undoable, saved with the song, and disabl
 
 **Spelling (flats)**: every black key can be spelled as a sharp or a flat. New notes use the spelling mode, SHARP / AUTO / FLAT (runtime only, not saved, AUTO at power-up; shown in the staff hint). AUTO spells D#, G#, A# as Eb, Ab, Bb and C#, F# as sharps. On the staff, EDIT + OCT− steps the mode toward flat (SHARP → AUTO → FLAT) and EDIT + OCT+ toward sharp; a single press waits 150 ms for the OCT− + OCT+ FREE PLAY chord, then acts, keeps the keyboard octave and cancels the EDIT page tap. Each press also respells the selected sound's black-key notes at the cursor (same match rule as EDIT+K2/K3: selected sound, current layer, cursor tick) to the new mode: one undo step, stopped only (the mode itself also changes while playing; press again at the end of the range to respell without changing mode). Keys, MIDI-in notes and live placement use the mode. BARS transpose: a note keeps its flat if it lands on a black key, a white-key landing clears it, a white key becoming black takes the mode. Spelling never changes sound; the duplicate rules ignore it.
 
-Staff lines use treble-staff pitch spacing. The view changes octave bands for low/high notes; extreme pitches may be outside the visible band. Sharps mark chromatic pitches; a flat note sits on the line or space of the next letter up (Bb on the B position) with a flat sign, and the header name reads Bb3, Eb4. Dense chords with the same position can overlap; the SEL view filter shows one sound's notes. The display now includes character stamps, ledger lines, octave-band labels and off-band indicators.
+Staff lines use treble-staff pitch spacing. The view changes octave bands for low/high notes; extreme pitches may be outside the visible band. Sharps mark chromatic pitches; a flat note sits on the line or space of the next letter up (Bb on the B position) with a flat sign, and the header name reads Bb3, Eb4. Dense chords with the same position can overlap; the SCL view filter shows one sound's notes. The display now includes character stamps, ledger lines, octave-band labels and off-band indicators.
 
 
 Browser shortcuts: the side palette selects the native instrument; Load Twinkle demo creates the undoable 66-note Twinkle Twinkle arrangement (the song book's DEMO entry after slot 8: REC twice loads it, SAVE refuses it); Play song controls native transport. Both demo replacement and import require stopped playback. A nonempty song requires confirmation before replacement. Screen Reader can request a native page/status summary; full incremental narration is still incomplete.

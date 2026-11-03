@@ -2,17 +2,179 @@
 <header><a class="brand" href="index.html"><img src="stamps/mario.png" alt="">STAMP COMPOSER <small>FM-1</small></a><nav aria-label="Project"><a href="index.html">Simulator</a><a href="manual.html" aria-current="page">Manual</a><a href="https://github.com/MichaelAPerry/MPFM1/tree/stamp-composer-core">Source ↗</a></nav></header>
 <main class="manual"><p class="eyebrow">The little field guide</p><h1>Make a song, one stamp at a time.</h1><p>Stamp Composer is a playful staff editor built around the M-VAVE FM-1’s own controls. The browser runs the same native application, with simulated controls and audio.</p>
 <div class="callout"><strong>First minute:</strong> Start composing → Load Twinkle demo → Play song. Stop playback, choose another character, and press a note key to add your own part. ENV undoes a change.</div>
+<h2>Your FM-1 at a glance</h2>
+<div style="overflow-x:auto"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 548" style="max-width:100%;height:auto;display:block" role="img" font-family="Barlow, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<title>The FM-1 panel with each control's job in Stamp Composer</title>
+<rect x="1" y="1" width="758" height="546" rx="16" fill="#efe9dc" stroke="#ddd4c2" stroke-width="2"/>
+<circle cx="70" cy="66" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="70" y1="50" x2="70" y2="60" stroke="#1e2b5a" stroke-width="3" stroke-linecap="round"/>
+<text x="70" y="102" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">MASTER</text>
+<text x="70" y="116" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">volume</text>
+<text x="70" y="129" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">(the unit's own)</text>
+<circle cx="180" cy="66" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="180" y1="50" x2="180" y2="60" stroke="#1e2b5a" stroke-width="3" stroke-linecap="round"/>
+<text x="180" y="102" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">SELECT</text>
+<text x="180" y="116" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">move the cursor</text>
+<circle cx="70" cy="168" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="70" y1="152" x2="70" y2="162" stroke="#1e2b5a" stroke-width="3" stroke-linecap="round"/>
+<text x="70" y="204" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">PRESETS</text>
+<text x="70" y="218" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">pick the stamp</text>
+<text x="70" y="231" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">(the sound)</text>
+<circle cx="180" cy="168" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="180" y1="152" x2="180" y2="162" stroke="#1e2b5a" stroke-width="3" stroke-linecap="round"/>
+<text x="180" y="204" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">ALGORITHM</text>
+<text x="180" y="218" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">pick the layer</text>
+<text x="180" y="231" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">(1 to 8)</text>
+<rect x="268" y="26" width="224" height="224" rx="8" fill="#14172b" stroke="#1e2b5a" stroke-width="3"/>
+<text x="284" y="46" font-size="12" font-weight="700" fill="#f4efe3" text-anchor="start">STAMP</text>
+<text x="476" y="46" font-size="11" font-weight="700" fill="#f0b64a" text-anchor="end">EDIT</text>
+<rect x="282" y="54" width="24" height="24" rx="3" fill="#3a4066"/>
+<rect x="312" y="54" width="24" height="24" rx="3" fill="#3a4066"/>
+<rect x="342" y="54" width="24" height="24" rx="3" fill="#e5482e"/>
+<rect x="372" y="54" width="24" height="24" rx="3" fill="#3a4066"/>
+<rect x="402" y="54" width="24" height="24" rx="3" fill="#3a4066"/>
+<line x1="282" y1="104" x2="478" y2="104" stroke="#8d93b5" stroke-width="1"/>
+<line x1="282" y1="113" x2="478" y2="113" stroke="#8d93b5" stroke-width="1"/>
+<line x1="282" y1="122" x2="478" y2="122" stroke="#8d93b5" stroke-width="1"/>
+<line x1="282" y1="131" x2="478" y2="131" stroke="#8d93b5" stroke-width="1"/>
+<line x1="282" y1="140" x2="478" y2="140" stroke="#8d93b5" stroke-width="1"/>
+<circle cx="312" cy="131" r="5" fill="#f0b64a"/>
+<circle cx="346" cy="122" r="5" fill="#f0b64a"/>
+<circle cx="380" cy="113" r="5" fill="#f0b64a"/>
+<circle cx="414" cy="122" r="5" fill="#f0b64a"/>
+<circle cx="448" cy="131" r="5" fill="#f0b64a"/>
+<text x="380" y="168" font-size="10.5" font-weight="400" fill="#c9cde6" text-anchor="middle">the staff page</text>
+<rect x="280" y="186" width="45" height="50" rx="4" fill="#232850" stroke="#5a628f"/>
+<text x="302.5" y="205" font-size="12" font-weight="700" fill="#f4efe3" text-anchor="middle">K1</text>
+<text x="302.5" y="224" font-size="9.5" font-weight="400" fill="#aeb4d6" text-anchor="middle">value</text>
+<rect x="329" y="186" width="45" height="50" rx="4" fill="#232850" stroke="#5a628f"/>
+<text x="351.5" y="205" font-size="12" font-weight="700" fill="#f4efe3" text-anchor="middle">K2</text>
+<text x="351.5" y="224" font-size="9.5" font-weight="400" fill="#aeb4d6" text-anchor="middle">value</text>
+<rect x="378" y="186" width="45" height="50" rx="4" fill="#232850" stroke="#5a628f"/>
+<text x="400.5" y="205" font-size="12" font-weight="700" fill="#f4efe3" text-anchor="middle">K3</text>
+<text x="400.5" y="224" font-size="9.5" font-weight="400" fill="#aeb4d6" text-anchor="middle">value</text>
+<rect x="427" y="186" width="45" height="50" rx="4" fill="#232850" stroke="#5a628f"/>
+<text x="449.5" y="205" font-size="12" font-weight="700" fill="#f4efe3" text-anchor="middle">K4</text>
+<text x="449.5" y="224" font-size="9.5" font-weight="400" fill="#aeb4d6" text-anchor="middle">value</text>
+<text x="380" y="268" font-size="11" font-weight="600" fill="#1e2b5a" text-anchor="middle">240 x 240 screen</text>
+<circle cx="590" cy="66" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="590" y1="50" x2="590" y2="60" stroke="#c23a22" stroke-width="3" stroke-linecap="round"/>
+<text x="590" y="102" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">KNOB1</text>
+<text x="590" y="116" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">K1: tile 1 of 4</text>
+<circle cx="700" cy="66" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="700" y1="50" x2="700" y2="60" stroke="#c23a22" stroke-width="3" stroke-linecap="round"/>
+<text x="700" y="102" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">KNOB2</text>
+<text x="700" y="116" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">K2: tile 2 of 4</text>
+<circle cx="590" cy="168" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="590" y1="152" x2="590" y2="162" stroke="#c23a22" stroke-width="3" stroke-linecap="round"/>
+<text x="590" y="204" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">KNOB3</text>
+<text x="590" y="218" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">K3: tile 3 of 4</text>
+<circle cx="700" cy="168" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="700" y1="152" x2="700" y2="162" stroke="#c23a22" stroke-width="3" stroke-linecap="round"/>
+<text x="700" y="204" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">KNOB4</text>
+<text x="700" y="218" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">K4: tile 4 of 4</text>
+<text x="645" y="256" font-size="10.5" font-weight="600" fill="#c23a22" text-anchor="middle">K1 to K4 follow the four tiles</text>
+<text x="645" y="270" font-size="10.5" font-weight="600" fill="#c23a22" text-anchor="middle">on the screen, left to right</text>
+<line x1="30" y1="282" x2="730" y2="282" stroke="#ddd4c2" stroke-width="2"/>
+<rect x="36" y="296" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="90.0" y="315" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">FX</text>
+<text x="90.0" y="331" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">mute sound</text>
+<rect x="152" y="296" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="206.0" y="315" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">SCL</text>
+<text x="206.0" y="331" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">show all / one</text>
+<rect x="268" y="296" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="322.0" y="315" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">ENV</text>
+<text x="322.0" y="331" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">undo</text>
+<rect x="384" y="296" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="438.0" y="315" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">LFO</text>
+<text x="438.0" y="331" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">redo</text>
+<rect x="500" y="296" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#c23a22" stroke-width="2"/>
+<text x="554.0" y="315" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">EDIT</text>
+<text x="554.0" y="331" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">tap: next page</text>
+<rect x="616" y="296" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="670.0" y="315" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">GLO</text>
+<text x="670.0" y="331" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">song book</text>
+<rect x="36" y="350" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="90.0" y="369" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">HOME</text>
+<text x="90.0" y="385" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">staff, hold: help</text>
+<rect x="152" y="350" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="206.0" y="369" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">SAVE</text>
+<text x="206.0" y="385" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">save to slot</text>
+<rect x="268" y="350" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="322.0" y="369" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">ARP</text>
+<text x="322.0" y="385" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">loop on/off</text>
+<rect x="384" y="350" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="438.0" y="369" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">SEQ</text>
+<text x="438.0" y="385" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">grid step</text>
+<rect x="500" y="350" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#c23a22" stroke-width="2"/>
+<text x="554.0" y="369" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">PLAY</text>
+<text x="554.0" y="385" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">play / stop</text>
+<rect x="616" y="350" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="670.0" y="369" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">REC</text>
+<text x="670.0" y="385" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">copy bar</text>
+<line x1="30" y1="410" x2="730" y2="410" stroke="#ddd4c2" stroke-width="2"/>
+<rect x="36" y="462" width="96" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="84.0" y="481" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">OCT−</text>
+<text x="84.0" y="497" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">octave down</text>
+<rect x="628" y="462" width="96" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="676.0" y="481" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">OCT+</text>
+<text x="676.0" y="497" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">octave up</text>
+<text x="380" y="432" font-size="11" font-weight="600" fill="#1e2b5a" text-anchor="middle">27 keys, F3 to G5 (OCT− and OCT+ move them)</text>
+<rect x="140" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="170" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="200" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="230" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="260" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="290" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="320" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="350" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="380" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="410" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="440" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="470" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="500" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="530" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="560" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="590" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="161" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="191" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="221" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="281" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="311" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="371" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="401" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="431" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="491" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="521" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="581" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<text x="274" y="514" font-size="10.5" font-weight="700" fill="#1e2b5a" text-anchor="middle">C4</text>
+<text x="484" y="514" font-size="10.5" font-weight="700" fill="#1e2b5a" text-anchor="middle">C5</text>
+<text x="154" y="514" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">F3</text>
+<text x="604" y="514" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">G5</text>
+</svg></div>
+<p>The panel’s printed names are used throughout: PRESETS picks the stamp, ALGORITHM picks the layer, SELECT moves the cursor, SCL is the button beside FX, and KNOB1–4 (K1–K4) follow the four tiles on the screen, left to right. EDIT taps through the pages (STAFF, MIX, SOUND, MIDI, GROOVE, BARS), GLO opens the song book, HOME returns to the staff.</p>
+<h2>Grips</h2><table><thead><tr><th>Grip</th><th>What happens</th></tr></thead><tbody>
+<tr><td>Several keys together</td><td>A chord on one step.</td></tr>
+<tr><td>EDIT + key</td><td>Erase that note at the cursor (at the playhead while playing).</td></tr>
+<tr><td>EDIT + K2 / K3</td><td>Velocity / length of the selected sound’s notes at the cursor (staff).</td></tr>
+<tr><td>EDIT + PLAY</td><td>Play from the cursor’s bar.</td></tr>
+<tr><td>EDIT + OCT− / OCT+</td><td>Spelling toward flats / sharps (staff).</td></tr>
+<tr><td>OCT− + OCT+ together</td><td>FREE PLAY on or off (second press within 150 ms).</td></tr>
+<tr><td>Hold HOME</td><td>Help overlay for the page; let go to hide it.</td></tr>
+<tr><td>REC twice (song book)</td><td>Arm, then load the slot. HOME cancels.</td></tr>
+</tbody></table>
 <h2>Place, move, listen</h2><table><thead><tr><th>Control</th><th>What it does</th></tr></thead><tbody>
 <tr><td>Note keys</td><td>On the staff: place and audition a note at the cursor, or at the playhead (nearest grid step) while the song plays. Multiple notes at the same position form a chord. On every other page the keys only play the selected sound.</td></tr><tr><td>SELECT</td><td>Staff: move the time cursor one grid step. BARS: choose the FROM bar. Song book: choose the slot. Other pages: nothing.</td></tr><tr><td>PRESETS</td><td>Choose a character and sound. The browser palette does the same thing.</td></tr><tr><td>ALGORITHM</td><td>Select an arrangement layer, 1–8.</td></tr><tr><td>PLAY / ARP</td><td>Start or stop / toggle looping (ARP and SEQ act on the staff only).</td></tr><tr><td>SEQ</td><td>Cycle quarter, eighth, sixteenth, eighth-triplet and sixteenth-triplet grids.</td></tr><tr><td>OCT− / OCT+</td><td>Shift the keyboard. Notes outside C2–C6 are refused. Both together toggle FREE PLAY (on any page): keys only sound, held notes last while the key is down, nothing is placed. On BARS a single press transposes instead; transposing keeps flats on black keys.</td></tr></tbody></table>
 <h2>Shape your song</h2><table><thead><tr><th>Control</th><th>What it does</th></tr></thead><tbody>
-<tr><td>K1 / K2 / K3 / K4</td><td>Tempo / new-note velocity / new-note length / song end (shown as bars and beats: 4B+2 is 4 bars and 2 beats).</td></tr><tr><td>EDIT (tap)</td><td>Step through the pages: staff, MIX, SOUND, MIDI, GROOVE, BARS, then back to the staff. Only a clean tap counts: pressing anything else while EDIT is held does not change the page. GLO opens the song book.</td></tr><tr><td>Hold EDIT + a note</td><td>Erase the matching pitch, sound and layer at the cursor. Holding to erase does not change pages. While playing it erases at the playhead.</td></tr><tr><td>Hold EDIT + K2 / K3</td><td>Change the velocity / length of the selected sound’s notes at the cursor. One hold is one undo step.</td></tr><tr><td>Hold EDIT + OCT− / OCT+</td><td>Sharps and flats: step the spelling for new notes toward FLAT / SHARP (AUTO in between and at start: Bb Eb Ab, C# F#) and respell the selected sound’s black-key notes at the cursor (one undo step). Flats sit on the next letter’s line with a flat sign; the header reads Bb3. Spelling never changes the sound; a single press waits a moment so OCT− + OCT+ still toggle FREE PLAY.</td></tr><tr><td>Hold EDIT + PLAY</td><td>Play from the start of the cursor’s bar.</td></tr><tr><td>ENV / LFO</td><td>Undo / redo, up to sixteen changes (stopped only).</td></tr><tr><td>REC</td><td>Staff: duplicate the current bar into the next bar. Song book: arm and load. BARS: copy the range.</td></tr><tr><td>FX / SEL</td><td>Mute the selected sound (silent, level kept, not saved) / filter the view to that sound. On MIX they mute and solo the selected layer instead; on BARS FX moves the range.</td></tr><tr><td>HOME</td><td>Tap to return to the staff and the beginning of the song. Hold it for about half a second to see this page’s controls, then let go.</td></tr></tbody></table>
+<tr><td>K1 / K2 / K3 / K4</td><td>Tempo / new-note velocity / new-note length / song end (shown as bars and beats: 4B+2 is 4 bars and 2 beats).</td></tr><tr><td>EDIT (tap)</td><td>Step through the pages: staff, MIX, SOUND, MIDI, GROOVE, BARS, then back to the staff. Only a clean tap counts: pressing anything else while EDIT is held does not change the page. GLO opens the song book.</td></tr><tr><td>Hold EDIT + a note</td><td>Erase the matching pitch, sound and layer at the cursor. Holding to erase does not change pages. While playing it erases at the playhead.</td></tr><tr><td>Hold EDIT + K2 / K3</td><td>Change the velocity / length of the selected sound’s notes at the cursor. One hold is one undo step.</td></tr><tr><td>Hold EDIT + OCT− / OCT+</td><td>Sharps and flats: step the spelling for new notes toward FLAT / SHARP (AUTO in between and at start: Bb Eb Ab, C# F#) and respell the selected sound’s black-key notes at the cursor (one undo step). Flats sit on the next letter’s line with a flat sign; the header reads Bb3. Spelling never changes the sound; a single press waits a moment so OCT− + OCT+ still toggle FREE PLAY.</td></tr><tr><td>Hold EDIT + PLAY</td><td>Play from the start of the cursor’s bar.</td></tr><tr><td>ENV / LFO</td><td>Undo / redo, up to sixteen changes (stopped only).</td></tr><tr><td>REC</td><td>Staff: duplicate the current bar into the next bar. Song book: arm and load. BARS: copy the range.</td></tr><tr><td>FX / SCL</td><td>Mute the selected sound (silent, level kept, not saved) / filter the view to that sound. On MIX they mute and solo the selected layer instead; on BARS FX moves the range.</td></tr><tr><td>HOME</td><td>Tap to return to the staff and the beginning of the song. Hold it for about half a second to see this page’s controls, then let go.</td></tr></tbody></table>
 <h2>The other pages</h2><table><thead><tr><th>Page</th><th>K1 / K2 / K3 / K4</th></tr></thead><tbody>
-<tr><td>MIX</td><td>Beats per bar (2–12) / sound volume / layer volume / song end (knobs stopped only). FX mutes and SEL solos the selected layer, even while playing; these are not saved.</td></tr>
+<tr><td>MIX</td><td>Beats per bar (2–12) / sound volume / layer volume / song end (knobs stopped only). FX mutes and SCL solos the selected layer, even while playing; these are not saved.</td></tr>
 <tr><td>SOUND</td><td>Tune ±12 semitones / tone (dark to open) / decay (short to long) / pan left to right. Saved with the song.</td></tr>
 <tr><td>MIDI</td><td>The sound’s channel (OFF, 1–16) / mode (OFF, ON, MIDI ONLY) / clock (OFF, OUT, IN) / the MIDI-in channel (OMNI, 1–16). Notes go out per sound with velocity and length; clock IN follows an outside machine and the header shows EXT. Incoming MIDI notes act like keys, on the chosen channel only; clock and Start/Stop always get through.</td></tr>
 <tr><td>GROOVE</td><td>Swing 0–75 / human 0–100 (a little random timing and loudness, the same every play) / swing grid 8TH or 16TH (which off-beats swing) / human mode TIME+VEL, TIME or VEL.</td></tr>
-<tr><td>BARS</td><td>From bar / to bar / target bar / transpose amount 1–12. REC copies, FX moves, SEQ deletes, ARP inserts empty bars, OCT− transposes down, OCT+ up. SEL limits copy, move and transpose to the selected sound. A change that would not fit is refused whole, and each one can be undone.</td></tr>
+<tr><td>BARS</td><td>From bar / to bar / target bar / transpose amount 1–12. REC copies, FX moves, SEQ deletes, ARP inserts empty bars, OCT− transposes down, OCT+ up. SCL limits copy, move and transpose to the selected sound. A change that would not fit is refused whole, and each one can be undone.</td></tr>
 </tbody></table><p>On SOUND, MIDI, GROOVE and BARS the knobs turn only while the song is stopped; a refused change says STOP FIRST. The time signature (MIX, K1) is the number of beats over 4, and bar lines follow it.</p><p>Swing and triplets: swing delays the off-beats of the chosen grid. Notes on triplet positions are not swung, because triplets already carry the swung feel; SWING 33 moves an off-beat eighth onto the triplet position.</p>
 <h2>Keep something good</h2><p>GLO opens the song book. K1 selects one of eight slots, or the DEMO entry after slot 8 (Twinkle Twinkle; REC twice loads it, SAVE refuses it). SAVE writes your current song. Press REC twice to load the selected slot. Stop playback before saving, loading or changing settings. The song is also autosaved a few seconds after you stop touching things, and comes back (RESTORED) when the app starts again, in the same browser.</p><p>Browser saves use local storage. Clearing browser data removes them, so <strong>Export song</strong> makes a portable .scf copy. Import replaces the current song and can be undone with ENV. The demo also replaces the current song, with a second-click check when a song already has notes.</p>
 <h2>Keyboard & accessibility</h2><p>White keys: Q–I and A–K. Black keys: 1–0 and minus. Z/X change octave; P plays and O duplicates the bar. Tab through every control; use arrow keys on knobs, Space or Enter on buttons. Drag a knob vertically with a mouse or touch. Shift-click latches a key or button.</p><p>The native app supplies screen-reader status for the current view. The simulator supports a system screen reader; it does not include a separate speech engine. All character buttons have sound names, keyboard focus and selected-state labels.</p>
-<h2>What this preview is</h2><p>Thirty-one recognizable character stamps, eight layers, a shared voice pool and 384 notes per song, between C2 and C6. Audio uses the Mario Paint sound pack, a swappable asset pack with its own notice (Nintendo’s sounds and art are not MIT-licensed). This is a native-app simulation, not a PI32 firmware binary running in a CPU emulator. The firmware has not yet been tested on a physical FM-1; section chains and other ideas remain in development.</p><p>Nintendo characters and original artwork belong to their respective rights holders and are separate from the application’s MIT license. This fan project is not affiliated with Nintendo or M-VAVE. The source repository includes asset provenance and dependency notices.</p><p><a href="index.html">← Back to the music playground</a></p></main></body></html>
+<h2>What this preview is</h2><p>Thirty-one recognizable character stamps, eight layers, a shared voice pool and 384 notes per song, between C2 and C6. Audio uses the Mario Paint sound pack, a swappable asset pack with its own notice (Nintendo’s sounds and art are not MIT-licensed). This is a native-app simulation, not a PI32 firmware binary running in a CPU emulator. The firmware has not yet been tested on a physical FM-1; section chains and other ideas remain in development.</p><p>Nintendo characters and original artwork belong to their respective rights holders and are separate from the application’s MIT license. This fan project is not affiliated with Nintendo or M-VAVE. The source repository includes asset provenance and dependency notices.</p><p><a href="index.html">← Back to the music playground</a></p><h2>If something goes wrong (on a real FM-1)</h2><p>After two failed starts the FM-1 shows SAFE MODE: PLAY tries again, REC opens the chip’s update mode, and the installer still works. Holding REC while powering on also opens update mode. Holding OCT− and OCT+ together <em>while powering on</em> opens the panel calibration (it quits by itself after 30 seconds if you leave it; finishing it rewrites the stored panel map). While running, the platform ignores long OCT− + OCT+ holds. This firmware has not been tested on a physical FM-1; see the project’s Install page before using it.</p>
+</main></body></html>
