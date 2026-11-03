@@ -35,10 +35,19 @@ M-UPGRADE also works. Songs saved by Stamp Composer may be lost: back them up fi
 
 ## If it does not start
 
-After two failed boots the chip enters its mask-ROM update mode (USB `4C4A:8057`, "WL80UBOOT1.00"); holding REC
-at power-on is reported to do the same. From a Mac or Linux, `base/bsp/tools/fm1_rescue.py` waits for that mode,
+fm1-base counts failed starts (`base/device/main_fm1.c`, `fm1_cstart`). After two crashes or hangs in a row within 30
+seconds of power-on, the next start is SAFE MODE: no sound, USB on; PLAY tries the app again, REC opens the chip's
+update mode, and the installer works from there. If safe mode itself fails twice more, the chip enters its mask-ROM
+update mode (USB `4C4A:8057`, "WL80UBOOT1.00"). Holding REC while powering on opens the same update mode directly
+(`main_fm1.c`, "REC held at power-on"). From a Mac or Linux, `base/bsp/tools/fm1_rescue.py` waits for that mode,
 **backs up the whole flash first**, then writes stock firmware into the app area only. It does not repair a damaged
 boot area.
+
+**Two holds to know.** Holding OCT− and OCT+ together *while powering on* opens the platform's HARDWARE CALIBRATION
+(`main_fm1.c`: `panel_setup`), which re-teaches every button and knob and rewrites the stored panel map; leave it
+alone and it quits after 30 seconds, keeping the old map. While the firmware runs, fm1-base reacts to no OCT−+OCT+
+hold at all (some other firmware has a hold-for-update combination; fm1-base does not), and Stamp Composer reads a
+quick tap of both as FREE PLAY.
 
 ## About the boot area
 

@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 548" width="760" height="548" role="img" font-family="Barlow, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<title>The FM-1 panel with each control's job in Stamp Composer</title>
+<rect x="1" y="1" width="758" height="546" rx="16" fill="#efe9dc" stroke="#ddd4c2" stroke-width="2"/>
+<circle cx="70" cy="66" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="70" y1="50" x2="70" y2="60" stroke="#1e2b5a" stroke-width="3" stroke-linecap="round"/>
+<text x="70" y="102" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">MASTER</text>
+<text x="70" y="116" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">volume</text>
+<text x="70" y="129" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">(the unit's own)</text>
+<circle cx="180" cy="66" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="180" y1="50" x2="180" y2="60" stroke="#1e2b5a" stroke-width="3" stroke-linecap="round"/>
+<text x="180" y="102" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">SELECT</text>
+<text x="180" y="116" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">move the cursor</text>
+<circle cx="70" cy="168" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="70" y1="152" x2="70" y2="162" stroke="#1e2b5a" stroke-width="3" stroke-linecap="round"/>
+<text x="70" y="204" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">PRESETS</text>
+<text x="70" y="218" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">pick the stamp</text>
+<text x="70" y="231" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">(the sound)</text>
+<circle cx="180" cy="168" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="180" y1="152" x2="180" y2="162" stroke="#1e2b5a" stroke-width="3" stroke-linecap="round"/>
+<text x="180" y="204" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">ALGORITHM</text>
+<text x="180" y="218" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">pick the layer</text>
+<text x="180" y="231" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">(1 to 8)</text>
+<rect x="268" y="26" width="224" height="224" rx="8" fill="#14172b" stroke="#1e2b5a" stroke-width="3"/>
+<text x="284" y="46" font-size="12" font-weight="700" fill="#f4efe3" text-anchor="start">STAMP</text>
+<text x="476" y="46" font-size="11" font-weight="700" fill="#f0b64a" text-anchor="end">EDIT</text>
+<rect x="282" y="54" width="24" height="24" rx="3" fill="#3a4066"/>
+<rect x="312" y="54" width="24" height="24" rx="3" fill="#3a4066"/>
+<rect x="342" y="54" width="24" height="24" rx="3" fill="#e5482e"/>
+<rect x="372" y="54" width="24" height="24" rx="3" fill="#3a4066"/>
+<rect x="402" y="54" width="24" height="24" rx="3" fill="#3a4066"/>
+<line x1="282" y1="104" x2="478" y2="104" stroke="#8d93b5" stroke-width="1"/>
+<line x1="282" y1="113" x2="478" y2="113" stroke="#8d93b5" stroke-width="1"/>
+<line x1="282" y1="122" x2="478" y2="122" stroke="#8d93b5" stroke-width="1"/>
+<line x1="282" y1="131" x2="478" y2="131" stroke="#8d93b5" stroke-width="1"/>
+<line x1="282" y1="140" x2="478" y2="140" stroke="#8d93b5" stroke-width="1"/>
+<circle cx="312" cy="131" r="5" fill="#f0b64a"/>
+<circle cx="346" cy="122" r="5" fill="#f0b64a"/>
+<circle cx="380" cy="113" r="5" fill="#f0b64a"/>
+<circle cx="414" cy="122" r="5" fill="#f0b64a"/>
+<circle cx="448" cy="131" r="5" fill="#f0b64a"/>
+<text x="380" y="168" font-size="10.5" font-weight="400" fill="#c9cde6" text-anchor="middle">the staff page</text>
+<rect x="280" y="186" width="45" height="50" rx="4" fill="#232850" stroke="#5a628f"/>
+<text x="302.5" y="205" font-size="12" font-weight="700" fill="#f4efe3" text-anchor="middle">K1</text>
+<text x="302.5" y="224" font-size="9.5" font-weight="400" fill="#aeb4d6" text-anchor="middle">value</text>
+<rect x="329" y="186" width="45" height="50" rx="4" fill="#232850" stroke="#5a628f"/>
+<text x="351.5" y="205" font-size="12" font-weight="700" fill="#f4efe3" text-anchor="middle">K2</text>
+<text x="351.5" y="224" font-size="9.5" font-weight="400" fill="#aeb4d6" text-anchor="middle">value</text>
+<rect x="378" y="186" width="45" height="50" rx="4" fill="#232850" stroke="#5a628f"/>
+<text x="400.5" y="205" font-size="12" font-weight="700" fill="#f4efe3" text-anchor="middle">K3</text>
+<text x="400.5" y="224" font-size="9.5" font-weight="400" fill="#aeb4d6" text-anchor="middle">value</text>
+<rect x="427" y="186" width="45" height="50" rx="4" fill="#232850" stroke="#5a628f"/>
+<text x="449.5" y="205" font-size="12" font-weight="700" fill="#f4efe3" text-anchor="middle">K4</text>
+<text x="449.5" y="224" font-size="9.5" font-weight="400" fill="#aeb4d6" text-anchor="middle">value</text>
+<text x="380" y="268" font-size="11" font-weight="600" fill="#1e2b5a" text-anchor="middle">240 x 240 screen</text>
+<circle cx="590" cy="66" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="590" y1="50" x2="590" y2="60" stroke="#c23a22" stroke-width="3" stroke-linecap="round"/>
+<text x="590" y="102" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">KNOB1</text>
+<text x="590" y="116" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">K1: tile 1 of 4</text>
+<circle cx="700" cy="66" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="700" y1="50" x2="700" y2="60" stroke="#c23a22" stroke-width="3" stroke-linecap="round"/>
+<text x="700" y="102" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">KNOB2</text>
+<text x="700" y="116" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">K2: tile 2 of 4</text>
+<circle cx="590" cy="168" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="590" y1="152" x2="590" y2="162" stroke="#c23a22" stroke-width="3" stroke-linecap="round"/>
+<text x="590" y="204" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">KNOB3</text>
+<text x="590" y="218" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">K3: tile 3 of 4</text>
+<circle cx="700" cy="168" r="21" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<line x1="700" y1="152" x2="700" y2="162" stroke="#c23a22" stroke-width="3" stroke-linecap="round"/>
+<text x="700" y="204" font-size="12" font-weight="700" fill="#1e2b5a" text-anchor="middle">KNOB4</text>
+<text x="700" y="218" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">K4: tile 4 of 4</text>
+<text x="645" y="256" font-size="10.5" font-weight="600" fill="#c23a22" text-anchor="middle">K1 to K4 follow the four tiles</text>
+<text x="645" y="270" font-size="10.5" font-weight="600" fill="#c23a22" text-anchor="middle">on the screen, left to right</text>
+<line x1="30" y1="282" x2="730" y2="282" stroke="#ddd4c2" stroke-width="2"/>
+<rect x="36" y="296" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="90.0" y="315" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">FX</text>
+<text x="90.0" y="331" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">mute sound</text>
+<rect x="152" y="296" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="206.0" y="315" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">SCL</text>
+<text x="206.0" y="331" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">show all / one</text>
+<rect x="268" y="296" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="322.0" y="315" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">ENV</text>
+<text x="322.0" y="331" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">undo</text>
+<rect x="384" y="296" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="438.0" y="315" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">LFO</text>
+<text x="438.0" y="331" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">redo</text>
+<rect x="500" y="296" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#c23a22" stroke-width="2"/>
+<text x="554.0" y="315" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">EDIT</text>
+<text x="554.0" y="331" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">tap: next page</text>
+<rect x="616" y="296" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="670.0" y="315" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">GLO</text>
+<text x="670.0" y="331" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">song book</text>
+<rect x="36" y="350" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="90.0" y="369" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">HOME</text>
+<text x="90.0" y="385" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">staff, hold: help</text>
+<rect x="152" y="350" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="206.0" y="369" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">SAVE</text>
+<text x="206.0" y="385" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">save to slot</text>
+<rect x="268" y="350" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="322.0" y="369" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">ARP</text>
+<text x="322.0" y="385" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">loop on/off</text>
+<rect x="384" y="350" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="438.0" y="369" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">SEQ</text>
+<text x="438.0" y="385" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">grid step</text>
+<rect x="500" y="350" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#c23a22" stroke-width="2"/>
+<text x="554.0" y="369" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">PLAY</text>
+<text x="554.0" y="385" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">play / stop</text>
+<rect x="616" y="350" width="108" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="670.0" y="369" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">REC</text>
+<text x="670.0" y="385" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">copy bar</text>
+<line x1="30" y1="410" x2="730" y2="410" stroke="#ddd4c2" stroke-width="2"/>
+<rect x="36" y="462" width="96" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="84.0" y="481" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">OCT−</text>
+<text x="84.0" y="497" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">octave down</text>
+<rect x="628" y="462" width="96" height="44" rx="7" fill="#fbf8f1" stroke="#1e2b5a" stroke-width="2"/>
+<text x="676.0" y="481" font-size="13" font-weight="700" fill="#1e2b5a" text-anchor="middle">OCT+</text>
+<text x="676.0" y="497" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">octave up</text>
+<text x="380" y="432" font-size="11" font-weight="600" fill="#1e2b5a" text-anchor="middle">27 keys, F3 to G5 (OCT− and OCT+ move them)</text>
+<rect x="140" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="170" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="200" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="230" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="260" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="290" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="320" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="350" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="380" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="410" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="440" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="470" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="500" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="530" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="560" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="590" y="444" width="28" height="76" rx="3" fill="#fffdf8" stroke="#1e2b5a" stroke-width="1.5"/>
+<rect x="161" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="191" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="221" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="281" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="311" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="371" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="401" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="431" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="491" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="521" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<rect x="581" y="444" width="16" height="46" rx="2" fill="#1e2b5a"/>
+<text x="274" y="514" font-size="10.5" font-weight="700" fill="#1e2b5a" text-anchor="middle">C4</text>
+<text x="484" y="514" font-size="10.5" font-weight="700" fill="#1e2b5a" text-anchor="middle">C5</text>
+<text x="154" y="514" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">F3</text>
+<text x="604" y="514" font-size="10.5" font-weight="400" fill="#4d5577" text-anchor="middle">G5</text>
+</svg>

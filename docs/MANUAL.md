@@ -20,7 +20,50 @@ Stamp Composer FM-1 turns the M-VAVE FM-1 into a little music maker in the spiri
 8. Bars
 9. Saving, autosave and backup
 10. Help, mirror and limits
-11. Install and go back
+11. Install, go back and recovery
+
+---
+
+## Your FM-1 at a glance
+
+![The FM-1 panel as a schematic: MASTER, SELECT, PRESETS and ALGORITHM at the left, the screen in the middle, KNOB1 to KNOB4 at the right, two rows of six buttons, OCT- and OCT+ and the 27 keys below](img/panel.svg "The FM-1 panel (not to scale) with each control's job in Stamp Composer")
+
+This manual uses the names printed on the panel: **PRESETS** (the knob that picks the stamp), **ALGORITHM** (picks the layer), **SELECT** (moves the cursor), **SCL** (the button next to FX), and **KNOB1** to **KNOB4**, written **K1** to **K4**. K1 to K4 follow the four tiles on the screen, left to right: whatever the tile in that place says is what that knob does on the current page. (The panel's calibration screen asks for SCL as "SEL"; it is the same button, and the on-screen hint lines shorten some names to ALGO, PRESET and SEL.) MASTER is the unit's own volume and the firmware does not use it for anything else.
+
+## Page by page
+
+**EDIT** (a quick tap) steps through the pages; **GLO** opens the song book; **HOME** goes back to the staff. What the four knobs do on each page:
+
+| Button | Page | K1 | K2 | K3 | K4 |
+| --- | --- | --- | --- | --- | --- |
+| HOME | STAFF | tempo | velocity | length | song end |
+| EDIT | MIX | beats per bar | sound volume | layer volume | song end |
+| EDIT | SOUND | tune | tone | decay | pan |
+| EDIT | MIDI | channel | mode | clock | MIDI-in channel |
+| EDIT | GROOVE | swing | human | swing grid | human mode |
+| EDIT | BARS | from bar | to bar | target bar | transpose amount |
+| GLO | Song book | slot | velocity | length | none |
+
+On every page PRESETS picks the sound and ALGORITHM picks the layer. Section 3 has every button on every page.
+
+## Grips
+
+The buttons that do something different when you combine them. Nothing here needs more than two hands.
+
+| Grip | What happens |
+| --- | --- |
+| Several keys together | A chord: every note lands on the same step |
+| EDIT + key | Erase that note at the cursor (at the playhead while playing); the page does not change |
+| EDIT + K2 or K3 | On the staff: change the velocity or length of the selected sound's notes at the cursor |
+| EDIT + PLAY | Play from the start of the cursor's bar |
+| EDIT + OCT− or OCT+ | On the staff: spelling toward flats or sharps, and respell the notes at the cursor |
+| OCT− + OCT+ together | FREE PLAY on or off: keys only play, never write. Press the second within 150 ms of the first |
+| OCT− or OCT+ on BARS | Transpose the bars down or up (after a 150 ms wait, so the two together still mean FREE PLAY) |
+| Hold HOME | After about half a second, a list of this page's controls; let go and it goes away |
+| REC twice (song book) | The first press arms a load, the second loads the slot; HOME cancels |
+| FX or SCL on MIX | Mute or solo the layer (everywhere else: mute the sound, filter the view) |
+| Hold OCT− + OCT+ while powering on | **Not a song grip.** Opens the platform's panel calibration (see "If something goes wrong") |
+| Hold REC while powering on | **Not a song grip.** Opens the chip's update mode (see "If something goes wrong") |
 
 ---
 
@@ -29,7 +72,7 @@ Stamp Composer FM-1 turns the M-VAVE FM-1 into a little music maker in the spiri
 The 240 by 240 screen has four parts, top to bottom.
 
 - **Header.** The name STAMP, the tempo in BPM, and a small badge that says EDIT, or PLAY while the song is playing. When the FM-1 follows an outside clock, BPM changes to EXT and the number shows the tempo it has measured.
-- **Character ribbon.** Five stamps in a row. The one in the highlighted box is your current sound; turn PRESET to slide the row along. To its right are the last note you played (like C4) and your layer (LAYER 1 to 8). A layer that is muted shows M, and when other layers are soloed this one shows OFF. A muted sound is drawn as a checkered stamp with an M. A line under the ribbon names the sound, like MARIO / PIANO.
+- **Character ribbon.** Five stamps in a row. The one in the highlighted box is your current sound; turn PRESETS to slide the row along. To its right are the last note you played (like C4) and your layer (LAYER 1 to 8). A layer that is muted shows M, and when other layers are soloed this one shows OFF. A muted sound is drawn as a checkered stamp with an M. A line under the ribbon names the sound, like MARIO / PIANO.
 - **The staff.** Six steps are shown at a time, numbered along the bottom, with the bar number and LOOP on or off, and the octave shift. Notes appear as the character that plays them. Sharps are marked, extra lines appear for high and low notes, and the staff slides to another octave band when you play out of range. While a song plays, your selected character hops along the staff in time.
 - **Four knob tiles and the status line.** The tiles show what knobs K1 to K4 do right now and their values. Under them, the status line shows the grid, the note count and SAVED or UNSAVED. Short messages (SAVED, STOP FIRST, SONG FULL) flash there for a moment.
 
@@ -37,13 +80,13 @@ The 240 by 240 screen has four parts, top to bottom.
 
 ## 2. Your first song in two minutes
 
-1. Turn **PRESET** to pick a character. Press a few keys on the STAFF page: each one plays and places a note at the cursor.
+1. Turn **PRESETS** to pick a character. Press a few keys on the STAFF page: each one plays and places a note at the cursor.
 2. Turn **SELECT** to move the cursor one step along. Place another note.
 3. Press several keys together for a **chord**. They all land on the same step.
 4. Press **SEQ** to change the step size, then add quicker notes.
 5. Press **PLAY**. Press it again to stop.
 6. Not happy? **ENV** takes back your last change and **LFO** puts it back.
-7. Turn **ALGO** to pick another layer, change **PRESET** to another character, and add a second part.
+7. Turn **ALGORITHM** to pick another layer, change **PRESETS** to another character, and add a second part.
 8. Turn **K1** to change the tempo, and press **ARP** to loop the song.
 9. Press **SAVE** to keep the song in the current slot. Your work is also saved on its own (see section 9).
 
@@ -53,7 +96,7 @@ Notes are written on the STAFF page. On every other page the keys only play the 
 
 ## 3. The pages
 
-**EDIT** (a quick tap) steps through the pages in this order: STAFF, MIX, SOUND, MIDI, GROOVE, BARS, then back to STAFF. **GLO** opens the song book, and a second press returns to the staff. **HOME** goes straight back to the staff with the cursor at the start. On every page, PRESET picks the sound and ALGO picks the layer.
+**EDIT** (a quick tap) steps through the pages in this order: STAFF, MIX, SOUND, MIDI, GROOVE, BARS, then back to STAFF. **GLO** opens the song book, and a second press returns to the staff. **HOME** goes straight back to the staff with the cursor at the start. On every page, PRESETS picks the sound and ALGORITHM picks the layer.
 
 ![The SOUND page, with TUNE, TONE, DECAY and PAN bars](img/sound.png "The SOUND page")
 
@@ -63,8 +106,8 @@ Notes are written on the STAFF page. On every other page the keys only play the 
 | --- | --- |
 | Note keys | Play a note and place it at the cursor (while playing: at the playhead, see section 4). Several keys make a chord. The keyboard covers F3 to G5; notes must land between C2 and C6 |
 | SELECT | Move the cursor by one grid step |
-| PRESET | Choose one of the 31 sounds (wraps, like the ribbon) |
-| ALGO | Choose layer 1 to 8 |
+| PRESETS | Choose one of the 31 sounds (wraps, like the ribbon) |
+| ALGORITHM | Choose layer 1 to 8 |
 | K1 | Tempo, 30 to 300 BPM (stopped only) |
 | K2 | Velocity (how hard) for new notes |
 | K3 | Length of new notes |
@@ -75,7 +118,7 @@ Notes are written on the STAFF page. On every other page the keys only play the 
 | ARP | Loop the whole song on or off (stopped only) |
 | REC | Copy the cursor's bar into the next bar (stopped only) |
 | FX | Mute or unmute the selected sound: it goes silent (audio and MIDI) but its level is kept. Works while playing; not saved |
-| SEL | Show every sound, or only the selected one (a view filter) |
+| SCL | Show every sound, or only the selected one (a view filter) |
 | ENV, LFO | Undo, redo (stopped only) |
 | OCT−, OCT+ | Move the keyboard down or up an octave. With EDIT held: spelling, sharps or flats (section 4) |
 | SAVE | Save to the current slot (stopped only) |
@@ -89,11 +132,11 @@ Notes are written on the STAFF page. On every other page the keys only play the 
 | K2 | Volume of the selected sound; 0 mutes it (stopped only) |
 | K3 | Volume of the selected layer; 0 mutes it (stopped only) |
 | K4 | Song end (stopped only) |
-| ALGO | Pick the layer |
+| ALGORITHM | Pick the layer |
 | FX | Mute or unmute the layer, even while playing |
-| SEL | Solo or unsolo the layer, even while playing |
+| SCL | Solo or unsolo the layer, even while playing |
 
-Only on MIX do FX and SEL work on the layer. On every other page except BARS, FX mutes the sound and SEL filters the view. Mute and solo are for performing. They are not saved and reset at power-up. A silent layer sends no MIDI either. If any layer is soloed, only soloed layers sound.
+Only on MIX do FX and SCL work on the layer. On every other page except BARS, FX mutes the sound and SCL filters the view. Mute and solo are for performing. They are not saved and reset at power-up. A silent layer sends no MIDI either. If any layer is soloed, only soloed layers sound.
 
 ### SOUND
 
@@ -106,7 +149,7 @@ Only on MIX do FX and SEL work on the layer. On every other page except BARS, FX
 
 ### MIDI
 
-The page shows all 31 sounds in a grid of 8 by 4 small stamps, each with its channel (-- = off) and the selected one highlighted; PRESET moves the highlight.
+The page shows all 31 sounds in a grid of 8 by 4 small stamps, each with its channel (-- = off) and the selected one highlighted; PRESETS moves the highlight.
 
 | Control | What it does |
 | --- | --- |
@@ -139,7 +182,7 @@ The page shows all 31 sounds in a grid of 8 by 4 small stamps, each with its cha
 | ARP | Insert empty bars at FROM |
 | OCT− | Transpose the bars down by K4 |
 | OCT+ | Transpose the bars up by K4 (OCT− and OCT+ together still toggle FREE PLAY, so a single press waits a moment) |
-| SEL | Copy, move and transpose touch only the selected sound |
+| SCL | Copy, move and transpose touch only the selected sound |
 
 On SOUND, MIDI, GROOVE and BARS the knobs only turn while the song is stopped; refused changes say STOP FIRST. On these pages, MIX and the song book, the keys only audition the selected sound, and REC (bar copy), SEQ and ARP do nothing; they belong to the STAFF page. A hint line at the bottom of each page lists the main buttons.
 
@@ -188,7 +231,7 @@ On SOUND, MIDI, GROOVE and BARS the knobs only turn while the song is stopped; r
 
 ## 5. The 31 sounds
 
-Each stamp has its own sound. Turn **PRESET** to choose.
+Each stamp has its own sound. Turn **PRESETS** to choose.
 
 | Stamp | Sound | Stamp | Sound |
 | --- | --- | --- | --- |
@@ -252,7 +295,7 @@ The BARS page works on a run of bars at once. Choose FROM and TO (the range, inc
 - **ARP inserts** empty bars at FROM. Later bars slide right.
 - **OCT+ transposes** the range by K4 semitones.
 
-Turn on SEL first if copy, move or transpose should touch only the selected sound. Delete and insert always take all sounds. If an action would not fit (more than 384 notes, over the length limit, notes leaving C2 to C6, or nothing to do) it is refused whole and a message says why. Each action is one undo step.
+Turn on SCL first if copy, move or transpose should touch only the selected sound. Delete and insert always take all sounds. If an action would not fit (more than 384 notes, over the length limit, notes leaving C2 to C6, or nothing to do) it is refused whole and a message says why. Each action is one undo step.
 
 ![The BARS page, with a range of bars shown on the strip](img/bars.png "The BARS page")
 
@@ -296,6 +339,17 @@ The main controls for notes and settings are locked while the song plays. Naviga
 
 ---
 
-## 11. Install and go back
+## 11. Install, go back and recovery
 
-Installing, backing up the stock firmware, returning to stock and recovering a unit that will not start are all on the Install page: [Install, back up, go back](../install/). Read it before you begin. This firmware has not yet been tested on a physical FM-1.
+Installing, backing up the stock firmware and returning to stock are on the Install page: [Install, back up, go back](../install/). Read it before you begin. This firmware has not yet been tested on a physical FM-1; everything below is what the platform code does, read from its source and run in emulators, not something seen on a unit.
+
+### If something goes wrong
+
+- **Normal start.** The boot screen, then the staff, with your last working song back (RESTORED). Nothing needs to be held.
+- **Safe mode.** If the firmware crashes or hangs twice in a row while starting (within about 30 seconds of power-on each time), the next start shows STAMP SAFE MODE: no sound, no song, USB on. Press **PLAY** to try the firmware again, or reinstall from the Install page, which works from here. If even safe mode fails to come up twice more, the chip drops into its own update mode.
+- **Update mode.** Holding **REC** while you power on, or **REC** on the safe mode screen, opens the chip's own update mode (the screen says UPDATE MODE (REC)); the FM-1 then shows up over USB as the chip's bootloader (`4C4A:8057`), ready for a firmware write. Leave it by installing something or power-cycling.
+- **Panel calibration.** Holding **OCT− and OCT+ together while you power on** opens the platform's HARDWARE CALIBRATION, which asks you to press every button and turn every knob in turn. Finishing it rewrites the stored panel map, so only do it on purpose. If you open it by accident, leave it alone: after 30 seconds without input it quits and keeps the old map. While the firmware is running, nothing in the platform reacts to holding OCT− and OCT+ (there is no hold-for-update combination as in some other firmware); in this firmware a quick tap of both together is only FREE PLAY.
+- **An install was interrupted.** Do not just power-cycle and hope. Connect again and run the installer again, or use the stock updater. If the unit will not start at all, use the rescue tool below.
+- **Rescue tool.** `base/bsp/tools/fm1_rescue.py` (Mac or Linux) waits for the chip's update mode, backs up the whole flash first, then writes the stock firmware into the app area. It does not repair a damaged boot area.
+- **Back to stock.** The installer page's "Back to the stock firmware" writes M-VAVE's firmware over the same cable; M-UPGRADE also works. Back up your songs first.
+- **No MIDI reply from the installer.** Use Chrome or Edge, a data USB cable, allow MIDI access, and close other programs that hold the FM-1's MIDI port. If it still finds nothing, power-cycle the FM-1 and try again.
