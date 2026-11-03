@@ -51,6 +51,10 @@ Representative optimized host stress measurements (4000 blocks × 256 frames, re
 - Site: release `stamp-0.2.fwsc` (`FM-1_56000200`) assembled with `make_site.py` + `tools/site_emu.sh`; front page, install, manual, emu, backup, mirror and fm1-emu pages load in headless Chromium without errors (with fm1-reader present), and the release boots in fm1-emu's page.
 - Not validated: any of the above on a physical FM-1; MIDI with a real DAW/synth; backup/restore and mirror with fm1-base's pages against a device; flash wear of autosave.
 
+## First hardware report (2026-11-03)
+
+- The owner reports the development build from the site (`stamp-0.2-dev.fwsc`, built from `main` at the PR #3 merge) **installs on a physical FM-1 and plays**. Nothing beyond that was reported: the install path, controls, MIDI, autosave, backup and voice load on hardware are still unverified.
+
 ## Not validated
 
 - No physical FM-1 was tested: real boot, display timing, audio quality, input feel and flash storage are unverified. Build reproducibility (byte-identical rebuild) not checked.
