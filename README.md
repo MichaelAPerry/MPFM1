@@ -29,7 +29,7 @@ To make your own tune:
 3. Press **PLAY** to listen. **ENV / LFO** undo and redo.
 4. Press **SAVE** to keep the song in this browser, or **Export song** for a portable `.scf` file.
 
-Drag knobs vertically, or focus one and use the arrow keys. Hold **EDIT** while pressing a note to erase it. Tap **EDIT** for the mixer; **GLO** opens the eight-slot song book. Browser storage belongs to that browser and origin; export your keepers before clearing site data.
+Drag knobs vertically, or focus one and use the arrow keys. Press a note again to remove it, or hold **EDIT** and press it to erase it (**EDIT+FX** clears the step, **EDIT+SELECT** jumps between notes). Tap **EDIT** for the mixer; **GLO** opens the eight-slot song book. Browser storage belongs to that browser and origin; export your keepers before clearing site data.
 
 ## On the little screen
 

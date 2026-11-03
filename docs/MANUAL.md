@@ -53,7 +53,10 @@ The buttons that do something different when you combine them. Nothing here need
 | Grip | What happens |
 | --- | --- |
 | Several keys together | A chord: every note lands on the same step |
-| EDIT + key | Erase that note at the cursor (at the playhead while playing); the page does not change |
+| A note key again | Press a note key where that note already is (same pitch, sound, layer, at the cursor) and it is removed: ERASED. One undo step; chords toggle note by note. (While playing a repeat is skipped, not removed) |
+| EDIT + key | Erase that pitch at the cursor on any sound or layer (the selected sound's first, else the most recently added); NOTHING TO ERASE if there is none. At the playhead while playing. The page does not change |
+| EDIT + FX | On the staff: clear every note at the cursor (only the selected sound's with SCL on), one undo step: CLEARED n NOTES |
+| EDIT + SELECT | On the staff: jump the cursor to the previous or next step that has a note (SCL on: selected sound only), whatever the grid |
 | EDIT + K2 or K3 | On the staff: change the velocity or length of the selected sound's notes at the cursor |
 | EDIT + PLAY | Play from the start of the cursor's bar |
 | EDIT + OCT− or OCT+ | On the staff: spelling toward flats or sharps, and respell the notes at the cursor |
@@ -80,7 +83,7 @@ The 240 by 240 screen has four parts, top to bottom.
 
 ## 2. Your first song in two minutes
 
-1. Turn **PRESETS** to pick a character. Press a few keys on the STAFF page: each one plays and places a note at the cursor.
+1. Turn **PRESETS** to pick a character. Press a few keys on the STAFF page: each one plays and places a note at the cursor. Press a note again to remove it.
 2. Turn **SELECT** to move the cursor one step along. Place another note.
 3. Press several keys together for a **chord**. They all land on the same step.
 4. Press **SEQ** to change the step size, then add quicker notes.
@@ -105,7 +108,7 @@ Notes are written on the STAFF page. On every other page the keys only play the 
 | Control | What it does |
 | --- | --- |
 | Note keys | Play a note and place it at the cursor (while playing: at the playhead, see section 4). Several keys make a chord. The keyboard covers F3 to G5; notes must land between C2 and C6 |
-| SELECT | Move the cursor by one grid step |
+| SELECT | Move the cursor by one grid step. With EDIT held: jump to the previous or next step that has a note, off the grid too |
 | PRESETS | Choose one of the 31 sounds (wraps, like the ribbon) |
 | ALGORITHM | Choose layer 1 to 8 |
 | K1 | Tempo, 30 to 300 BPM (stopped only) |
@@ -205,7 +208,16 @@ On SOUND, MIDI, GROOVE and BARS the knobs only turn while the song is stopped; r
 
 **Chords.** Press more than one key while the cursor stays put. The cursor only moves when you turn SELECT.
 
-**Erase.** Hold **EDIT** and press a key. That removes the note with the same pitch, sound and layer at the cursor. Holding EDIT to erase does not change the page.
+**Erase.** There are four ways, all on the staff, all one undo step, none of them change the page:
+
+- **Press the note again.** A key (or MIDI note) for a note that is already at the cursor with the selected sound and layer removes it: ERASED C4 PIANO. A chord removes note by note. A removed note makes no sound.
+- **Hold EDIT and press a key.** That pitch is erased at the cursor on any sound or layer. If the selected sound has it, that one goes (the first, if it is on several layers); otherwise the most recently added one goes. Press again for the next. If nothing matches it says NOTHING TO ERASE.
+- **Hold EDIT and press FX.** Every note at the cursor goes (with **SCL** on, only the selected sound's): CLEARED 3 NOTES.
+- **Hold EDIT and turn SELECT.** The cursor jumps to the previous or next step with a note in it (selected sound only with SCL on), whatever the grid, so you can always land exactly on a note even if you placed it live or on another grid. Plain SELECT still moves by grid steps. NO MORE NOTES means there is none further.
+
+The notes at the cursor are drawn on a teal box, and the status line reads EDIT+KEY ERASE, so you can see what will go. While the song plays, a repeated key is skipped as before (no toggle), and EDIT plus a key erases that pitch at the playhead's step on any sound.
+
+![Notes at the cursor on teal boxes](screens/erase.png "The notes at the cursor are boxed")
 
 **Edit notes you already placed.** Hold **EDIT** on the staff and turn **K2** to change the velocity, or **K3** to change the length, of the selected sound's notes at the cursor. The status line shows NOTE VEL or NOTE LEN. One hold is one undo step. If nothing is there it says NO NOTE HERE.
 
@@ -221,7 +233,7 @@ On SOUND, MIDI, GROOVE and BARS the knobs only turn while the song is stopped; r
 
 **Play from the cursor.** Hold **EDIT** and press **PLAY**. The song starts at the beginning of the cursor's bar. With MIDI clock out, it sends a position message and Continue rather than Start.
 
-**Live placement.** While the song plays, a key (or a MIDI note) sounds at once and also lands in the song at the playhead, rounded to the nearest step of the grid (triplet grids too). Past the end of the song it lands at the loop start if looping, otherwise on the last step. A note already there is not added twice, and a full song says SONG FULL. Hold **EDIT** and press a key to erase that note at the playhead. Everything you place or erase in one playback run is one undo step. A note placed a little ahead of the playhead sounds again when the playhead reaches it.
+**Live placement.** While the song plays, a key (or a MIDI note) sounds at once and also lands in the song at the playhead, rounded to the nearest step of the grid (triplet grids too). Past the end of the song it lands at the loop start if looping, otherwise on the last step. A note already there is not added twice, and a full song says SONG FULL. Hold **EDIT** and press a key to erase that pitch (any sound) at the playhead's step; a plain repeated key is skipped, not removed. Everything you place or erase in one playback run is one undo step. A note placed a little ahead of the playhead sounds again when the playhead reaches it.
 
 **Free play.** Press **OCT-** and **OCT+** together (the second within a tenth of a second of the first) to switch FREE PLAY on or off. The header badge says FREE. Keys then only play the selected sound, stopped or over the song, and never place or erase notes; a note lasts as long as you hold the key. A single OCT press still shifts the octave (on BARS it transposes the bars instead, with EDIT held on the staff it sets the spelling, and both together still toggle FREE PLAY there). FREE PLAY keys work on every page. Free play is not saved.
 
