@@ -2,9 +2,11 @@
 
 **Little stamps. Big ideas.** A Mario Paint–inspired music playground for the M-VAVE FM-1.
 
-![Stamp Composer — native staff, mixer and song book](docs/hero.png)
+![Stamp Composer on the FM-1 screen: staff with the Twinkle demo, MIDI grid of 31 sounds, song book](docs/hero.png)
 
 Pick a character, place a note, and build a song. 31 familiar stamps share one polyphonic engine, with eight layers for arranging, a scrolling staff, and a song book that keeps your ideas close.
+
+**[Website](https://michaelaperry.github.io/MPFM1/) · [Try the firmware in your browser](https://michaelaperry.github.io/MPFM1/fm1-emu/) · [Install](https://michaelaperry.github.io/MPFM1/install/) · [Manual](https://michaelaperry.github.io/MPFM1/manual/)**
 
 [Quick start](#play-in-your-browser) · [Controls](docs/CONTROLS.md) · [Manual](docs/MANUAL.md) · [Build](#build-it) · [Validation](docs/VALIDATION.md)
 
