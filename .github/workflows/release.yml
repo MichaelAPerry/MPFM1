@@ -23,7 +23,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Prepare a draft without replacing a public release
+      - name: Prepare a draft (or fill a fresh github.com release) without replacing packages
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -37,7 +37,9 @@ jobs:
           flags=(--prerelease=false)
           if [[ "$version" == *-* ]]; then flags=(--prerelease --latest=false); fi
           if draft=$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft); then
-            [[ "$draft" == true ]] || { echo 'Refusing to rebuild a public release'; exit 1; }
+            # a release made on github.com (its tag created by publishing it) is filled once; never one with packages
+            n=$(gh release view "$GITHUB_REF_NAME" --json assets --jq '[.assets[].name | select(endswith(".fwsc"))] | length')
+            [[ "$draft" == true || "$n" == 0 ]] || { echo 'Refusing to rebuild a release that has packages'; exit 1; }
           else
             gh release create "$GITHUB_REF_NAME" --verify-tag --draft \
               --title "$TITLE $version" --generate-notes "${flags[@]}"
