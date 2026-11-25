@@ -10,7 +10,7 @@ Pick a character, place a note, and build a song. 31 familiar stamps share one p
 
 [Quick start](#play-in-your-browser) · [Controls](docs/CONTROLS.md) · [Manual](docs/MANUAL.md) · [Build](#build-it) · [Validation](docs/VALIDATION.md)
 
-> **Development preview:** the firmware builds for the FM-1 and runs in the fm1-emu emulator and the browser preview, and the tests pass, but it is **untested on a physical FM-1**. Sounds are the Mario Paint sound pack (Nintendo's, a swappable asset pack: see [its notice](assets/sounds/NOTICE.md)). See the [manual](docs/MANUAL.md) and [install notes](docs/INSTALL.md) before trying a real unit.
+> **Development preview:** the firmware builds for the FM-1 and runs in the fm1-emu emulator and the browser preview, and the tests pass. It has also been **tested on a physical FM-1**. Sounds are the Mario Paint sound pack (Nintendo's, a swappable asset pack: see [its notice](assets/sounds/NOTICE.md)). See the [manual](docs/MANUAL.md) and [install notes](docs/INSTALL.md) before trying a real unit.
 
 > **Other firmwares' files:** Stamp Composer does not read other firmwares' projects, songs or samples. It reads its own songs (SCF) and imports Super Mario Paint text songs through the browser preview.
 
@@ -76,7 +76,7 @@ node tests/web.mjs build/emu/app.wasm build/playground.scf
 python3 -m http.server 8080 --directory build/emu
 ```
 
-For a device build, install the JieLi Linux PI32v2 toolchain and AC79 SDK described by `base/tools/build.py`, set `JIELI_TOOLCHAIN` and `AC79_SDK`, then run `./build.sh`. **No flashable firmware is included.** Package identity is `FM-1_56` (dev `FM-1_5600`); the firmware is untested on hardware. The browser simulator does not execute a PI32 firmware binary.
+For a device build, install the JieLi Linux PI32v2 toolchain and AC79 SDK described by `base/tools/build.py`, set `JIELI_TOOLCHAIN` and `AC79_SDK`, then run `./build.sh`. **No flashable firmware is included.** Package identity is `FM-1_56` (dev `FM-1_5600`); the firmware has been tested on a physical FM-1. The browser simulator does not execute a PI32 firmware binary.
 
 ## Bring a song or sound bank
 
